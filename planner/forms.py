@@ -36,3 +36,14 @@ class childForm(forms.ModelForm):
             'colour': forms.TextInput(attrs={'type': 'color'}),
         }
 
+class entryForm(forms.ModelForm):
+    class Meta:
+        model = Entry
+        fields = ['title', 'child', 'category', 'entry_type', 'description','priority', 'due_date', 'start_time', 'end_time', 'location']
+        widgets = {
+            'due_date': forms.DateInput(attrs={'type': 'datetime-local'}),
+            'start_time': forms.TimeInput(attrs={'type': 'datetime-local'}),
+            'end_time': forms.TimeInput(attrs={'type': 'datetime-local'}),
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
+
