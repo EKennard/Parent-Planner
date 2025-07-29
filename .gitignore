@@ -1,0 +1,14 @@
+planning docs/
+.venv/
+.env
+env.py
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Django specific
+*.log
+db.sqlite3
+media/
