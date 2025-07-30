@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParentPlanner</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <nav>
+        <div>
+            <div>
+                <div>
+                    <i class="fas fa-family"></i>
+                    <h1>ParentPlanner</h1>
+                </div>
+                
+                {% if user.is_authenticated %}
+                <div>
+                    <span>Welcome</span>
+                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                </div>
+                {% else %}
+                <div>
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'register' %}">Register</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</body>
+</html>

@@ -33,7 +33,7 @@ if os.path.isfile(os.path.join(BASE_DIR, "env.py")):
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.herokuapp.com']
 
 
 # Application definition
