@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit {{ child.first_name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav>
+        <div>
+            <div>
+                <a href="{% url 'dashboard' %}">ParentPlanner
+                </a>
+                <div>
+                    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+                    <a href="{% url 'logout' %}">Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div>
+        <div>
+            <div>
+                <div>
+                    <div">
+                        <h4>Edit {{ child.first_name }}'s Profile
+                        </h4>
+                </div>
+                <div>
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div {% if message.tags=='success' %} {% endif %}>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div>
+                            <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.help_text %}
+                            <p>{{ form.first_name.help_text }}</p>
+                            {% endif %}
+                            {% if form.first_name.errors %}
+                            <div>{{ form.first_name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.birth_date.id_for_label }}">{{ form.birth_date.label }}</label>
+                            {{ form.birth_date }}
+                            {% if form.birth_date.help_text %}
+                            <p>{{ form.birth_date.help_text }}</p>
+                            {% endif %}
+                            {% if form.birth_date.errors %}
+                            <div>{{ form.birth_date.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.school.id_for_label }}">{{ form.school.label }}</label>
+                            {{ form.school }}
+                            {% if form.school.help_text %}
+                            <p>{{ form.school.help_text }}</p>
+                            {% endif %}
+                            {% if form.school.errors %}
+                            <div>{{ form.school.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.year.id_for_label }}">{{ form.year.label }}</label>
+                            {{ form.year }}
+                            {% if form.year.help_text %}
+                            <p>{{ form.year.help_text }}</p>
+                            {% endif %}
+                            {% if form.year.errors %}
+                            <div>{{ form.year.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.class_name.id_for_label }}">{{ form.class_name.label }}</label>
+                            {{ form.class_name }}
+                            {% if form.class_name.help_text %}
+                            <p>{{ form.class_name.help_text }}</p>
+                            {% endif %}
+                            {% if form.class_name.errors %}
+                            <div>{{ form.class_name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.color.id_for_label }}">{{ form.color.label }}</label>
+                            {{ form.color }}
+                            {% if form.color.help_text %}
+                            <p>{{ form.color.help_text }}</p>
+                            {% endif %}
+                            {% if form.color.errors %}
+                            <div>{{ form.color.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <button type="submit">Update Profile</button>
+                            <a href="{% url 'dashboard' %}">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

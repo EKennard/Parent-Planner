@@ -22,3 +22,22 @@ def register(request):
     else:
         form = registrationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+@login_required
+def dashboard(request):
+    try:
+        parent = Parent.objects.get(user=request.user)
+        children = Child.objects.filter(parent=parent)
+        recent_entries = Entry.objects.filter(child__parent=parent)[:10]
+    except Parent.DoesNotExist:
+        # Create parent if doesn't exist
+        parent = Parent.objects.create(user=request.user)
+        children = []
+        recent_entries = []
+    
+    context = {
+        'parent': parent,
+        'children': children,
+        'recent_entries': recent_entries,
+    }
+    return render(request, 'dashboard.html', context)

@@ -35,36 +35,13 @@
                     <!------------ registration form -------------->
                     <form method="post">
                         {% csrf_token %}
-                                                <div>
-                            <label>Username</label>
-                            <input type="text" name="username"required>
-                        </div>
-                                                <div>
-                            <label>First Name</label>
-                            <input type="text" name="first_name" required>
-                        </div>
-                                                <div>
-                            <label>Last Name</label>
-                            <input type="text" name="last_name" required>
-                        </div>
-                                                <div>
-                            <label>Email</label>
-                            <input type="email" name="email" required>
-                        </div>
-                                                <div>
-                            <label>Password</label>
-                            <input type="password" name="password1" required>
-                        </div>
-                                                <div>
-                            <label>Confirm Password</label>
-                            <input type="password" name="password2" required>
-                        </div>
+                        {{ form.as_p }}
                         <button type="submit">
-                            <i class="fas fa-user-plus"></i>Create Account
+                            Create Account
                         </button>
                     </form>
-                    <div">
-                        <p>Already have an account? <a href="{% url 'login' %}" >Sign in here</a></p>
+                    <div>
+                        <p>Already have an account? <a href="{% url 'login' %}">Sign in here</a></p>
                     </div>
                 </div>
             </div>

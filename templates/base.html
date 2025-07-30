@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParentPlanner</title>
+    <title>{% block title %}ParentPlanner{% endblock %}</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -12,13 +12,12 @@
         <div>
             <div>
                 <div>
-                    <i class="fas fa-family"></i>
                     <h1>ParentPlanner</h1>
                 </div>
                 
                 {% if user.is_authenticated %}
                 <div>
-                    <span>Welcome</span>
+                    <span>Welcome, {{ user.username }}</span>
                     <a href="{% url 'dashboard' %}">Dashboard</a>
                     <a href="{% url 'logout' %}">Logout</a>
                 </div>
@@ -31,5 +30,10 @@
             </div>
         </div>
     </nav>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 </body>
 </html>

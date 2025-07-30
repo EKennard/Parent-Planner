@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Entry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    
+    <nav>
+        <div>
+            <div>
+                <a href="{% url 'dashboard' %}"></a>
+                </a>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div>
+        <div>
+            <div>
+                <div>
+                    <div>
+                        <h4>Add Entry</h4>
+                        <p>Create a note, task, or event</p>
+                    </div>
+                    <div>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div {% if message.tags == 'success' %}{% endif %}>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form method="post" id="entryForm">
+                            {% csrf_token %}
+                            
+                            <div>
+                                <div>
+                                    <label for="{{ form.title.id_for_label }}">
+                                        {{ form.title.label }} *
+                                    </label>
+                                    {{ form.title }}
+                                    {% if form.title.errors %}
+                                        <div>{{ form.title.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ form.entry_type.id_for_label }}">
+                                        {{ form.entry_type.label }} *
+                                    </label>
+                                    {{ form.entry_type }}
+                                    {% if form.entry_type.errors %}
+                                        <div>{{ form.entry_type.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div>
+                                    <label for="{{ form.child.id_for_label }}">
+                                        {{ form.child.label }} *
+                                    </label>
+                                    {{ form.child }}
+                                    {% if form.child.errors %}
+                                        <div>{{ form.child.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ form.category.id_for_label }}">
+                                        {{ form.category.label }} *
+                                    </label>
+                                    {{ form.category }}
+                                    {% if form.category.errors %}
+                                        <div>{{ form.category.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="{{ form.custom_category.id_for_label }}"></label>
+                                </label>
+                                {{ form.custom_category }}
+                                {% if form.custom_category.help_text %}
+                                    <p>{{ form.custom_category.help_text }}</p>
+                                {% endif %}
+                            </div>
+                            
+                            <div>
+                                <label for="{{ form.description.id_for_label }}">
+                                    {{ form.description.label }}
+                                </label>
+                                {{ form.description }}
+                                {% if form.description.errors %}
+                                    <div>{{ form.description.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Task-specific fields -->
+                            <div id="taskFields">
+                                <div>
+                                    <label for="{{ form.priority.id_for_label }}">
+                                        {{ form.priority.label }}
+                                    </label>
+                                    {{ form.priority }}
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ form.due_date.id_for_label }}">
+                                        {{ form.due_date.label }}
+                                    </label>
+                                    {{ form.due_date }}
+                                    {% if form.due_date.help_text %}
+                                        <p>{{ form.due_date.help_text }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Event-specific fields -->
+                            <div id="eventFields">
+                                <div>
+                                    <div>
+                                        <label for="{{ form.start_time.id_for_label }}">
+                                            {{ form.start_time.label }}
+                                        </label>
+                                        {{ form.start_time }}
+                                        {% if form.start_time.help_text %}
+                                            <p>{{ form.start_time.help_text }}</p>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ form.end_time.id_for_label }}">
+                                            {{ form.end_time.label }}
+                                        </label>
+                                            {{ form.end_time.label }}
+                                        </label>
+                                        {{ form.end_time }}
+                                        {% if form.end_time.help_text %}
+                                            <p>{{ form.end_time.help_text }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ form.location.id_for_label }}">
+                                        {{ form.location.label }}
+                                    </label>
+                                    {{ form.location }}
+                                    {% if form.location.help_text %}
+                                        <p>{{ form.location.help_text }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <button type="submit">Add Entry</button>
+                                <a href="{% url 'dashboard' %}">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleEntryFields() {
+            const entryType = document.getElementById('{{ form.entry_type.id_for_label }}').value;
+            const taskFields = document.getElementById('taskFields');
+            const eventFields = document.getElementById('eventFields');
+            
+            // hides conditional fields
+            taskFields.style.display = 'none';
+            eventFields.style.display = 'none';
+
+            // show entry type fields
+            if (entryType === 'task') {
+                taskFields.style.display = 'block';
+            } else if (entryType === 'event') {
+                taskFields.style.display = 'block';
+                eventFields.style.display = 'block';
+            }
+        }
+        
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleEntryFields();
+        });
+    </script>
+</body>
+</html>
