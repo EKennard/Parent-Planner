@@ -32,7 +32,7 @@ def registration(request):
             return redirect('dashboard')
     else:
         form = registrationForm()
-    return render(request, 'registration.html', {'form': form})
+    return render(request, 'registration/registration.html', {'form': form})
 
 
 #-----------------------------dashboard view---------------------------------
@@ -62,7 +62,7 @@ def add_child(request):
             child = form.save(commit=False)
             child.parent = parent 
             child.save()
-            messages.success(request, f'Added {child.first_name}!')
+            messages.success(request, f'Added {child.name}!')
             return redirect('dashboard')
         else:
             messages.error(request, 'Please correct the errors below.')
@@ -82,7 +82,7 @@ def add_entry(request):
         if form.is_valid():
             entry = form.save()
             entry_type = entry.get_entry_type_display().lower()
-            messages.success(request, f'Added {entry_type} for {entry.child.first_name}!')
+            messages.success(request, f'Added {entry_type} for {entry.child.name}!')
             return redirect('child_entries', child_id=entry.child.id)
     else:
         form = entryForm(parent=parent)
@@ -100,7 +100,7 @@ def child_entries(request, child_id):
         form = entryForm(request.POST, parent=parent)
         if form.is_valid():
             entry = form.save()
-            messages.success(request, f'Added {entry.get_entry_type_display().lower()} for {child.first_name}!')
+            messages.success(request, f'Added {entry.get_entry_type_display().lower()} for {child.name}!')
             return redirect('child_entries', child_id=child.id)
     else:
         form = entryForm(parent=parent, initial={'child': child})
@@ -167,7 +167,7 @@ def edit_child(request, child_id):
         form = childForm(request.POST, instance=child)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Updated {child.first_name}!')
+            messages.success(request, f'Updated {child.name}!')
             return redirect('dashboard')
     else:
         form = childForm(instance=child)

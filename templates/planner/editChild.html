@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit {{ child.first_name }}</title>
+    <title>Edit {{ child.name }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -31,7 +31,7 @@
             <div>
                 <div>
                     <div">
-                        <h4>Edit {{ child.first_name }}'s Profile
+                        <h4>Edit {{ child.name }}'s Profile
                         </h4>
                 </div>
                 <div>
@@ -48,13 +48,13 @@
                         {% csrf_token %}
 
                         <div>
-                            <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
-                            {{ form.first_name }}
-                            {% if form.first_name.help_text %}
-                            <p>{{ form.first_name.help_text }}</p>
+                            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                            {{ form.name }}
+                            {% if form.name.help_text %}
+                            <p>{{ form.name.help_text }}</p>
                             {% endif %}
-                            {% if form.first_name.errors %}
-                            <div>{{ form.first_name.errors }}</div>
+                            {% if form.name.errors %}
+                            <div>{{ form.name.errors }}</div>
                             {% endif %}
                         </div>
 
