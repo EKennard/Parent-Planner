@@ -40,12 +40,23 @@ def registration(request):
 def dashboard(request):
     parent, _ = Parent.objects.get_or_create(user=request.user)
     children = Child.objects.filter(parent=parent)
-    recent_entries = Entry.objects.filter(child__parent=parent)[:10]
+    all_entries = Entry.objects.filter(child__parent=parent)
+    active_entries = all_entries.order_by('-created_at')
+    
+    # Calculate counts
+    total_entries = all_entries.count()
+    notes_count = all_entries.filter(entry_type='note').count()
+    tasks_count = all_entries.filter(entry_type='task').count()
+    events_count = all_entries.filter(entry_type='event').count()
     
     context = {
         'parent': parent,
         'children': children,
-        'recent_entries': recent_entries,
+        'active_entries': active_entries,
+        'total_entries': total_entries,
+        'notes_count': notes_count,
+        'tasks_count': tasks_count,
+        'events_count': events_count,
     }
     return render(request, 'dashboard.html', context)
 
