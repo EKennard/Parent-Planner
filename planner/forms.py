@@ -37,13 +37,21 @@ class childForm(forms.ModelForm):
         }
 
 class entryForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        # Extract parent parameter before calling super()
+        parent = kwargs.pop('parent', None)
+        super().__init__(*args, **kwargs)
+        
+        # Filter child choices by parent
+        if parent:
+            self.fields['child'].queryset = Child.objects.filter(parent=parent)
     class Meta:
         model = Entry
         fields = ['title', 'child', 'category', 'entry_type', 'description','priority', 'due_date', 'start_time', 'end_time', 'location']
         widgets = {
-            'due_date': forms.DateInput(attrs={'type': 'datetime-local'}),
-            'start_time': forms.TimeInput(attrs={'type': 'datetime-local'}),
-            'end_time': forms.TimeInput(attrs={'type': 'datetime-local'}),
+            'due_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'description': forms.Textarea(attrs={'rows': 4}),
         }
 

@@ -20,3 +20,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+from parentplanner.wsgi import application
+print(application)

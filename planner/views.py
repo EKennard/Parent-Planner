@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import registrationForm, childForm, entryForm
 from .models import Parent, Child, Entry, Category
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import models
@@ -200,3 +200,10 @@ def quick_delete_entry(request, entry_id):
         entry.delete()
         messages.success(request, f'Deleted {entry_type.lower()}: {entry_title}')
     return redirect('dashboard')
+
+
+def logout_view(request):
+    """Log out the user and redirect to home page"""
+    logout(request)
+    messages.success(request, 'You have been successfully logged out.')
+    return redirect('home')

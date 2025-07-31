@@ -28,12 +28,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.path.isfile(os.path.join(BASE_DIR, "env.py")):
-    DEBUG = True
-else:
-    DEBUG = False
+# if os.path.isfile(os.path.join(BASE_DIR, "env.py")):
+#     DEBUG = True
+# else:
+#     DEBUG = False
 
-ALLOWED_HOSTS = ['.herokuapp.com']
+DEBUG = True
+
+ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -51,7 +53,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',  # Temporarily disabled until whitenoise is installed
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
