@@ -68,7 +68,7 @@ def add_child(request):
             messages.error(request, 'Please correct the errors below.')
     else:
         form = childForm()
-    return render(request, 'planner/add_child.html', {'form': form})
+    return render(request, 'planner/addChild.html', {'form': form})
 
 
 #-----------------------add entry view----------------------------
@@ -86,7 +86,7 @@ def add_entry(request):
             return redirect('child_entries', child_id=entry.child.id)
     else:
         form = entryForm(parent=parent)
-    return render(request, 'planner/add_entry.html', {'form': form})
+    return render(request, 'planner/addEntry.html', {'form': form})
 
 
 #-----------------------child entries view----------------------------
@@ -101,14 +101,14 @@ def child_entries(request, child_id):
         if form.is_valid():
             entry = form.save()
             messages.success(request, f'Added {entry.get_entry_type_display().lower()} for {child.name}!')
-            return redirect('child_entries', child_id=child.id)
+            return redirect('childEntries', child_id=child.id)
     else:
         form = entryForm(parent=parent, initial={'child': child})
     entries = Entry.objects.filter(child=child).defer('is_completed').order_by('-created_at')
     entry_type_filter = request.GET.get('type')
     if entry_type_filter in ['note', 'task', 'event']:
         entries = entries.filter(entry_type=entry_type_filter)
-    return render(request, 'planner/child_entries.html', {
+    return render(request, 'planner/childEntries.html', {
         'child': child,
         'form': form,
         'entries': entries,
@@ -130,10 +130,10 @@ def edit_entry(request, entry_id):
         if form.is_valid():
             form.save()
             messages.success(request, f'Updated {entry.get_entry_type_display().lower()}: {entry.title}')
-            return redirect('child_entries', child_id=entry.child.id)
+            return redirect('childEntries', child_id=entry.child.id)
     else:
         form = entryForm(instance=entry, parent=parent)
-    return render(request, 'planner/edit_entry.html', {
+    return render(request, 'planner/editEntry.html', {
         'form': form,
         'entry': entry,
         'child': entry.child,
@@ -153,7 +153,7 @@ def delete_entry(request, entry_id):
         entry_type = entry.get_entry_type_display()
         entry.delete()
         messages.success(request, f'Deleted {entry_type.lower()}: {entry_title}')
-    return redirect('child_entries', child_id=child_id)
+    return redirect('childEntries', child_id=child_id)
 
 #----------------------edit child view----------------------------
 
@@ -171,7 +171,7 @@ def edit_child(request, child_id):
             return redirect('dashboard')
     else:
         form = childForm(instance=child)
-    return render(request, 'planner/edit_child.html', {
+    return render(request, 'planner/editChild.html', {
         'form': form,
         'child': child,
     })
