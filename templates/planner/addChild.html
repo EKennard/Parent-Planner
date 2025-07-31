@@ -57,13 +57,13 @@
                             <h2>Basic Information</h2>
                             
                             <div>
-                                <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }} *</label>
-                                {{ form.first_name }}
-                                {% if form.first_name.help_text %}
-                                    <p>{{ form.first_name.help_text }}</p>
+                                <label for="{{ form.name.id_for_label }}">{{ form.name.label }} *</label>
+                                {{ form.name }}
+                                {% if form.name.help_text %}
+                                    <p>{{ form.name.help_text }}</p>
                                 {% endif %}
-                                {% if form.first_name.errors %}
-                                    {% for error in form.first_name.errors %}
+                                {% if form.name.errors %}
+                                    {% for error in form.name.errors %}
                                         <p>{{ error }}</p>
                                     {% endfor %}
                                 {% endif %}

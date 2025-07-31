@@ -98,11 +98,11 @@
                         <div>
                             <div>
                                 <div{{ child.color }};>
-                                    {{ child.first_name|first|upper }}
+                                    {{ child.name|first|upper }}
                             </div>
                         </div>
                         <div>
-                            <h3>{{ child.first_name }}</h3>
+                            <h3>{{ child.name }}</h3>
                             {% if child.school %}
                             <p>{{ child.color }};"{{ child.school }}</p>
                             {% endif %}
