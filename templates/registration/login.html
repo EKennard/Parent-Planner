@@ -7,27 +7,29 @@
     <div>
         <div>
             <div>
-                <div>
-                    <h2>Login</h2>
-                    
+                <div class="place-content-center">
+                    <h2 class="text-xl font-bold">Login</h2>
+
                     {% if form.errors %}
                         <div>
                             {{ form.errors }}
                         </div>
                     {% endif %}
                     
-                    <form method="post">
+                    <form method="post" class="border border-gray-300">
                         {% csrf_token %}
-                        <div>
-                            <label for="{{ form.username.id_for_label }}">Username:</label>
-                            {{ form.username }}
+                        <div class ="px-3 py-2 grid h-48 grid-cols-2 place-content-center max-w-sm">
+                            <label for="{{ form.username.id_for_label }}" class="px-3 py-2">Username:</label>
+                            <input type="text" name="username" id="{{ form.username.id_for_label }}" class="w-100px px-3 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" required>
                         </div>
-                        <div>
-                            <label for="{{ form.password.id_for_label }}">Password:</label>
-                            {{ form.password }}
+                        <div class ="px-3 py-2 grid h-48 grid-cols-2 place-content-center max-w-sm">
+                            <label for="{{ form.password.id_for_label }}" class="px-3 py-2">Password:</label>
+                            <input type="password" name="password" id="{{ form.password.id_for_label }}" class="w-100px px-3 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary" required>
                         </div>
-                        <div>
-                            <button type="submit">Login</button>
+                        <div class ="px-3 py-2 grid h-48 grid-cols-2 place-content-center max-w-sm">
+                            <button type="submit" class="w-100px bg-primary hover:bg-primary/90 text-white font-bold px-3 py-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                                Login
+                            </button>
                         </div>
                     </form>
 
