@@ -137,13 +137,13 @@
                             <h2>Personalization</h2>
                             
                             <div>
-                                <label for="{{ form.color.id_for_label }}">{{ form.color.label }}</label>
-                                {{ form.color }}
-                                {% if form.color.help_text %}
-                                    <p>{{ form.color.help_text }}</p>
+                                <label for="{{ form.colour.id_for_label }}">{{ form.colour.label }}</label>
+                                {{ form.colour }}
+                                {% if form.colour.help_text %}
+                                    <p>{{ form.colour.help_text }}</p>
                                 {% endif %}
-                                {% if form.color.errors %}
-                                    {% for error in form.color.errors %}
+                                {% if form.colour.errors %}
+                                    {% for error in form.colour.errors %}
                                         <p>{{ error }}</p>
                                     {% endfor %}
                                 {% endif %}

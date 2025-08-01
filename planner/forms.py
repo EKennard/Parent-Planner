@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Parent, Child, Entry, Category
+from .models import Parent, Child, Entry
 import random
 
 # generates random colour code for the child model
@@ -27,6 +27,17 @@ class childForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if not self.instance.pk:
             self.fields['colour'].initial = generate_random_color()
+        # Make sure colour field isn't required since it has a default
+        self.fields['colour'].required = False
+    
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        # Ensure colour has a value
+        if not instance.colour:
+            instance.colour = generate_random_color()
+        if commit:
+            instance.save()
+        return instance
     
     class Meta:
         model = Child

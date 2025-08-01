@@ -23,6 +23,15 @@ class Child(models.Model):
     school = models.CharField(max_length=100, blank=True)
     year = models.CharField(max_length=20, blank=True)
     class_name = models.CharField(max_length=50, blank=True)
+    colour = models.CharField(max_length=7, default='#000000', blank=True)  # hex color code
+    
+    def __str__(self):
+        return self.name
+    name = models.CharField(max_length=50)
+    birth_date = models.DateField(blank=True, null=True)
+    school = models.CharField(max_length=100, blank=True)
+    year = models.CharField(max_length=20, blank=True)
+    class_name = models.CharField(max_length=50, blank=True)
     colour = models.CharField(max_length=7, default='#000000')  # hex color code
     
     def __str__(self):
@@ -47,10 +56,24 @@ class Entry(models.Model):
         ('Medium', 'Medium'), 
         ('High', 'High'),     
     ]
+
+    category = [
+        ('None', 'None'),
+        ('Homework', 'Homework'),
+        ('Health', 'Health'),
+        ('School', 'School'),
+        ('Activities', 'Activities'),
+        ('Chores', 'Chores'),
+        ('Appointments', 'Appointments'),
+        ('Reminders', 'Reminders'),
+        ('Celebrations', 'Celebrations'),
+        ('Achievements', 'Achievements'),
+        ('Other', 'Other'),
+    ]
     
     title = models.CharField(max_length=200)
     child = models.ForeignKey(Child, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     entry_type = models.CharField(max_length=10, choices=entryTypes, default='note')
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

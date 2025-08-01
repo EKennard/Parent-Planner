@@ -1,0 +1,24 @@
+{
+  "name": "parent-planner",
+  "version": "1.0.0",
+  "description": "ParentPlanner is a web application designed to help modern families stay organised and manage their daily activities effectively. The app will enable parents to create personalised profiles for each child, track important tasks and events, and maintain clear oversight of family schedules. Family Planner is targeted toward busy parents who need a centralised system to coordinate multiple children's activities, school events, appointments, and personal notes. The application provides a list view, making it easy for families to visualise their schedules and ensure nothing important is missed.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EKennard/Parent-Planner.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/EKennard/Parent-Planner/issues"
+  },
+  "homepage": "https://github.com/EKennard/Parent-Planner#readme",
+  "devDependencies": {
+    "tailwindcss": "^4.1.11"
+  }
+}
