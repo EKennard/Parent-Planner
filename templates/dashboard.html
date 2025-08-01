@@ -1,43 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
+{% block title %}Dashboard - ParentPlanner{% endblock %}
 
-<body>
-    <nav>
-        <div>
-            <div>
-                <div>
-                    <h1>ParentPlanner</h1>
-                </div>
-                <div>
-                    <span>
-                        {{ parent.user.first_name|default:parent.user.username }}
-                    </span>
-                    <a href="{% url 'logout' %}">Logout</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
+{% block content %}
     <div>
         {% csrf_token %}
         {% if messages %}
-            {% for message in messages %}
-            <div>
-                {% if message.tags == 'success' %}
-                {% elif message.tags == 'error' %}
-                {% else %}
-                {% endif %}
-                <span>{{ message }}</span>
-            </div>
-            {% endfor %}
+        {% for message in messages %}
+        <div>
+            {% if message.tags == 'success' %}
+            {% elif message.tags == 'error' %}
+            {% else %}
+            {% endif %}
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
         {% endif %}
     </div>
 
@@ -182,19 +159,20 @@
                                     <!-- buttons -->
                                     <div>
                                         {% if entry.entry_type == 'task' or entry.entry_type == 'event' %}
-                                        <a href="{% url 'toggle_entry_completion' entry.id %}" 
-                                           title="{% if entry.is_completed %}Mark incomplete{% else %}Mark complete{% endif %}">
+                                        <a href="{% url 'toggle_entry_completion' entry.id %}"
+                                            title="{% if entry.is_completed %}Mark incomplete{% else %}Mark complete{% endif %}">
                                             {% if entry.is_completed %}Undo{% else %}Done{% endif %}
                                         </a>
                                         {% endif %}
 
                                         <a href="{% url 'edit_entry' entry.id %}">Edit</a>
 
-                                        <a href="{% url 'child_entries' entry.child.id %}" title="View all for {{ entry.child.name }}">All</a>
+                                        <a href="{% url 'child_entries' entry.child.id %}"
+                                            title="View all for {{ entry.child.name }}">All</a>
 
-                                        <a href="{% url 'quick_delete_entry' entry.id %}" 
-                                           onclick="confirmDelete('{{ entry.title }}', this.href); return false;" 
-                                           title="Delete entry">Delete</a>
+                                        <a href="{% url 'quick_delete_entry' entry.id %}"
+                                            onclick="confirmDelete('{{ entry.title }}', this.href); return false;"
+                                            title="Delete entry">Delete</a>
                                     </div>
                                 </div>
                             </div>
@@ -258,6 +236,5 @@
             });
         })
     </script>
-</body>
-
-</html>
+    </div>
+{% endblock %}

@@ -6,7 +6,7 @@
     <div>
         <div>
             <div>
-                <div>
+                <div class="text-xl font-bold">
                     <h1>Create Account</h1>
                 </div>
                 
@@ -33,10 +33,10 @@
                     {% endif %}
 
                     <!------------ registration form -------------->
-                    <form method="post">
+                    <form method="post" class="border border-gray-300">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit">
+                        <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-bold px-3 py-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                             Create Account
                         </button>
                     </form>
