@@ -23,13 +23,13 @@ The ParentPlanner App was developed with specific user needs in mind, addressing
 - **Event time management**: "As a user, I want to see start and end times clearly so that I can avoid double-booking."
 - **Family Sharing**: "As a user,I want to share selected event information so that both parents stay informed."
 - **Export capabilities**: "As a user, I want to export relevant schedule information so that I can share appropriate details with teachers, babysitters, and family members who need to know our availability/child schedule."
-**Colour coded activity types**: 2As a user, I Want to see notes, tasks, and events displayed in different colors so that I can quickly identify the type of activity without reading details. (CHANGE TO SHOULD HAVE ON GITHUB!!!)
+**Colour coded activity types**: 2As a user, I Want to see notes, tasks, and events displayed in different colors so that I can quickly identify the type of activity without reading details.
 
 ### Could Haves
-- **Location Awareness**: "As a user: I want to see event locations so that I can plan efficient routes and account for travel time. "(CHANGE TO COULD HAVE ON GITHUB!!!)
+- **Location Awareness**: "As a user: I want to see event locations so that I can plan efficient routes and account for travel time. "
 - **Monthly calender view**: "As a user I want to see all family activities displayed on a monthly calendar so that I can quickly identify busy periods and plan accordingly."
 - **Individual child calendersa**: "As a user I want to view individual calendar pages for each child so that I can focus on one child's commitments when discussing their schedule."
-- **Individual child calendersa**: "As a user I want to click on any calendar date and immediately create an entry for that specific day so that I can plan ahead efficiently while viewing our schedule."
+- **Easy calenders date entries**: "As a user I want to click on any calendar date and immediately create an entry for that specific day so that I can plan ahead efficiently while viewing our schedule."
 - **Quick celender navigation**: "As a user I want  to easily navigate between different months and years so that I can schedule future events and review past activities."
 
 ## Features

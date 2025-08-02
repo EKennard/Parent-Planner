@@ -1,37 +1,15 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Entry</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body>
-    
-    <nav>
-        <div>
-            <div>
-                <a href="{% url 'dashboard' %}"></a>
-                </a>
-                <div class="flex items-center space-x-4">
-                    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
-                    <a href="{% url 'logout' %}">Logout</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+{% extends 'base.html' %}
 
-    <div>
-        <div>
-            <div>
-                <div>
-                    <div>
-                        <h4>Add Entry</h4>
-                        <p>Create a note, task, or event</p>
-                    </div>
-                    <div>
+{% block title %}Add Entry - ParentPlanner{% endblock %}
+
+{% block content %}
+    <div class="max-w-2xl mx-auto">
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-900">Add Entry</h1>
+            <p class="text-gray-600 mt-2">Create a note, task, or event</p>
+        </div>
+        
+        <div class="bg-white shadow-lg rounded-lg p-8">
                         {% if messages %}
                             {% for message in messages %}
                                 <div>
@@ -194,5 +172,5 @@
             toggleEntryFields();
         });
     </script>
-</body>
-</html>
+    </div>
+{% endblock %}

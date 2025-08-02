@@ -4,7 +4,6 @@ from .models import Parent, Child, Entry, Category
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db import models
 
 # Create your views here.
 
@@ -40,7 +39,7 @@ def registration(request):
 def dashboard(request):
     parent, _ = Parent.objects.get_or_create(user=request.user)
     children = Child.objects.filter(parent=parent)
-    all_entries = Entry.objects.filter(child__parent=parent)
+    all_entries = Entry.objects.filter(child__parent=parent).defer('is_completed')
     active_entries = all_entries.order_by('-created_at')
     
     # Calculate counts

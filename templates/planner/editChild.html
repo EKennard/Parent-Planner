@@ -1,133 +1,120 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit {{ child.name }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
+{% block title %}Edit {{ child.name }} - ParentPlanner{% endblock %}
 
-<body>
-
-    <nav>
-        <div>
-            <div>
-                <a href="{% url 'dashboard' %}">ParentPlanner
-                </a>
-                <div>
-                    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
-                    <a href="{% url 'logout' %}">Logout
-                    </a>
-                </div>
-            </div>
+{% block content %}
+    <div class="max-w-2xl mx-auto">
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-900">Edit {{ child.name }}'s Profile</h1>
+            <p class="text-gray-600 mt-2">Update child information</p>
         </div>
-    </nav>
-
-    <div>
-        <div>
-            <div>
-                <div>
-                    <div">
-                        <h4>Edit {{ child.name }}'s Profile
-                        </h4>
-                </div>
-                <div>
-
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div>
-                        {% if message.tags == 'success' %}
-                            <!-- Success styling can be added here -->
-                        {% elif message.tags == 'error' %}
-                            <!-- Error styling can be added here -->
-                        {% endif %}
+        
+        <div class="bg-white shadow-lg rounded-lg p-8">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mb-4 p-4 rounded-md {% if message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200{% elif message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}">
                         {{ message }}
                     </div>
-                    {% endfor %}
-                    {% endif %}
+                {% endfor %}
+            {% endif %}
 
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
 
+                <!-- Basic Information -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Basic Information</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                            <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.name.label }} *</label>
                             {{ form.name }}
                             {% if form.name.help_text %}
-                            <p>{{ form.name.help_text }}</p>
+                                <p class="text-sm text-gray-500 mt-1">{{ form.name.help_text }}</p>
                             {% endif %}
                             {% if form.name.errors %}
-                            <div>{{ form.name.errors }}</div>
+                                <div class="text-red-600 text-sm mt-1">{{ form.name.errors }}</div>
                             {% endif %}
                         </div>
-
+                        
                         <div>
-                            <label for="{{ form.birth_date.id_for_label }}">{{ form.birth_date.label }}</label>
+                            <label for="{{ form.birth_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.birth_date.label }}</label>
                             {{ form.birth_date }}
                             {% if form.birth_date.help_text %}
-                            <p>{{ form.birth_date.help_text }}</p>
+                                <p class="text-sm text-gray-500 mt-1">{{ form.birth_date.help_text }}</p>
                             {% endif %}
                             {% if form.birth_date.errors %}
-                            <div>{{ form.birth_date.errors }}</div>
+                                <div class="text-red-600 text-sm mt-1">{{ form.birth_date.errors }}</div>
                             {% endif %}
                         </div>
+                    </div>
+                </div>
 
-                        <div>
-                            <label for="{{ form.school.id_for_label }}">{{ form.school.label }}</label>
-                            {{ form.school }}
-                            {% if form.school.help_text %}
-                            <p>{{ form.school.help_text }}</p>
-                            {% endif %}
-                            {% if form.school.errors %}
-                            <div>{{ form.school.errors }}</div>
-                            {% endif %}
-                        </div>
+                <!-- School Information -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">School Information</h2>
 
+                    <div>
+                        <label for="{{ form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.school.label }}</label>
+                        {{ form.school }}
+                        {% if form.school.help_text %}
+                            <p class="text-sm text-gray-500 mt-1">{{ form.school.help_text }}</p>
+                        {% endif %}
+                        {% if form.school.errors %}
+                            <div class="text-red-600 text-sm mt-1">{{ form.school.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="{{ form.year.id_for_label }}">{{ form.year.label }}</label>
+                            <label for="{{ form.year.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.year.label }}</label>
                             {{ form.year }}
                             {% if form.year.help_text %}
-                            <p>{{ form.year.help_text }}</p>
+                                <p class="text-sm text-gray-500 mt-1">{{ form.year.help_text }}</p>
                             {% endif %}
                             {% if form.year.errors %}
-                            <div>{{ form.year.errors }}</div>
+                                <div class="text-red-600 text-sm mt-1">{{ form.year.errors }}</div>
                             {% endif %}
                         </div>
-
+                        
                         <div>
-                            <label for="{{ form.class_name.id_for_label }}">{{ form.class_name.label }}</label>
+                            <label for="{{ form.class_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.class_name.label }}</label>
                             {{ form.class_name }}
                             {% if form.class_name.help_text %}
-                            <p>{{ form.class_name.help_text }}</p>
+                                <p class="text-sm text-gray-500 mt-1">{{ form.class_name.help_text }}</p>
                             {% endif %}
                             {% if form.class_name.errors %}
-                            <div>{{ form.class_name.errors }}</div>
+                                <div class="text-red-600 text-sm mt-1">{{ form.class_name.errors }}</div>
                             {% endif %}
                         </div>
-
-                        <div>
-                            <label for="{{ form.color.id_for_label }}">{{ form.color.label }}</label>
-                            {{ form.color }}
-                            {% if form.color.help_text %}
-                            <p>{{ form.color.help_text }}</p>
-                            {% endif %}
-                            {% if form.color.errors %}
-                            <div>{{ form.color.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div>
-                            <button type="submit">Update Profile</button>
-                            <a href="{% url 'dashboard' %}">Cancel</a>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Personalization -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Personalization</h2>
+                    
+                    <div>
+                        <label for="{{ form.colour.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.colour.label }}</label>
+                        {{ form.colour }}
+                        {% if form.colour.help_text %}
+                            <p class="text-sm text-gray-500 mt-1">{{ form.colour.help_text }}</p>
+                        {% endif %}
+                        {% if form.colour.errors %}
+                            <div class="text-red-600 text-sm mt-1">{{ form.colour.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 pt-6">
+                    <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        Update Profile
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md transition duration-200">
+                        Cancel
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
-    </div>
-</body>
-
-</html>
+{% endblock %}
