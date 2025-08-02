@@ -48,7 +48,11 @@
                 </div>
                 <div>
                     <a href="{% url 'add_child' %}">Add Child</a>
+                    {% if children %}
                     <a href="{% url 'add_entry' %}">Add Entry</a>
+                    {% else %}
+                    <span title="Add a child profile first">Add Entry</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -184,14 +188,21 @@
                     {% if active_entries|length > 10 %}
                     <div>
                         <p>Showing first 10 entries</p>
+                        {% if children %}
                         <a href="{% url 'add_entry' %}">Add New Entry</a>
+                        {% endif %}
                     </div>
                     {% endif %}
                     {% else %}
                     <div>
                         <h3>No entries yet</h3>
+                        {% if children %}
                         <p>Start by adding notes, tasks, or events</p>
                         <a href="{% url 'add_entry' %}">Add First Entry</a>
+                        {% else %}
+                        <p>Add a child profile first, then you can start creating entries</p>
+                        <a href="{% url 'add_child' %}">Add Child Profile</a>
+                        {% endif %}
                     </div>
                     {% endif %}
                 </div>

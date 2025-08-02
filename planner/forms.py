@@ -49,13 +49,19 @@ class childForm(forms.ModelForm):
 
 class entryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        # Extract parent parameter before calling super()
         parent = kwargs.pop('parent', None)
         super().__init__(*args, **kwargs)
-        
-        # Filter child choices by parent
         if parent:
             self.fields['child'].queryset = Child.objects.filter(parent=parent)
+            if not self.fields['child'].queryset.exists():
+                self.fields['child'].help_text = 'You must add at least one child profile before creating entries.'
+                self.fields['child'].widget.attrs['disabled'] = True
+    
+    def clean_child(self):
+        child = self.cleaned_data.get('child')
+        if not child:
+            raise forms.ValidationError('Please select a child for this entry.')
+        return child
     class Meta:
         model = Entry
         fields = ['title', 'child', 'category', 'entry_type', 'description','priority', 'due_date', 'start_time', 'end_time', 'location']

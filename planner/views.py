@@ -87,6 +87,10 @@ def add_entry(request):
     parent = get_parent_or_redirect(request)
     if not parent:
         return redirect('register')
+    children = Child.objects.filter(parent=parent)
+    if not children.exists():
+        messages.error(request, 'You need to add at least one child profile before creating entries.')
+        return redirect('add_child')
     if request.method == 'POST':
         form = entryForm(request.POST, parent=parent)
         if form.is_valid():
