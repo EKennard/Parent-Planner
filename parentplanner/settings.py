@@ -34,8 +34,6 @@ DEBUG = True
 #     DEBUG = False
 
 
-
-
 ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost', 'https://parentplanner-0a7a2e9a2998.herokuapp.com']
 
 
@@ -94,7 +92,7 @@ WSGI_APPLICATION = 'parentplanner.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'testdb.sqlite3',
     }
 }
 
