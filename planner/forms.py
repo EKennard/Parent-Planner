@@ -13,7 +13,59 @@ class registrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('username', 'email', 'password1', 'password2')         
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Customize password help text
+        # self.fields['password1'].help_text = 'Your password must contain at least 8 characters and cannot be entirely numeric.'
+        # self.fields['password2'].help_text = 'Enter the same password as before, for verification.'
+        self.fields['password1'].help_text = None
+        self.fields['password2'].help_text = None
+        # Optional: Customize other field help text
+        # self.fields['username'].help_text = 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'
+        self.fields['username'].help_text = None
+        
+        # Custom error messages
+        self.fields['username'].error_messages.update({
+            'required': 'Please enter a username.',
+            'invalid': 'Please enter a valid username.',
+        })
+        
+        self.fields['password1'].error_messages.update({
+            'required': 'Please create a password.',
+        })
+        
+        self.fields['password2'].error_messages.update({
+            'required': 'Please confirm your password.',
+        })
+        
+        self.fields['email'].error_messages.update({
+            'required': 'Please enter your email address.',
+            'invalid': 'Please enter a valid email address.',
+        })
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('An account with this email address already exists.')
+        return email
+    
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        # If no username provided, generate one from email
+        if not username:
+            email = self.cleaned_data.get('email')
+            if email:
+                # Use email prefix as username
+                username = email.split('@')[0]
+                # Make sure this generated username doesn't conflict
+                base_username = username
+                counter = 1
+                while User.objects.filter(username=username).exists():
+                    username = f"{base_username}{counter}"
+                    counter += 1
+        return username
+        
     def save(self, commit=True):
         user = super(registrationForm, self).save(commit=False)
         user.email = self.cleaned_data['email']

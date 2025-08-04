@@ -151,6 +151,7 @@ TAILWIND_APP_NAME = 'theme'
 
 # Django Allauth Configuration
 AUTHENTICATION_BACKENDS = [
+    'planner.backends.EmailBackend',  # Our custom email authentication
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
@@ -159,4 +160,7 @@ SITE_ID = 1
 
 # Allauth settings (updated to new format)
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_SIGNUP_FIELDS = ['username', 'password1', 'password2']
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email for login
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True 
+ACCOUNT_SIGNUP_FIELDS = ['email', 'password1', 'password2']
