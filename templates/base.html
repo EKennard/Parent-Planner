@@ -76,10 +76,10 @@
                     {% if user.is_authenticated %}
                         <span class="text-accent font-medium">Welcome, {{ user.username }}</span>
                         <a href="{% url 'dashboard' %}" class="hover:underline transition-colors">Dashboard</a>
-                        <a href="{% url 'logout' %}" class="hover:underline transition-colors">Logout</a>
+                        <a href="{% url 'account_logout' %}" class="hover:underline transition-colors">Logout</a>
                     {% else %}
-                        <a href="{% url 'login' %}" class="hover:underline transition-colors">Login</a>
-                        <a href="{% url 'register' %}" class="hover:underline transition-colors">Register</a>
+                        <a href="{% url 'account_login' %}" class="hover:underline transition-colors">Login</a>
+                        <a href="{% url 'account_signup' %}" class="hover:underline transition-colors">Register</a>
                     {% endif %}
                 </div>
             </div>
@@ -90,10 +90,10 @@
                     {% if user.is_authenticated %}
                         <span class="text-accent font-medium text-sm">Welcome, {{ user.username }}</span>
                         <a href="{% url 'dashboard' %}" class="text-white hover:text-accent py-2 transition-colors">Dashboard</a>
-                        <a href="{% url 'logout' %}" class="text-white hover:text-accent py-2 transition-colors">Logout</a>
+                        <a href="{% url 'account_logout' %}" class="text-white hover:text-accent py-2 transition-colors">Logout</a>
                     {% else %}
-                        <a href="{% url 'login' %}" class="text-white hover:text-accent py-2 transition-colors">Login</a>
-                        <a href="{% url 'register' %}" class="text-white hover:text-accent py-2 transition-colors">Register</a>
+                        <a href="{% url 'account_login' %}" class="text-white hover:text-accent py-2 transition-colors">Login</a>
+                        <a href="{% url 'account_signup' %}" class="text-white hover:text-accent py-2 transition-colors">Register</a>
                     {% endif %}
                 </div>
             </div>

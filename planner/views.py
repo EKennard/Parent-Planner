@@ -20,7 +20,7 @@ def get_parent_or_redirect(request):
 def home(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
-    return redirect('login')
+    return redirect('account_login')
 
 def registration(request):
     if request.method == 'POST':

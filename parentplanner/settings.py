@@ -92,7 +92,7 @@ WSGI_APPLICATION = 'parentplanner.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'testdb.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -157,9 +157,9 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
-# Allauth settings (updated to new format)
+# Allauth settings
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email for login
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = True 
+ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_SIGNUP_FIELDS = ['email', 'password1', 'password2']
