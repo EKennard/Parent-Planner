@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # if os.path.isfile(os.path.join(BASE_DIR, "env.py")):
 DEBUG = True
 # else:
-#     DEBUG = False
+# DEBUG = False
 
 
 ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost', 'https://parentplanner-0a7a2e9a2998.herokuapp.com']
