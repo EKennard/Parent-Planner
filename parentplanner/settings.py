@@ -34,7 +34,7 @@ DEBUG = True
 # DEBUG = False
 
 
-ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost', 'https://parentplanner-0a7a2e9a2998.herokuapp.com']
+ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost', 'parentplanner-0a7a2e9a2998.herokuapp.com']
 
 
 # Application definition
@@ -163,3 +163,17 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email for login
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_SIGNUP_FIELDS = ['email', 'password1', 'password2']
+
+# CSRF and Security Settings for Production
+import os
+if 'DATABASE_URL' in os.environ:  # This means we're on Heroku
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_HTTPONLY = True
+    CSRF_TRUSTED_ORIGINS = [
+        'https://parentplanner-0a7a2e9a2998.herokuapp.com',
+        'https://*.herokuapp.com'
+    ]
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
