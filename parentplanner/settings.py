@@ -28,14 +28,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.path.isfile(os.path.join(BASE_DIR, "env.py")):
-    DEBUG = True
-else:
-    DEBUG = False
+# if os.path.isfile(os.path.join(BASE_DIR, "env.py")):
+DEBUG = True
+# else:
+#     DEBUG = False
 
 
 
-ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost']
+
+ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost', 'https://parentplanner-0a7a2e9a2998.herokuapp.com']
 
 
 # Application definition
