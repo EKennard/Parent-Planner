@@ -28,10 +28,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# if os.path.isfile(os.path.join(BASE_DIR, "env.py")):
-DEBUG = True
-# else:
-# DEBUG = False
+if os.path.isfile(os.path.join(BASE_DIR, "env.py")):
+    DEBUG = True
+else:
+    DEBUG = False
 
 
 ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1', 'localhost', 'parentplanner-0a7a2e9a2998.herokuapp.com']
@@ -89,12 +89,25 @@ WSGI_APPLICATION = 'parentplanner.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+import dj_database_url
+import os
+
+# Default to SQLite for local development, PostgreSQL for production
+if 'DATABASE_URL' in os.environ:
+    # Production: Use Heroku PostgreSQL
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ['DATABASE_URL'])
     }
-}
+    # Heroku PostgreSQL requires SSL connections
+    DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
+else:
+    # Local development: Use SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -157,12 +170,11 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
-# Allauth settings
+# Allauth settings (using new format)
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Use email for login
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Keep this for compatibility
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_SIGNUP_FIELDS = ['email', 'password1', 'password2']
 
 # CSRF and Security Settings for Production
 import os

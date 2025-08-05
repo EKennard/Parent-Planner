@@ -17,6 +17,7 @@
         <form method="post" action="{% url 'account_logout' %}" class="space-y-4">
             {% csrf_token %}
             
+            <!-- Hidden redirect field -->
             {{ redirect_field }}
             
             <div class="flex space-x-4">
