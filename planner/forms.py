@@ -4,23 +4,6 @@ from django.contrib.auth.models import User
 from .models import Parent, Child, Entry
 import random
 from datetime import date
-from django.forms.widgets import RadioSelect
-from django.utils.safestring import mark_safe
-
-class ColorRadioSelect(RadioSelect):
-    """Custom radio select widget that displays color swatches"""
-    
-    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
-        option = super().create_option(name, value, label, selected, index, subindex, attrs)
-        if value:
-            # Create a color swatch for each option
-            option['label'] = mark_safe(
-                f'<span class="flex items-center gap-2">'
-                f'<span class="inline-block w-6 h-6 rounded-full border-2 border-gray-300" style="background-color: {value};"></span>'
-                f'<span>{label}</span>'
-                f'</span>'
-            )
-        return option
 
 # generates random colour code from predefined choices
 def generate_random_color():
@@ -100,8 +83,8 @@ class childForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if not self.instance.pk:
             self.fields['colour'].initial = generate_random_color()
-        # Make sure colour field isn't required since it has a default
-        self.fields['colour'].required = False
+        # Make sure colour field is required so user must select a color
+        self.fields['colour'].required = True
     
     def clean_birth_date(self):
         birth_date = self.cleaned_data.get('birth_date')
@@ -123,7 +106,7 @@ class childForm(forms.ModelForm):
         fields = ['name', 'birth_date', 'school', 'year', 'class_name', 'colour']
         widgets = {
             'birth_date': forms.DateInput(attrs={'type': 'date'}),
-            'colour': ColorRadioSelect(attrs={'class': 'color-radio-group space-y-2'}),
+            'colour': forms.Select(attrs={'style': 'display: none;'}),
         }
 
 class entryForm(forms.ModelForm):

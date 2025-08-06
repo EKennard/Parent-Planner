@@ -4,54 +4,82 @@
 
 {% block extra_head %}
 <style>
-/* Custom styling for color radio buttons */
-.color-radio-group {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+/* Color grid styling - clean version */
+.color-grid-widget {
+    margin: 0.5rem 0;
 }
 
-.color-radio-group label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
+.color-dots-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+    padding: 1rem;
+    background-color: #f9fafb;
     border: 2px solid #e5e7eb;
     border-radius: 0.5rem;
+    max-width: 300px;
+}
+
+.color-dot {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 3px solid #d1d5db;
     cursor: pointer;
     transition: all 0.2s ease;
-    background-color: white;
+    justify-self: center;
 }
 
-.color-radio-group label:hover {
+.color-dot:hover {
+    transform: scale(1.1);
     border-color: #9ca3af;
-    background-color: #f9fafb;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.color-radio-group input[type="radio"] {
-    margin: 0;
-}
-
-.color-radio-group input[type="radio"]:checked + span {
-    font-weight: 600;
-}
-
-.color-radio-group label:has(input:checked) {
+.color-dot.selected {
     border-color: #4f46e5;
-    background-color: #eef2ff;
-}
-
-.color-radio-group .flex {
-    width: 100%;
-}
-
-.color-radio-group span[style*="background-color"] {
-    min-width: 1.5rem;
-    min-height: 1.5rem;
-    border: 2px solid #d1d5db;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transform: scale(1.15);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2), 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 </style>
+
+<script>
+function selectColorDot(dot, selectId) {
+    const color = dot.dataset.color;
+    const select = document.getElementById(selectId);
+    
+    if (select) {
+        select.value = color;
+        select.dispatchEvent(new Event('change'));
+    }
+    
+    // Update visual selection
+    const widget = dot.closest('.color-grid-widget');
+    if (widget) {
+        widget.querySelectorAll('.color-dot').forEach(d => {
+            d.classList.remove('selected');
+        });
+        dot.classList.add('selected');
+    }
+}
+
+// Set initial selection when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const select = document.getElementById('id_colour');
+    if (select && select.value) {
+        const selectedDot = document.querySelector(`[data-color="${select.value}"]`);
+        if (selectedDot) {
+            selectColorDot(selectedDot, 'id_colour');
+        }
+    } else {
+        // Default to first color
+        const firstDot = document.querySelector('.color-dot');
+        if (firstDot && select) {
+            selectColorDot(firstDot, 'id_colour');
+        }
+    }
+});
+</script>
 {% endblock %}
 
 {% block content %}
@@ -154,7 +182,76 @@
                             
                             <div>
                                 <label for="{{ form.colour.id_for_label }}">{{ form.colour.label }}</label>
+                                
+                                <!-- Hidden select field -->
                                 {{ form.colour }}
+                                
+                                <!-- Custom color grid -->
+                                <div class="color-grid-widget" data-target="{{ form.colour.id_for_label }}">
+                                    <div class="color-dots-grid">
+                                        <div class="color-dot selected" 
+                                             data-color="#FF6B6B"
+                                             onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                             style="background-color: #FF6B6B;"
+                                             title="Coral Red">
+                                        </div>
+                                        <div class="color-dot" 
+                                             data-color="#4ECDC4"
+                                             onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                             style="background-color: #4ECDC4;"
+                                             title="Turquoise">
+                                        </div>
+                                        <div class="color-dot" 
+                                             data-color="#0D6A80"
+                                             onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                             style="background-color: #0D6A80;"
+                                             title="Sky Blue">
+                                        </div>
+                                        <div class="color-dot" 
+                                             data-color="#96CEB4"
+                                             onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                             style="background-color: #96CEB4;"
+                                             title="Mint Green">
+                                        </div>
+                                        <div class="color-dot" 
+                                             data-color="#D1D811"
+                                             onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                             style="background-color: #D1D811;"
+                                             title="Sunny Yellow">
+                                        </div>
+                                        <div class="color-dot" 
+                                             data-color="#DDA0DD"
+                                             onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                             style="background-color: #DDA0DD;"
+                                             title="Plum Purple">
+                                        </div>
+                                        <div class="color-dot" 
+                                             data-color="#AD6A0D"
+                                             onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                             style="background-color: #AD6A0D;"
+                                             title="Peach Orange">
+                                        </div>
+                                        <div class="color-dot" 
+                                             data-color="#8516EE"
+                                             onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                             style="background-color: #8516EE;"
+                                             title="Light Blue">
+                                        </div>
+                                        <div class="color-dot" 
+                                             data-color="#0CEB0C"
+                                             onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                             style="background-color: #0CEB0C;"
+                                             title="Pale Green">
+                                        </div>
+                                        <div class="color-dot" 
+                                             data-color="#BE12E0"
+                                             onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                             style="background-color: #BE12E0;"
+                                             title="Bright Pink">
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 {% if form.colour.help_text %}
                                     <p>{{ form.colour.help_text }}</p>
                                 {% endif %}
