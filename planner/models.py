@@ -27,15 +27,6 @@ class Child(models.Model):
     
     def __str__(self):
         return self.name
-    name = models.CharField(max_length=50)
-    birth_date = models.DateField(blank=True, null=True)
-    school = models.CharField(max_length=100, blank=True)
-    year = models.CharField(max_length=20, blank=True)
-    class_name = models.CharField(max_length=50, blank=True)
-    colour = models.CharField(max_length=7, default='#000000')  # hex color code
-    
-    def __str__(self):
-        return self.name
 
 
 

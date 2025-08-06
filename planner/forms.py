@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Parent, Child, Entry
 import random
+from datetime import date
 
 # generates random colour code for the child model
 def generate_random_color():
@@ -81,6 +82,12 @@ class childForm(forms.ModelForm):
             self.fields['colour'].initial = generate_random_color()
         # Make sure colour field isn't required since it has a default
         self.fields['colour'].required = False
+    
+    def clean_birth_date(self):
+        birth_date = self.cleaned_data.get('birth_date')
+        if birth_date and birth_date > date.today():
+            raise forms.ValidationError('Birth date cannot be in the future.')
+        return birth_date
     
     def save(self, commit=True):
         instance = super().save(commit=False)
