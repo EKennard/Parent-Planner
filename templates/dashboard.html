@@ -112,87 +112,110 @@
         <div class="space-y-4">
             {% if active_entries %}
                     {% for entry in active_entries|slice:":10" %}
-                    <div class="border-b border-gray-200 pb-4 mb-4">
-                        <!-- Entry Header -->
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900">{{ entry.title }}</h3>
-                                <p class="text-sm text-gray-600">
-                                    <span class="font-medium" style="color: {{ entry.child.colour }};">{{ entry.child.name }}</span>
-                                    • {{ entry.get_entry_type_display }}
-                                    {% if entry.category and entry.category != 'none' %}
-                                    • {{ entry.get_category_display }}
-                                    {% endif %}
-                                </p>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                {% if entry.is_completed %}
-                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Completed</span>
-                                {% endif %}
-                                {% if entry.priority and entry.entry_type == 'task' %}
-                                <span class="text-xs font-medium px-2 py-1 rounded
-                                    {% if entry.priority == 'high' %}bg-red-100 text-red-800
-                                    {% elif entry.priority == 'medium' %}bg-yellow-100 text-yellow-800
-                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
-                                    {{ entry.get_priority_display }}
-                                </span>
-                                {% endif %}
-                            </div>
-                        </div>
+                    <div class="border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow">
+                        <div class="flex justify-between items-start">
+                            <!-- Main Content -->
+                            <div class="flex-1 pr-4">
+                                <!-- Entry Header -->
+                                <div class="mb-2">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ entry.title }}</h3>
+                                    <div class="flex items-center space-x-2 text-sm">
+                                        <span class="font-medium" style="color: {{ entry.child.colour }};">{{ entry.child.name }}</span>
+                                        <span class="text-gray-400">•</span>
+                                        <span class="text-gray-600">{{ entry.get_entry_type_display }}</span>
+                                        {% if entry.category and entry.category != 'none' %}
+                                        <span class="text-gray-400">•</span>
+                                        <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">{{ entry.get_category_display }}</span>
+                                        {% endif %}
+                                        {% if entry.priority and entry.entry_type == 'task' %}
+                                        <span class="text-xs font-medium px-2 py-1 rounded-full
+                                            {% if entry.priority == 'high' %}bg-red-100 text-red-800
+                                            {% elif entry.priority == 'medium' %}bg-yellow-100 text-yellow-800
+                                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                            {{ entry.get_priority_display }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
 
-                        <!-- Entry Details -->
-                        <div class="space-y-2">
-                            <!-- Description -->
-                            {% if entry.description %}
-                            <p class="text-gray-700">{{ entry.description|truncatewords:20 }}</p>
-                            {% endif %}
-
-                            <!-- Date/Time Information -->
-                            <div class="text-sm text-gray-600">
+                                <!-- Essential Date/Time Info -->
                                 {% if entry.entry_type == 'task' and entry.due_date %}
-                                <div><strong>Due:</strong> {{ entry.due_date|date:"M d, Y g:i A" }}</div>
-                                {% elif entry.entry_type == 'event' %}
-                                    {% if entry.start_time %}
-                                    <div><strong>Start:</strong> {{ entry.start_time|date:"M d, Y g:i A" }}</div>
-                                    {% endif %}
-                                    {% if entry.end_time %}
-                                    <div><strong>End:</strong> {{ entry.end_time|date:"M d, Y g:i A" }}</div>
-                                    {% endif %}
+                                <div class="text-sm text-orange-600 font-medium mb-2">
+                                    📅 Due: {{ entry.due_date|date:"M d, Y g:i A" }}
+                                </div>
+                                {% elif entry.entry_type == 'event' and entry.start_time %}
+                                <div class="text-sm text-blue-600 font-medium mb-2">
+                                    🕒 {{ entry.start_time|date:"M d, Y g:i A" }}
+                                    {% if entry.end_time %} - {{ entry.end_time|date:"g:i A" }}{% endif %}
                                     {% if entry.location %}
-                                    <div><strong>Location:</strong> {{ entry.location }}</div>
+                                    <br>📍 {{ entry.location }}
                                     {% endif %}
-                                {% else %}
-                                <div><strong>Created:</strong> {{ entry.created_at|date:"M d, Y g:i A" }}</div>
+                                </div>
                                 {% endif %}
-                                {% if entry.updated_at != entry.created_at %}
-                                <div><strong>Last Updated:</strong> {{ entry.updated_at|date:"M d, Y g:i A" }}</div>
+
+                                <!-- Description (truncated) -->
+                                {% if entry.description %}
+                                <p class="text-gray-700 text-sm">{{ entry.description|truncatewords:15 }}</p>
                                 {% endif %}
+
+                                <!-- Expandable Details -->
+                                <div class="mt-2">
+                                    <button onclick="toggleDetails('details-{{ entry.id }}')" class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                        View Details ▼
+                                    </button>
+                                    <div id="details-{{ entry.id }}" class="hidden mt-2 p-3 bg-gray-50 rounded text-sm">
+                                        <div class="grid grid-cols-2 gap-2 text-xs">
+                                            <div><strong>Created:</strong> {{ entry.created_at|date:"M d, Y g:i A" }}</div>
+                                            {% if entry.updated_at != entry.created_at %}
+                                            <div><strong>Updated:</strong> {{ entry.updated_at|date:"M d, Y g:i A" }}</div>
+                                            {% endif %}
+                                            {% if entry.description %}
+                                            <div class="col-span-2 mt-2"><strong>Full Description:</strong><br>{{ entry.description }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Action Buttons -->
-                        <div class="flex space-x-3 mt-3 pt-2 border-t border-gray-100">
-                            {% if entry.entry_type == 'task' or entry.entry_type == 'event' %}
-                            <a href="{% url 'toggle_entry_completion' entry.id %}"
-                                class="text-sm {% if entry.is_completed %}text-orange-600 hover:text-orange-800{% else %}text-green-600 hover:text-green-800{% endif %} font-medium"
-                                title="{% if entry.is_completed %}Mark incomplete{% else %}Mark complete{% endif %}">
-                                {% if entry.is_completed %}Mark Incomplete{% else %}Mark Complete{% endif %}
-                            </a>
-                            {% endif %}
+                            <!-- Action Panel (Right Side) -->
+                            <div class="flex flex-col items-center space-y-2 min-w-[120px]">
+                                <!-- Completion Checkbox -->
+                                {% if entry.entry_type == 'task' or entry.entry_type == 'event' %}
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" id="complete-{{ entry.id }}" 
+                                           {% if entry.is_completed %}checked{% endif %}
+                                           onchange="toggleCompletion({{ entry.id }})"
+                                           class="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500">
+                                    <label for="complete-{{ entry.id }}" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                                        {% if entry.is_completed %}Done{% else %}To Do{% endif %}
+                                    </label>
+                                </div>
+                                {% endif %}
 
-                            <a href="{% url 'edit_entry' entry.id %}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Edit</a>
-
-                            <a href="{% url 'child_entries' entry.child.id %}"
-                                class="text-sm text-purple-600 hover:text-purple-800 font-medium"
-                                title="View all entries for {{ entry.child.name }}">View All for {{ entry.child.name }}</a>
-
-                            <form method="post" action="{% url 'quick_delete_entry' entry.id %}" style="display: inline;" 
-                                  onsubmit="return confirm('Are you sure you want to delete \'{{ entry.title }}\'?')">
-                                {% csrf_token %}
-                                <button type="submit" class="text-sm text-red-600 hover:text-red-800 font-medium bg-transparent border-none cursor-pointer" title="Delete entry">
-                                    Delete
-                                </button>
-                            </form>
+                                <!-- Action Buttons -->
+                                <div class="flex flex-col space-y-1 w-full">
+                                    <!-- View All Button -->
+                                    <a href="{% url 'child_entries' entry.child.id %}" 
+                                       class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium py-1 px-3 rounded text-center transition duration-200">
+                                        View All
+                                    </a>
+                                    
+                                    <!-- Edit Button -->
+                                    <a href="{% url 'edit_entry' entry.id %}" 
+                                       class="bg-green-500 hover:bg-green-600 text-white text-xs font-medium py-1 px-3 rounded text-center transition duration-200">
+                                        Edit
+                                    </a>
+                                    
+                                    <!-- Delete Button -->
+                                    <form method="post" action="{% url 'quick_delete_entry' entry.id %}" style="display: block;" 
+                                          onsubmit="return confirm('Delete \'{{ entry.title }}\'?')">
+                                        {% csrf_token %}
+                                        <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-1 px-3 rounded transition duration-200">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
@@ -230,6 +253,68 @@
 </div>
 
 <script>
+    // Toggle details section
+    function toggleDetails(detailsId) {
+        const details = document.getElementById(detailsId);
+        const button = details.previousElementSibling;
+        
+        if (details.classList.contains('hidden')) {
+            details.classList.remove('hidden');
+            button.innerHTML = 'Hide Details ▲';
+        } else {
+            details.classList.add('hidden');
+            button.innerHTML = 'View Details ▼';
+        }
+    }
+
+    // Toggle completion status via AJAX
+    function toggleCompletion(entryId) {
+        const checkbox = document.getElementById(`complete-${entryId}`);
+        const label = checkbox.nextElementSibling;
+        
+        // Create form and submit via fetch
+        fetch(`/toggle-completion/${entryId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                // Update label text based on checkbox state
+                label.textContent = checkbox.checked ? 'Done' : 'To Do';
+                
+                // Show success feedback
+                showToast(checkbox.checked ? 'Marked as complete!' : 'Marked as incomplete!');
+            } else {
+                // Revert checkbox if request failed
+                checkbox.checked = !checkbox.checked;
+                showToast('Failed to update status', 'error');
+            }
+        })
+        .catch(error => {
+            // Revert checkbox if request failed
+            checkbox.checked = !checkbox.checked;
+            showToast('Failed to update status', 'error');
+        });
+    }
+
+    // Simple toast notification
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 px-4 py-2 rounded shadow-lg text-white z-50 ${
+            type === 'error' ? 'bg-red-500' : 'bg-green-500'
+        }`;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+
     function confirmDelete(entryTitle, deleteUrl) {
         if (confirm(`Are you sure you want to delete "${entryTitle}"? This action cannot be undone.`)) {
             // Create a form and submit it for POST request
