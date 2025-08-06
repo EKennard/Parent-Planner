@@ -17,15 +17,15 @@
             <div class="border-b-2 border-primary bg-gray-50 px-6 py-4">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 border-2 border-primary flex items-center justify-center text-white font-black text-2xl uppercase tracking-wide" style="background-color: {{ child.colour }};">
+                        <div class="w-16 h-16 border-2 border-primary flex items-center justify-center text-white font-normal text-2xl tracking-wide" style="background-color: {{ child.colour }};">
                             {{ child.name|first|upper }}
                         </div>
                         <div>
-                            <h1 class="text-3xl font-black text-gray-900 uppercase tracking-wide">{{ child.name }}'s Entries</h1>
+                            <h1 class="text-3xl font-normal text-gray-900 tracking-wide">{{ child.name }}'s Entries</h1>
                             <p class="text-gray-600 font-medium">{{ entries.count }} total entries</p>
                         </div>
                     </div>
-                    <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-secondary text-white font-bold py-3 px-6 border-2 border-primary transition-all duration-200 uppercase tracking-wide">
+                    <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-secondary text-white font-normal py-3 px-6 border-2 border-primary transition-all duration-200 tracking-wide">
                         Add Entry
                     </a>
                 </div>
@@ -36,16 +36,16 @@
         <div class="bg-white border-2 border-primary shadow-lg mb-8">
             <div class="border-b-2 border-primary bg-gray-50 px-6 py-2">
                 <nav class="flex space-x-2">
-                    <a href="?type=" class="py-3 px-6 border-2 font-bold text-sm uppercase tracking-wide transition-all duration-200 {% if not request.GET.type %}bg-primary text-white border-primary{% else %}bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary{% endif %}">
+                    <a href="?type=" class="py-3 px-6 border-2 font-normal text-sm tracking-wide transition-all duration-200 {% if not request.GET.type %}bg-primary text-white border-primary{% else %}bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary{% endif %}">
                         All Entries
                     </a>
-                    <a href="?type=note" class="py-3 px-6 border-2 font-bold text-sm uppercase tracking-wide transition-all duration-200 {% if request.GET.type == 'note' %}bg-green-600 text-white border-green-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-green-600 hover:text-green-600{% endif %}">
+                    <a href="?type=note" class="py-3 px-6 border-2 font-normal text-sm tracking-wide transition-all duration-200 {% if request.GET.type == 'note' %}bg-green-600 text-white border-green-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-green-600 hover:text-green-600{% endif %}">
                         Notes
                     </a>
-                    <a href="?type=task" class="py-3 px-6 border-2 font-bold text-sm uppercase tracking-wide transition-all duration-200 {% if request.GET.type == 'task' %}bg-amber-600 text-white border-amber-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-amber-600 hover:text-amber-600{% endif %}">
+                    <a href="?type=task" class="py-3 px-6 border-2 font-normal text-sm tracking-wide transition-all duration-200 {% if request.GET.type == 'task' %}bg-amber-600 text-white border-amber-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-amber-600 hover:text-amber-600{% endif %}">
                         Tasks
                     </a>
-                    <a href="?type=event" class="py-3 px-6 border-2 font-bold text-sm uppercase tracking-wide transition-all duration-200 {% if request.GET.type == 'event' %}bg-violet-600 text-white border-violet-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-violet-600 hover:text-violet-600{% endif %}">
+                    <a href="?type=event" class="py-3 px-6 border-2 font-normal text-sm tracking-wide transition-all duration-200 {% if request.GET.type == 'event' %}bg-violet-600 text-white border-violet-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-violet-600 hover:text-violet-600{% endif %}">
                         Events
                     </a>
                 </nav>
@@ -55,7 +55,7 @@
         <!-- Modern Entries Section -->
         <div class="bg-white border-2 border-primary shadow-lg">
             <div class="border-b-2 border-primary bg-gray-50 px-6 py-4">
-                <h3 class="text-2xl font-black text-gray-900 uppercase tracking-wide">Entries</h3>
+                <h3 class="text-2xl font-normal text-gray-900 tracking-wide">Entries</h3>
             </div>
             
             <div class="p-6">
@@ -69,7 +69,7 @@
                                  style="border-left-color: {{ entry.child.colour }};">
                                 
                                 <!-- Entry Type Tag - Top Left Corner -->
-                                <div class="absolute top-3 left-3 text-xs font-black px-3 py-1 border-2 uppercase tracking-wider
+                                <div class="absolute top-3 left-3 text-xs font-normal px-3 py-1 border-2 tracking-wider
                                     {% if entry.entry_type == 'note' %}bg-green-100 text-green-800 border-green-600
                                     {% elif entry.entry_type == 'task' %}bg-amber-100 text-amber-800 border-amber-600
                                     {% elif entry.entry_type == 'event' %}bg-violet-100 text-violet-800 border-violet-600{% endif %}">
@@ -81,10 +81,10 @@
                                 <div class="flex items-start justify-between pt-8">
                                     <div class="flex-1 pr-6">
                                         <div class="mb-4">
-                                            <h4 class="text-xl font-black text-gray-900 mb-2 uppercase tracking-wide">{{ entry.title }}</h4>
+                                            <h4 class="text-xl font-normal text-gray-900 mb-2 tracking-wide">{{ entry.title }}</h4>
                                             <div class="flex items-center space-x-3 text-sm">
                                                 {% if entry.category and entry.category != 'none' %}
-                                                <span class="bg-gray-100 text-gray-700 px-3 py-1 text-xs font-bold uppercase tracking-wider border">{{ entry.get_category_display }}</span>
+                                                <span class="bg-gray-100 text-gray-700 px-3 py-1 text-xs font-normal tracking-wider border">{{ entry.get_category_display }}</span>
                                                 {% endif %}
                                                 <span class="text-gray-500 font-medium">{{ entry.created_at|date:"M d, Y" }}</span>
                                             </div>
@@ -97,7 +97,7 @@
                                         <div class="flex flex-wrap gap-2 text-sm">
                                             {% if entry.entry_type == 'task' %}
                                                 {% if entry.priority %}
-                                                    <span class="text-xs font-black px-3 py-1 uppercase tracking-wider border-2
+                                                    <span class="text-xs font-normal px-3 py-1 tracking-wider border-2
                                                         {% if entry.priority == 'high' %}bg-red-100 text-red-800 border-red-600
                                                         {% elif entry.priority == 'medium' %}bg-yellow-100 text-yellow-800 border-yellow-600
                                                         {% else %}bg-gray-100 text-gray-800 border-gray-600{% endif %}">
@@ -105,18 +105,18 @@
                                                     </span>
                                                 {% endif %}
                                                 {% if entry.due_date %}
-                                                    <span class="bg-red-100 text-red-800 px-3 py-1 text-xs font-bold uppercase tracking-wider border-2 border-red-600">
+                                                    <span class="bg-red-100 text-red-800 px-3 py-1 text-xs font-normal tracking-wider border-2 border-red-600">
                                                         Due: {{ entry.due_date|date:"M d, Y g:i A" }}
                                                     </span>
                                                 {% endif %}
                                             {% elif entry.entry_type == 'event' %}
                                                 {% if entry.start_time %}
-                                                    <span class="bg-violet-100 text-violet-800 px-3 py-1 text-xs font-bold uppercase tracking-wider border-2 border-violet-600">
+                                                    <span class="bg-violet-100 text-violet-800 px-3 py-1 text-xs font-normal tracking-wider border-2 border-violet-600">
                                                         {{ entry.start_time|date:"M d, Y g:i A" }}
                                                     </span>
                                                 {% endif %}
                                                 {% if entry.location %}
-                                                    <span class="bg-gray-100 text-gray-800 px-3 py-1 text-xs font-bold uppercase tracking-wider border-2 border-gray-600">
+                                                    <span class="bg-gray-100 text-gray-800 px-3 py-1 text-xs font-normal tracking-wider border-2 border-gray-600">
                                                         📍 {{ entry.location }}
                                                     </span>
                                                 {% endif %}
@@ -125,12 +125,12 @@
                                     </div>
                                     
                                     <div class="flex flex-col space-y-2 min-w-[120px]">
-                                        <a href="{% url 'edit_entry' entry.id %}" class="bg-primary hover:bg-secondary text-white text-xs font-black py-2 px-4 text-center transition-all duration-200 uppercase tracking-wide border-2 border-primary">
+                                        <a href="{% url 'edit_entry' entry.id %}" class="bg-primary hover:bg-secondary text-white text-xs font-normal py-2 px-4 text-center transition-all duration-200 tracking-wide border-2 border-primary">
                                             Edit
                                         </a>
                                         <form method="post" action="{% url 'delete_entry' entry.id %}" style="display: block;" onsubmit="return confirm('Are you sure you want to delete this entry?')">
                                             {% csrf_token %}
-                                            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-black py-2 px-4 transition-all duration-200 uppercase tracking-wide border-2 border-red-800">
+                                            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-normal py-2 px-4 transition-all duration-200 tracking-wide border-2 border-red-800">
                                                 Delete
                                             </button>
                                         </form>
@@ -144,9 +144,9 @@
                         <div class="w-24 h-24 mx-auto mb-6 bg-gray-100 border-2 border-primary flex items-center justify-center">
                             <div class="w-12 h-12 bg-primary border-2 border-primary"></div>
                         </div>
-                        <h3 class="text-2xl font-black text-gray-900 uppercase tracking-wide mb-3">No entries yet</h3>
+                        <h3 class="text-2xl font-normal text-gray-900 tracking-wide mb-3">No entries yet</h3>
                         <p class="text-gray-600 font-medium mb-6">Add your first entry to get started!</p>
-                        <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-secondary text-white font-bold py-3 px-6 border-2 border-primary transition-all duration-200 uppercase tracking-wide">
+                        <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-secondary text-white font-normal py-3 px-6 border-2 border-primary transition-all duration-200 tracking-wide">
                             Add Entry
                         </a>
                     </div>

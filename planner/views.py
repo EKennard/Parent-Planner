@@ -191,6 +191,25 @@ def edit_child(request, child_id):
     })
 
 
+#----------------------delete child view----------------------------
+@login_required
+def delete_child(request, child_id):
+    parent = get_parent_or_redirect(request)
+    if not parent:
+        return redirect('register')
+    child = get_object_or_404(Child, id=child_id, parent=parent)
+    
+    if request.method == 'POST':
+        child_name = child.name
+        child.delete()  # This will cascade delete all related entries
+        messages.success(request, f'{child_name}\'s profile and all associated entries have been deleted.')
+        return redirect('dashboard')
+    
+    # If not POST, redirect back to edit page
+    messages.error(request, 'Invalid request.')
+    return redirect('edit_child', child_id=child_id)
+
+
 #----------------------- entry completion view----------------------------
 @login_required
 def toggle_entry_completion(request, entry_id):

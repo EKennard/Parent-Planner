@@ -6,6 +6,10 @@
     <title>{% block title %}ParentPlanner{% endblock %}</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -36,7 +40,7 @@
                     
                     //fonts
                     fontFamily: {
-                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'sans': ['Poppins', 'Nunito', 'system-ui', 'sans-serif'],
                         'mono': ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
                     },
                     
@@ -63,7 +67,8 @@
             background-color: #f8fafc !important;
             border: 2px solid #4F46E5 !important;
             padding: 0.75rem !important;
-            font-weight: 500 !important;
+            font-weight: 400 !important;
+            font-family: 'Poppins', 'Nunito', system-ui, sans-serif !important;
             transition: all 0.2s ease !important;
         }
         

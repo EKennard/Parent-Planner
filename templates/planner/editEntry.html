@@ -7,7 +7,7 @@
         <!-- Modern Header -->
         <div class="bg-white border-2 border-primary shadow-lg mb-8">
             <div class="border-b-2 border-primary bg-gray-50 px-6 py-4">
-                <h1 class="text-3xl font-black text-gray-900 uppercase tracking-wide">Edit Entry: {{ entry.title }}</h1>
+                <h1 class="text-3xl font-normal text-gray-900 tracking-wide">Edit Entry: {{ entry.title }}</h1>
                 <p class="text-gray-600 font-medium mt-2">Child: {{ entry.child.name }}</p>
             </div>
         </div>
@@ -30,7 +30,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="{{ form.title.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.title.label }} *</label>
+                            <label for="{{ form.title.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.title.label }} *</label>
                             {{ form.title }}
                             {% if form.title.errors %}
                                 <div class="text-red-600 text-sm mt-1 font-medium">{{ form.title.errors }}</div>
@@ -38,7 +38,7 @@
                         </div>
 
                         <div>
-                            <label for="{{ form.entry_type.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.entry_type.label }} *</label>
+                            <label for="{{ form.entry_type.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.entry_type.label }} *</label>
                             {{ form.entry_type }}
                             {% if form.entry_type.errors %}
                                 <div class="text-red-600 text-sm mt-1 font-medium">{{ form.entry_type.errors }}</div>
@@ -48,7 +48,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="{{ form.child.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.child.label }} *</label>
+                            <label for="{{ form.child.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.child.label }} *</label>
                             {{ form.child }}
                             {% if form.child.errors %}
                                 <div class="text-red-600 text-sm mt-1 font-medium">{{ form.child.errors }}</div>
@@ -56,7 +56,7 @@
                         </div>
 
                     <div>
-                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.category.label }}</label>
+                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.category.label }}</label>
                         {{ form.category }}
                         {% if form.category.errors %}
                             <div class="text-red-600 text-sm mt-1 font-medium">{{ form.category.errors }}</div>
@@ -65,7 +65,7 @@
                 </div>
 
                 <div>
-                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.description.label }}</label>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.description.label }}</label>
                     {{ form.description }}
                     {% if form.description.errors %}
                         <div class="text-red-600 text-sm mt-1 font-medium">{{ form.description.errors }}</div>
@@ -74,15 +74,15 @@
 
                 <!-- Task-specific fields -->
                 <div id="taskFields" class="space-y-6 border-t-2 border-primary pt-6">
-                    <h3 class="text-xl font-black text-amber-600 uppercase tracking-wide">Task Details</h3>
+                    <h3 class="text-xl font-normal text-amber-600 tracking-wide">Task Details</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="{{ form.priority.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.priority.label }}</label>
+                            <label for="{{ form.priority.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.priority.label }}</label>
                             {{ form.priority }}
                         </div>
 
                         <div>
-                            <label for="{{ form.due_date.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.due_date.label }}</label>
+                            <label for="{{ form.due_date.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.due_date.label }}</label>
                             {{ form.due_date }}
                             {% if form.due_date.help_text %}
                                 <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.due_date.help_text }}</p>
@@ -93,10 +93,10 @@
 
                 <!-- Event-specific fields -->
                 <div id="eventFields" class="space-y-6 border-t-2 border-primary pt-6">
-                    <h3 class="text-xl font-black text-violet-600 uppercase tracking-wide">Event Details</h3>
+                    <h3 class="text-xl font-normal text-violet-600 tracking-wide">Event Details</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="{{ form.start_time.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.start_time.label }}</label>
+                            <label for="{{ form.start_time.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.start_time.label }}</label>
                             {{ form.start_time }}
                             {% if form.start_time.help_text %}
                                 <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.start_time.help_text }}</p>
@@ -104,7 +104,7 @@
                         </div>
 
                         <div>
-                            <label for="{{ form.end_time.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.end_time.label }}</label>
+                            <label for="{{ form.end_time.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.end_time.label }}</label>
                             {{ form.end_time }}
                             {% if form.end_time.help_text %}
                                 <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.end_time.help_text }}</p>
@@ -113,7 +113,7 @@
                     </div>
 
                     <div>
-                        <label for="{{ form.location.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.location.label }}</label>
+                        <label for="{{ form.location.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.location.label }}</label>
                         {{ form.location }}
                         {% if form.location.help_text %}
                             <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.location.help_text }}</p>
@@ -123,10 +123,10 @@
 
                 <!-- Action Buttons -->
                 <div class="flex gap-4 pt-8 border-t-2 border-primary">
-                    <button type="submit" class="bg-primary hover:bg-secondary text-white font-bold py-3 px-8 border-2 border-primary transition-all duration-200 uppercase tracking-wide hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                    <button type="submit" class="bg-primary hover:bg-secondary text-white font-normal py-3 px-8 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                         Update Entry
                     </button>
-                    <a href="{% url 'child_entries' entry.child.id %}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 border-2 border-gray-500 transition-all duration-200 uppercase tracking-wide">
+                    <a href="{% url 'child_entries' entry.child.id %}" class="bg-gray-500 hover:bg-gray-600 text-white font-normal py-3 px-8 border-2 border-gray-500 transition-all duration-200 tracking-wide">
                         Cancel
                     </a>
                 </div>

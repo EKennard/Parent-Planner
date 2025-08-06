@@ -9,6 +9,7 @@ urlpatterns = [
     path('add-entry/', views.add_entry, name='add_entry'),
     path('child/<int:child_id>/', views.child_entries, name='child_entries'),
     path('edit-child/<int:child_id>/', views.edit_child, name='edit_child'),
+    path('delete-child/<int:child_id>/', views.delete_child, name='delete_child'),
     path('edit-entry/<int:entry_id>/', views.edit_entry, name='edit_entry'),
     path('delete-entry/<int:entry_id>/', views.delete_entry, name='delete_entry'),
     path('toggle-completion/<int:entry_id>/', views.toggle_entry_completion, name='toggle_entry_completion'),
