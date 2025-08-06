@@ -114,15 +114,15 @@
                 <!-- Filter Toggle Buttons -->
                 <div class="flex space-x-2">
                     <button onclick="toggleEntryType('note')" id="filter-note" 
-                            class="filter-btn active bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold transition duration-200 hover:bg-blue-700 border-4 border-blue-800">
+                            class="filter-btn active bg-green-600 text-white px-4 py-2 rounded-full text-sm font-bold transition duration-200 hover:bg-green-700 border-4 border-green-800">
                         Notes
                     </button>
                     <button onclick="toggleEntryType('task')" id="filter-task" 
-                            class="filter-btn active bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold transition duration-200 hover:bg-orange-700 border-4 border-orange-800">
+                            class="filter-btn active bg-amber-600 text-white px-4 py-2 rounded-full text-sm font-bold transition duration-200 hover:bg-amber-700 border-4 border-amber-800">
                         Tasks
                     </button>
                     <button onclick="toggleEntryType('event')" id="filter-event" 
-                            class="filter-btn active bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold transition duration-200 hover:bg-purple-700 border-4 border-purple-800">
+                            class="filter-btn active bg-violet-600 text-white px-4 py-2 rounded-full text-sm font-bold transition duration-200 hover:bg-violet-700 border-4 border-violet-800">
                         Events
                     </button>
                 </div>
@@ -132,7 +132,12 @@
         <div class="space-y-4">
             {% if active_entries %}
                     {% for entry in active_entries|slice:":10" %}
-                    <div class="border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow entry-card" data-entry-type="{{ entry.entry_type }}">
+                    <div class="border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow entry-card border-l-8 border-t-4
+                         {% if entry.entry_type == 'note' %}border-t-green-600
+                         {% elif entry.entry_type == 'task' %}border-t-amber-600
+                         {% elif entry.entry_type == 'event' %}border-t-violet-600{% endif %}" 
+                         data-entry-type="{{ entry.entry_type }}" 
+                         style="border-left-color: {{ entry.child.colour }};">
                         <div class="flex justify-between items-start">
                             <!-- Main Content -->
                             <div class="flex-1 pr-4">
@@ -142,9 +147,9 @@
                                         <h3 class="text-lg font-semibold text-gray-900 mr-3">{{ entry.title }}</h3>
                                         <!-- Color-coded Entry Type Tag -->
                                         <span class="entry-type-tag text-xs font-bold px-2 py-1 rounded-full
-                                            {% if entry.entry_type == 'note' %}bg-blue-100 text-blue-800
-                                            {% elif entry.entry_type == 'task' %}bg-orange-100 text-orange-800
-                                            {% elif entry.entry_type == 'event' %}bg-purple-100 text-purple-800{% endif %}">
+                                            {% if entry.entry_type == 'note' %}bg-green-100 text-green-800
+                                            {% elif entry.entry_type == 'task' %}bg-amber-100 text-amber-800
+                                            {% elif entry.entry_type == 'event' %}bg-violet-100 text-violet-800{% endif %}">
                                             {% if entry.entry_type == 'note' %}📝 NOTE
                                             {% elif entry.entry_type == 'task' %}✅ TASK
                                             {% elif entry.entry_type == 'event' %}📅 EVENT{% endif %}
@@ -170,11 +175,11 @@
 
                                 <!-- Essential Date/Time Info -->
                                 {% if entry.entry_type == 'task' and entry.due_date %}
-                                <div class="text-sm text-orange-600 font-medium mb-2">
+                                <div class="text-sm text-amber-600 font-medium mb-2">
                                     📅 Due: {{ entry.due_date|date:"M d, Y g:i A" }}
                                 </div>
                                 {% elif entry.entry_type == 'event' and entry.start_time %}
-                                <div class="text-sm text-purple-600 font-medium mb-2">
+                                <div class="text-sm text-violet-600 font-medium mb-2">
                                     🕒 {{ entry.start_time|date:"M d, Y g:i A" }}
                                     {% if entry.end_time %} - {{ entry.end_time|date:"g:i A" }}{% endif %}
                                     {% if entry.location %}
@@ -378,14 +383,14 @@
             activeFilters.delete(entryType);
             button.classList.remove('border-4');
             if (entryType === 'note') {
-                button.classList.remove('border-blue-800');
-                button.classList.add('border', 'border-blue-600');
+                button.classList.remove('border-green-800');
+                button.classList.add('border', 'border-green-600');
             } else if (entryType === 'task') {
-                button.classList.remove('border-orange-800');
-                button.classList.add('border', 'border-orange-600');
+                button.classList.remove('border-amber-800');
+                button.classList.add('border', 'border-amber-600');
             } else if (entryType === 'event') {
-                button.classList.remove('border-purple-800');
-                button.classList.add('border', 'border-purple-600');
+                button.classList.remove('border-violet-800');
+                button.classList.add('border', 'border-violet-600');
             }
         } else {
             // Show this type - add bold outline
@@ -393,14 +398,14 @@
             button.classList.remove('border');
             button.classList.add('border-4');
             if (entryType === 'note') {
-                button.classList.remove('border-blue-600');
-                button.classList.add('border-blue-800');
+                button.classList.remove('border-green-600');
+                button.classList.add('border-green-800');
             } else if (entryType === 'task') {
-                button.classList.remove('border-orange-600');
-                button.classList.add('border-orange-800');
+                button.classList.remove('border-amber-600');
+                button.classList.add('border-amber-800');
             } else if (entryType === 'event') {
-                button.classList.remove('border-purple-600');
-                button.classList.add('border-purple-800');
+                button.classList.remove('border-violet-600');
+                button.classList.add('border-violet-800');
             }
         }
         
@@ -447,9 +452,9 @@
         const eventBtn = document.getElementById('filter-event');
         
         // Ensure all buttons have the thick bold border (active state)
-        noteBtn.classList.add('border-4', 'border-blue-800');
-        taskBtn.classList.add('border-4', 'border-orange-800');
-        eventBtn.classList.add('border-4', 'border-purple-800');
+        noteBtn.classList.add('border-4', 'border-green-800');
+        taskBtn.classList.add('border-4', 'border-amber-800');
+        eventBtn.classList.add('border-4', 'border-violet-800');
     });
 
     // Add smooth scrolling to any anchor links
