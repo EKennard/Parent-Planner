@@ -78,56 +78,48 @@
 </div>
 {% endif %}
 
-<!-- Modern Stats Bar -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8 px-3 sm:px-0">
+<!-- Compact Stats Bar -->
+<div class="grid grid-cols-4 gap-1 sm:gap-3 mb-3 sm:mb-6 px-3 sm:px-0">
     <!-- Total Entries Card -->
-    <div class="bg-white border-2 border-primary shadow-lg relative overflow-hidden group hover:shadow-xl transition-all duration-300">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-violet-500"></div>
-        <div class="p-3 sm:p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-normal text-gray-500 tracking-wider mb-1">Total Entries</p>
-                    <h3 class="text-xl sm:text-3xl font-normal text-gray-900">{{ total_entries }}</h3>
-                </div>
+    <div class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+        <div class="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-gradient-to-r from-green-500 to-violet-500"></div>
+        <div class="p-1.5 sm:p-3">
+            <div class="text-center">
+                <p class="text-xs font-normal text-gray-500 tracking-wider mb-0.5 sm:mb-1 truncate">Total</p>
+                <h3 class="text-sm sm:text-xl font-normal text-gray-900">{{ total_entries }}</h3>
             </div>
         </div>
     </div>
 
     <!-- Notes Card -->
-    <div class="bg-white border-2 border-primary shadow-lg relative overflow-hidden group hover:shadow-xl transition-all duration-300">
-        <div class="absolute top-0 left-0 w-full h-1 bg-green-500"></div>
-        <div class="p-3 sm:p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-normal text-gray-500 tracking-wider mb-1">Notes</p>
-                    <h3 class="text-xl sm:text-3xl font-normal text-green-700">{{ notes_count }}</h3>
-                </div>
+    <div class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+        <div class="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-green-500"></div>
+        <div class="p-1.5 sm:p-3">
+            <div class="text-center">
+                <p class="text-xs font-normal text-gray-500 tracking-wider mb-0.5 sm:mb-1 truncate">Notes</p>
+                <h3 class="text-sm sm:text-xl font-normal text-green-700">{{ notes_count }}</h3>
             </div>
         </div>
     </div>
 
     <!-- Tasks Card -->
-    <div class="bg-white border-2 border-primary shadow-lg relative overflow-hidden group hover:shadow-xl transition-all duration-300">
-        <div class="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
-        <div class="p-3 sm:p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-normal text-gray-500 tracking-wider mb-1">Tasks</p>
-                    <h3 class="text-xl sm:text-3xl font-normal text-amber-700">{{ tasks_count }}</h3>
-                </div>
+    <div class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+        <div class="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-amber-500"></div>
+        <div class="p-1.5 sm:p-3">
+            <div class="text-center">
+                <p class="text-xs font-normal text-gray-500 tracking-wider mb-0.5 sm:mb-1 truncate">Tasks</p>
+                <h3 class="text-sm sm:text-xl font-normal text-amber-700">{{ tasks_count }}</h3>
             </div>
         </div>
     </div>
 
     <!-- Events Card -->
-    <div class="bg-white border-2 border-primary shadow-lg relative overflow-hidden group hover:shadow-xl transition-all duration-300">
-        <div class="absolute top-0 left-0 w-full h-1 bg-violet-500"></div>
-        <div class="p-3 sm:p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-normal text-gray-500 tracking-wider mb-1">Events</p>
-                    <h3 class="text-xl sm:text-3xl font-normal text-violet-700">{{ events_count }}</h3>
-                </div>
+    <div class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+        <div class="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-violet-500"></div>
+        <div class="p-1.5 sm:p-3">
+            <div class="text-center">
+                <p class="text-xs font-normal text-gray-500 tracking-wider mb-0.5 sm:mb-1 truncate">Events</p>
+                <h3 class="text-sm sm:text-xl font-normal text-violet-700">{{ events_count }}</h3>
             </div>
         </div>
     </div>
