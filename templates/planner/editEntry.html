@@ -137,20 +137,14 @@
     <script>
         // Page-specific initialization for editEntry.html
         document.addEventListener('DOMContentLoaded', function () {
-            // Initialize Flatpickr for combined datetime fields (same as addEntry)
+            // Initialize datetime pickers using the global utility
             const dueDateInput = document.getElementById('{{ form.due_date.id_for_label }}');
             const startTimeInput = document.getElementById('{{ form.start_time.id_for_label }}');
             const endTimeInput = document.getElementById('{{ form.end_time.id_for_label }}');
             
-            // Initialize datetime pickers for editEntry.html (combined date+time)
+            // Initialize datetime pickers with form-specific validation callbacks
             if (dueDateInput) {
-                flatpickr(dueDateInput, {
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i:S",
-                    altInput: true,
-                    altFormat: "d-m-Y at H:i",
-                    time_24hr: false,
-                    minuteIncrement: 15,
+                window.FlatpickrUtils.initializeDatetimePicker(dueDateInput, {
                     onChange: function(selectedDates, dateStr, instance) {
                         if (window.validateTaskDate) window.validateTaskDate();
                     }
@@ -158,13 +152,7 @@
             }
             
             if (startTimeInput) {
-                flatpickr(startTimeInput, {
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i:S",
-                    altInput: true,
-                    altFormat: "d-m-Y at H:i",
-                    time_24hr: false,
-                    minuteIncrement: 15,
+                window.FlatpickrUtils.initializeDatetimePicker(startTimeInput, {
                     onChange: function(selectedDates, dateStr, instance) {
                         if (window.updateEndTimeConstraint) window.updateEndTimeConstraint();
                         if (window.validateEventTimes) window.validateEventTimes();
@@ -173,13 +161,7 @@
             }
             
             if (endTimeInput) {
-                flatpickr(endTimeInput, {
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i:S",
-                    altInput: true,
-                    altFormat: "d-m-Y at H:i",
-                    time_24hr: false,
-                    minuteIncrement: 15,
+                window.FlatpickrUtils.initializeDatetimePicker(endTimeInput, {
                     onChange: function(selectedDates, dateStr, instance) {
                         if (window.validateEventTimes) window.validateEventTimes();
                     }
