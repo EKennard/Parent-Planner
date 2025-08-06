@@ -102,116 +102,129 @@
         {% endif %}
     </div>
 
-    <!-- timeline section -->
-    <div class="border p-4 border-purple-500">
-        <div class="border p-4 border-purple-500">
-            <div class="border p-4 border-purple-500">
-                <div class="border p-4 border-purple-500">
-                    <div class="border p-4 border-purple-500">
-                        <h2 class="border p-4 border-purple-500">Active Timeline</h2>
-                    </div>
-                    <span class="border p-4 border-purple-500">Chronological entries</span>
-                </div>
-            </div>
+    <!-- Active Timeline Section -->
+    <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Active Timeline</h2>
+            <p class="text-gray-600">Recent activities and upcoming events for all children</p>
+        </div>
 
-            <div class="border p-4 border-purple-500">
-                {% if active_entries %}
-                <div class="border p-4 border-purple-500">
+        <div class="space-y-4">
+            {% if active_entries %}
                     {% for entry in active_entries|slice:":10" %}
-                    <div>
-                        <!-- content -->
-                        <div>
+                    <div class="border-b border-gray-200 pb-4 mb-4">
+                        <!-- Entry Header -->
+                        <div class="flex justify-between items-start mb-2">
                             <div>
-                                <div>
-                                    <div>
-                                        <h3>{{ entry.title }}</h3>
-                                        {% if entry.is_completed %}
-                                        <span>Done</span>
-                                        {% endif %}
-                                    </div>
-
-                                    <div>
-                                        <span>{{ entry.get_entry_type_display}}</span>
-                                        {% if entry.category %}
-                                        <span>{{ entry.category.name }}</span>
-                                        {% endif %}
-                                        {% if entry.priority and entry.entry_type == 'task' %}
-                                        <span>{{ entry.get_priority_display }}</span>
-                                        {% endif %}
-                                    </div>
-
-                                    <!-- Date/Time info -->
-                                    <div>
-                                        {% if entry.entry_type == 'task' and entry.due_date %}
-                                        <span>Due: {{ entry.due_date|date:"M d, Y g:i A" }}</span>
-                                        {% elif entry.entry_type == 'event' and entry.start_time %}
-                                        <span>
-                                            {{ entry.start_time|date:"M d, Y g:i A" }}
-                                            {% if entry.end_time %} - {{ entry.end_time|date:"g:i A" }}{% endif %}
-                                        </span>
-                                        {% if entry.location %}
-                                        <span>{{ entry.location }}</span>
-                                        {% endif %}
-                                        {% else %}
-                                        <span>Created: {{ entry.created_at|date:"M d, Y g:i A" }}</span>
-                                        {% endif %}
-                                    </div>
-
-                                    {% if entry.description %}
-                                    <p>{{ entry.description|truncatewords:15 }}</p>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ entry.title }}</h3>
+                                <p class="text-sm text-gray-600">
+                                    <span class="font-medium" style="color: {{ entry.child.colour }};">{{ entry.child.name }}</span>
+                                    • {{ entry.get_entry_type_display }}
+                                    {% if entry.category and entry.category != 'none' %}
+                                    • {{ entry.get_category_display }}
                                     {% endif %}
-                                </div>
-
-                                <!-- buttons -->
-                                <div>
-                                    {% if entry.entry_type == 'task' or entry.entry_type == 'event' %}
-                                    <a href="{% url 'toggle_entry_completion' entry.id %}"
-                                        title="{% if entry.is_completed %}Mark incomplete{% else %}Mark complete{% endif %}">
-                                        {% if entry.is_completed %}Undo{% else %}Done{% endif %}
-                                    </a>
-                                    {% endif %}
-
-                                    <a href="{% url 'edit_entry' entry.id %}">Edit</a>
-
-                                    <a href="{% url 'child_entries' entry.child.id %}"
-                                        title="View all for {{ entry.child.name }}">All</a>
-
-                                    <form method="post" action="{% url 'quick_delete_entry' entry.id %}" style="display: inline;" 
-                                          onsubmit="return confirm('Are you sure you want to delete \'{{ entry.title }}\'?')">
-                                        {% csrf_token %}
-                                        <button type="submit" class="text-red-600 hover:text-red-800 bg-transparent border-none cursor-pointer" title="Delete entry">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
+                                </p>
                             </div>
+                            <div class="flex items-center space-x-2">
+                                {% if entry.is_completed %}
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Completed</span>
+                                {% endif %}
+                                {% if entry.priority and entry.entry_type == 'task' %}
+                                <span class="text-xs font-medium px-2 py-1 rounded
+                                    {% if entry.priority == 'high' %}bg-red-100 text-red-800
+                                    {% elif entry.priority == 'medium' %}bg-yellow-100 text-yellow-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ entry.get_priority_display }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Entry Details -->
+                        <div class="space-y-2">
+                            <!-- Description -->
+                            {% if entry.description %}
+                            <p class="text-gray-700">{{ entry.description|truncatewords:20 }}</p>
+                            {% endif %}
+
+                            <!-- Date/Time Information -->
+                            <div class="text-sm text-gray-600">
+                                {% if entry.entry_type == 'task' and entry.due_date %}
+                                <div><strong>Due:</strong> {{ entry.due_date|date:"M d, Y g:i A" }}</div>
+                                {% elif entry.entry_type == 'event' %}
+                                    {% if entry.start_time %}
+                                    <div><strong>Start:</strong> {{ entry.start_time|date:"M d, Y g:i A" }}</div>
+                                    {% endif %}
+                                    {% if entry.end_time %}
+                                    <div><strong>End:</strong> {{ entry.end_time|date:"M d, Y g:i A" }}</div>
+                                    {% endif %}
+                                    {% if entry.location %}
+                                    <div><strong>Location:</strong> {{ entry.location }}</div>
+                                    {% endif %}
+                                {% else %}
+                                <div><strong>Created:</strong> {{ entry.created_at|date:"M d, Y g:i A" }}</div>
+                                {% endif %}
+                                {% if entry.updated_at != entry.created_at %}
+                                <div><strong>Last Updated:</strong> {{ entry.updated_at|date:"M d, Y g:i A" }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-3 mt-3 pt-2 border-t border-gray-100">
+                            {% if entry.entry_type == 'task' or entry.entry_type == 'event' %}
+                            <a href="{% url 'toggle_entry_completion' entry.id %}"
+                                class="text-sm {% if entry.is_completed %}text-orange-600 hover:text-orange-800{% else %}text-green-600 hover:text-green-800{% endif %} font-medium"
+                                title="{% if entry.is_completed %}Mark incomplete{% else %}Mark complete{% endif %}">
+                                {% if entry.is_completed %}Mark Incomplete{% else %}Mark Complete{% endif %}
+                            </a>
+                            {% endif %}
+
+                            <a href="{% url 'edit_entry' entry.id %}" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Edit</a>
+
+                            <a href="{% url 'child_entries' entry.child.id %}"
+                                class="text-sm text-purple-600 hover:text-purple-800 font-medium"
+                                title="View all entries for {{ entry.child.name }}">View All for {{ entry.child.name }}</a>
+
+                            <form method="post" action="{% url 'quick_delete_entry' entry.id %}" style="display: inline;" 
+                                  onsubmit="return confirm('Are you sure you want to delete \'{{ entry.title }}\'?')">
+                                {% csrf_token %}
+                                <button type="submit" class="text-sm text-red-600 hover:text-red-800 font-medium bg-transparent border-none cursor-pointer" title="Delete entry">
+                                    Delete
+                                </button>
+                            </form>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
 
-                <!-- show more section -->
+                <!-- Show More Section -->
                 {% if active_entries|length > 10 %}
-                <div>
-                    <p>Showing first 10 entries</p>
+                <div class="text-center py-4 border-t border-gray-100">
+                    <p class="text-gray-600 mb-3">Showing first 10 entries</p>
                     {% if children %}
-                    <a href="{% url 'add_entry' %}">Add New Entry</a>
+                    <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-md transition duration-200">
+                        Add New Entry
+                    </a>
                     {% endif %}
                 </div>
                 {% endif %}
                 {% else %}
-                <div>
-                    <h3>No entries yet</h3>
+                <div class="text-center py-8">
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No entries yet</h3>
                     {% if children %}
-                    <p>Start by adding notes, tasks, or events</p>
-                    <a href="{% url 'add_entry' %}">Add First Entry</a>
+                    <p class="text-gray-600 mb-4">Start by adding notes, tasks, or events for your children</p>
+                    <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-md transition duration-200">
+                        Add First Entry
+                    </a>
                     {% else %}
-                    <p>Add a child profile first, then you can start creating entries</p>
-                    <a href="{% url 'add_child' %}">Add Child Profile</a>
+                    <p class="text-gray-600 mb-4">Add a child profile first, then you can start creating entries</p>
+                    <a href="{% url 'add_child' %}" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-md transition duration-200">
+                        Add Child Profile
+                    </a>
                     {% endif %}
                 </div>
                 {% endif %}
-            </div>
         </div>
     </div>
 </div>
