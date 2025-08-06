@@ -105,29 +105,59 @@
     <!-- Active Timeline Section -->
     <div class="bg-white shadow-lg rounded-lg p-6">
         <div class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Active Timeline</h2>
-            <p class="text-gray-600">Recent activities and upcoming events for all children</p>
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Active Timeline</h2>
+                    <p class="text-gray-600">Recent activities and upcoming events for all children</p>
+                </div>
+                
+                <!-- Filter Toggle Buttons -->
+                <div class="flex space-x-2">
+                    <button onclick="toggleEntryType('note')" id="filter-note" 
+                            class="filter-btn active bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium transition duration-200 hover:bg-blue-600">
+                        📝 Notes
+                    </button>
+                    <button onclick="toggleEntryType('task')" id="filter-task" 
+                            class="filter-btn active bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium transition duration-200 hover:bg-orange-600">
+                        ✅ Tasks
+                    </button>
+                    <button onclick="toggleEntryType('event')" id="filter-event" 
+                            class="filter-btn active bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium transition duration-200 hover:bg-purple-600">
+                        📅 Events
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="space-y-4">
             {% if active_entries %}
                     {% for entry in active_entries|slice:":10" %}
-                    <div class="border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow">
+                    <div class="border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow entry-card" data-entry-type="{{ entry.entry_type }}">
                         <div class="flex justify-between items-start">
                             <!-- Main Content -->
                             <div class="flex-1 pr-4">
                                 <!-- Entry Header -->
                                 <div class="mb-2">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ entry.title }}</h3>
+                                    <div class="flex items-center mb-1">
+                                        <h3 class="text-lg font-semibold text-gray-900 mr-3">{{ entry.title }}</h3>
+                                        <!-- Color-coded Entry Type Tag -->
+                                        <span class="entry-type-tag text-xs font-bold px-2 py-1 rounded-full
+                                            {% if entry.entry_type == 'note' %}bg-blue-100 text-blue-800
+                                            {% elif entry.entry_type == 'task' %}bg-orange-100 text-orange-800
+                                            {% elif entry.entry_type == 'event' %}bg-purple-100 text-purple-800{% endif %}">
+                                            {% if entry.entry_type == 'note' %}📝 NOTE
+                                            {% elif entry.entry_type == 'task' %}✅ TASK
+                                            {% elif entry.entry_type == 'event' %}📅 EVENT{% endif %}
+                                        </span>
+                                    </div>
                                     <div class="flex items-center space-x-2 text-sm">
                                         <span class="font-medium" style="color: {{ entry.child.colour }};">{{ entry.child.name }}</span>
-                                        <span class="text-gray-400">•</span>
-                                        <span class="text-gray-600">{{ entry.get_entry_type_display }}</span>
                                         {% if entry.category and entry.category != 'none' %}
                                         <span class="text-gray-400">•</span>
                                         <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">{{ entry.get_category_display }}</span>
                                         {% endif %}
                                         {% if entry.priority and entry.entry_type == 'task' %}
+                                        <span class="text-gray-400">•</span>
                                         <span class="text-xs font-medium px-2 py-1 rounded-full
                                             {% if entry.priority == 'high' %}bg-red-100 text-red-800
                                             {% elif entry.priority == 'medium' %}bg-yellow-100 text-yellow-800
@@ -144,7 +174,7 @@
                                     📅 Due: {{ entry.due_date|date:"M d, Y g:i A" }}
                                 </div>
                                 {% elif entry.entry_type == 'event' and entry.start_time %}
-                                <div class="text-sm text-blue-600 font-medium mb-2">
+                                <div class="text-sm text-purple-600 font-medium mb-2">
                                     🕒 {{ entry.start_time|date:"M d, Y g:i A" }}
                                     {% if entry.end_time %} - {{ entry.end_time|date:"g:i A" }}{% endif %}
                                     {% if entry.location %}
@@ -336,6 +366,68 @@
             form.submit();
         }
     }
+
+    // Entry Type Filtering System
+    let activeFilters = new Set(['note', 'task', 'event']); // All types visible by default
+
+    function toggleEntryType(entryType) {
+        const button = document.querySelector(`[onclick="toggleEntryType('${entryType}')"]`);
+        
+        if (activeFilters.has(entryType)) {
+            // Hide this type
+            activeFilters.delete(entryType);
+            button.classList.remove('bg-opacity-20', 'border-2');
+            button.classList.add('bg-opacity-10', 'border', 'opacity-60');
+        } else {
+            // Show this type
+            activeFilters.add(entryType);
+            button.classList.remove('bg-opacity-10', 'border', 'opacity-60');
+            button.classList.add('bg-opacity-20', 'border-2');
+        }
+        
+        // Update entry visibility
+        updateEntryVisibility();
+    }
+
+    function updateEntryVisibility() {
+        const entries = document.querySelectorAll('.entry-card');
+        let visibleCount = 0;
+        
+        entries.forEach(entry => {
+            const entryType = entry.getAttribute('data-entry-type');
+            
+            if (activeFilters.has(entryType)) {
+                entry.style.display = 'block';
+                visibleCount++;
+            } else {
+                entry.style.display = 'none';
+            }
+        });
+        
+        // Show/hide "no entries" message if needed
+        const noEntriesMsg = document.getElementById('no-entries-message');
+        if (visibleCount === 0 && entries.length > 0) {
+            if (!noEntriesMsg) {
+                const timeline = document.querySelector('.space-y-4');
+                const message = document.createElement('div');
+                message.id = 'no-entries-message';
+                message.className = 'text-center text-gray-500 p-8';
+                message.innerHTML = '<p class="text-lg">No entries match the selected filters</p><p class="text-sm mt-2">Try enabling different entry types above</p>';
+                timeline.appendChild(message);
+            }
+        } else if (noEntriesMsg) {
+            noEntriesMsg.remove();
+        }
+    }
+
+    // Initialize filter buttons on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set all filter buttons to active state initially
+        const filterButtons = document.querySelectorAll('[onclick*="toggleEntryType"]');
+        filterButtons.forEach(button => {
+            button.classList.add('bg-opacity-20', 'border-2');
+        });
+    });
 
     // Add smooth scrolling to any anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
