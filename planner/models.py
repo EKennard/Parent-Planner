@@ -17,13 +17,28 @@ class Category(models.Model):
 # --------------------------- child model ----------------------------
 
 class Child(models.Model):
+    
+    # Predefined color choices for children
+    COLOR_CHOICES = [
+        ('#FF6B6B', 'Coral Red'),
+        ('#4ECDC4', 'Turquoise'),
+        ("#0D6A80", 'Sky Blue'),
+        ('#96CEB4', 'Mint Green'),
+        ("#D1D811", 'Sunny Yellow'),
+        ('#DDA0DD', 'Plum Purple'),
+        ("#AD6A0D", 'Peach Orange'),
+        ("#8516EE", 'Light Blue'),
+        ("#0CEB0C", 'Pale Green'),
+        ("#BE12E0", 'Bright Pink'),
+    ]
+    
     parent = models.ForeignKey('Parent', on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     birth_date = models.DateField(blank=True, null=True)
     school = models.CharField(max_length=100, blank=True)
     year = models.CharField(max_length=20, blank=True)
     class_name = models.CharField(max_length=50, blank=True)
-    colour = models.CharField(max_length=7, default='#000000', blank=True)  # hex color code
+    colour = models.CharField(max_length=7, choices=COLOR_CHOICES, default='#FF6B6B', blank=True)  # hex color code
     
     def __str__(self):
         return self.name

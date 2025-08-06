@@ -5,9 +5,12 @@ from .models import Parent, Child, Entry
 import random
 from datetime import date
 
-# generates random colour code for the child model
+# generates random colour code from predefined choices
 def generate_random_color():
-    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
+    from .models import Child
+    import random
+    color_choices = [choice[0] for choice in Child.COLOR_CHOICES]
+    return random.choice(color_choices)
 
 class registrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -82,6 +85,11 @@ class childForm(forms.ModelForm):
             self.fields['colour'].initial = generate_random_color()
         # Make sure colour field isn't required since it has a default
         self.fields['colour'].required = False
+        
+        # Add custom styling for the color field
+        self.fields['colour'].widget.attrs.update({
+            'class': 'color-select w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
+        })
     
     def clean_birth_date(self):
         birth_date = self.cleaned_data.get('birth_date')
@@ -103,7 +111,7 @@ class childForm(forms.ModelForm):
         fields = ['name', 'birth_date', 'school', 'year', 'class_name', 'colour']
         widgets = {
             'birth_date': forms.DateInput(attrs={'type': 'date'}),
-            'colour': forms.TextInput(attrs={'type': 'color'}),
+            'colour': forms.Select(),
         }
 
 class entryForm(forms.ModelForm):

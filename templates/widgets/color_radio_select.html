@@ -1,0 +1,21 @@
+{% load widget_tweaks %}
+<div class="color-radio-group">
+    <div class="grid grid-cols-5 gap-3">
+        {% for group, options, index in widget.optgroups %}
+            {% for option in options %}
+                <label class="color-option relative cursor-pointer">
+                    <input type="radio" 
+                           name="{{ widget.name }}" 
+                           value="{{ option.value }}"
+                           {% if option.selected %}checked{% endif %}
+                           class="sr-only peer">
+                    <div class="color-swatch w-12 h-12 rounded-full border-4 border-gray-200 peer-checked:border-gray-600 peer-checked:ring-2 peer-checked:ring-blue-500 hover:border-gray-400 transition-all duration-200"
+                         style="background-color: {{ option.value }};"
+                         title="{{ option.label }}">
+                    </div>
+                    <div class="text-xs text-center mt-1 text-gray-600">{{ option.label }}</div>
+                </label>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
