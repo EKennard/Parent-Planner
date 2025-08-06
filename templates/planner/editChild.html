@@ -2,6 +2,50 @@
 
 {% block title %}Edit {{ child.name }} - ParentPlanner{% endblock %}
 
+{% block extra_head %}
+<!-- Color picker JavaScript -->
+{% load static %}
+<script src="{% static 'js/color_picker.js' %}" defer></script>
+<style>
+/* Modern Color Grid Styling */
+.color-grid-widget {
+    margin: 1rem 0;
+}
+
+.color-dots-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: #f9fafb;
+    border: 2px solid #4F46E5;
+    max-width: 350px;
+}
+
+.color-dot {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    justify-self: center;
+}
+
+.color-dot:hover {
+    transform: scale(1.1);
+    border-color: #111827;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.color-dot.selected {
+    border-color: #4f46e5;
+    transform: scale(1.15);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-width: 4px;
+}
+</style>
+{% endblock %}
+
 {% block content %}
     <div class="max-w-2xl mx-auto">
         <!-- Modern Header -->
@@ -25,8 +69,22 @@
             {% endif %}
 
             <div class="p-8">
-                <form method="post" enctype="multipart/form-data" class="space-y-8">
+                <form method="post" enctype="multipart/form-data" class="space-y-8" id="editChildForm">
                     {% csrf_token %}
+                    
+                    <!-- Display form errors for debugging -->
+                    {% if form.errors %}
+                        <div class="mb-4 p-4 border-2 bg-red-50 text-red-700 border-red-600">
+                            <h4 class="font-semibold">Form Errors:</h4>
+                            <ul class="list-disc list-inside mt-2">
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li><strong>{{ field }}:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
 
                     <!-- Basic Information -->
                     <div class="space-y-6">
@@ -104,7 +162,66 @@
                         
                         <div>
                             <label for="{{ form.colour.id_for_label }}" class="block text-sm font-normal text-gray-700 mb-2 tracking-wide">{{ form.colour.label }}</label>
+                            
+                            <!-- Hidden select field -->
                             {{ form.colour }}
+                            
+                            <!-- Custom color grid -->
+                            <div class="color-grid-widget" data-target="{{ form.colour.id_for_label }}">
+                                <div class="color-dots-grid">
+                                    <div class="color-dot" 
+                                         style="background-color: #FF6B6B;" 
+                                         data-color="#FF6B6B"
+                                         onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                         title="Coral Red"></div>
+                                    <div class="color-dot" 
+                                         style="background-color: #4ECDC4;" 
+                                         data-color="#4ECDC4"
+                                         onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                         title="Turquoise"></div>
+                                    <div class="color-dot" 
+                                         style="background-color: #0D6A80;" 
+                                         data-color="#0D6A80"
+                                         onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                         title="Sky Blue"></div>
+                                    <div class="color-dot" 
+                                         style="background-color: #96CEB4;" 
+                                         data-color="#96CEB4"
+                                         onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                         title="Mint Green"></div>
+                                    <div class="color-dot" 
+                                         style="background-color: #D1D811;" 
+                                         data-color="#D1D811"
+                                         onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                         title="Sunny Yellow"></div>
+                                    <div class="color-dot" 
+                                         style="background-color: #DDA0DD;" 
+                                         data-color="#DDA0DD"
+                                         onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                         title="Plum Purple"></div>
+                                    <div class="color-dot" 
+                                         style="background-color: #AD6A0D;" 
+                                         data-color="#AD6A0D"
+                                         onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                         title="Peach Orange"></div>
+                                    <div class="color-dot" 
+                                         style="background-color: #8516EE;" 
+                                         data-color="#8516EE"
+                                         onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                         title="Light Blue"></div>
+                                    <div class="color-dot" 
+                                         style="background-color: #0CEB0C;" 
+                                         data-color="#0CEB0C"
+                                         onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                         title="Pale Green"></div>
+                                    <div class="color-dot" 
+                                         style="background-color: #BE12E0;" 
+                                         data-color="#BE12E0"
+                                         onclick="selectColorDot(this, '{{ form.colour.id_for_label }}')"
+                                         title="Bright Pink"></div>
+                                </div>
+                            </div>
+                            
                             {% if form.colour.help_text %}
                                 <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.colour.help_text }}</p>
                             {% endif %}

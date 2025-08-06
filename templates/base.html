@@ -22,48 +22,10 @@
     <script src="{% static 'js/form_validation.js' %}" defer></script>
     <!-- Flatpickr Configuration JS -->
     <script src="{% static 'js/flatpickr_config.js' %}" defer></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        // primary brand colors
-                        primary: '#4F46E5',        // indigo blue
-                        secondary: '#7C3AED',      // purple
-                        accent: '#F59E0B',         // amber/yellow accent
-                        accentBlue: '#06B6D4',     // cyan accent
-                        
-                        // layout
-                        neutral: '#F8FAFC',        // light gray
-                        surface: '#FFFFFF',        // white
-                        border: '#E2E8F0',         // light gray
-                        textGray: '#64748B',       // slate gray
-                    },
-                    
-                    // shadows
-                    boxShadow: {
-                        'md': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                        'lg': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                        'xl': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-                        '2xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                    },
-                    
-                    //fonts
-                    fontFamily: {
-                        'sans': ['Poppins', 'Nunito', 'system-ui', 'sans-serif'],
-                        'mono': ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
-                    },
-                    
-                    // gradient backgrounds
-                    backgroundImage: {
-                        'gradient-main': 'linear-gradient(90deg, hsla(339, 100%, 55%, 1) 0%, hsla(197, 100%, 64%, 1) 100%)',
-                        'gradient-hover': 'linear-gradient(90deg, hsla(339, 100%, 50%, 1) 0%, hsla(197, 100%, 59%, 1) 100%)',
-                    },
-                }
-            },
-            plugins: []
-        }
-    </script>
+    <!-- Tailwind Configuration JS -->
+    <script src="{% static 'js/tailwind_config.js' %}" defer></script>
+    <!-- Mobile Menu JS -->
+    <script src="{% static 'js/mobile_menu.js' %}" defer></script>
     <style>
         /* Global input styling for better UX */
         input[type="text"], 
@@ -80,6 +42,48 @@
             font-weight: 400 !important;
             font-family: 'Poppins', 'Nunito', system-ui, sans-serif !important;
             transition: all 0.2s ease !important;
+        }
+        
+        /* Flatpickr custom styles to ensure they override defaults */
+        .flatpickr-calendar {
+            background: #ffffff !important;
+            border: 2px solid #4F46E5 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+            font-family: 'Poppins', 'Nunito', system-ui, sans-serif !important;
+        }
+        
+        .flatpickr-months {
+            background: #4F46E5 !important;
+            border-radius: 6px 6px 0 0 !important;
+        }
+        
+        .flatpickr-current-month,
+        .flatpickr-current-month * {
+            color: white !important;
+            font-weight: 700 !important;
+        }
+        
+        .flatpickr-prev-month,
+        .flatpickr-next-month {
+            color: white !important;
+            fill: white !important;
+        }
+        
+        .flatpickr-day.selected {
+            background: #4F46E5 !important;
+            border-color: #4F46E5 !important;
+            color: white !important;
+        }
+        
+        .flatpickr-day.today {
+            border-color: #7C3AED !important;
+        }
+        
+        .flatpickr-day:hover {
+            background: #7C3AED !important;
+            border-color: #7C3AED !important;
+            color: white !important;
         }
         
         input[type="text"]:focus, 
@@ -274,6 +278,32 @@
         .flatpickr-confirm:hover {
             background: #7C3AED;
         }
+        
+        /* Dashboard Expandable Cards */
+        .entry-card {
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .entry-card:hover {
+            border-color: #4F46E5 !important;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15) !important;
+        }
+        
+        /* Ensure hidden class works properly */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Smooth transitions for expand/collapse */
+        [id^="entry-details-"] {
+            transition: all 0.3s ease-in-out;
+            overflow: hidden;
+        }
+        
+        [id^="toggle-icon-"] {
+            transition: transform 0.2s ease-in-out;
+        }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
@@ -327,25 +357,5 @@
         {% block content %}
         {% endblock %}
     </main>
-    
-    <!-- Mobile menu toggle script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const menuIcon = document.getElementById('menu-icon');
-            
-            if (mobileMenuButton && mobileMenu) {
-                mobileMenuButton.addEventListener('click', function() {
-                    mobileMenu.classList.toggle('hidden');
-                    // Toggle menu icon between bars and X
-                    if (menuIcon) {
-                        menuIcon.classList.toggle('fa-bars');
-                        menuIcon.classList.toggle('fa-times');
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>

@@ -3,6 +3,9 @@
 {% block title %}Add Child - ParentPlanner{% endblock %}
 
 {% block extra_head %}
+<!-- Color picker JavaScript -->
+{% load static %}
+<script src="{% static 'js/color_picker.js' %}" defer></script>
 <style>
 /* Modern Color Grid Styling */
 .color-grid-widget {
@@ -41,45 +44,6 @@
     border-width: 4px;
 }
 </style>
-</style>
-
-<script>
-function selectColorDot(dot, selectId) {
-    const color = dot.dataset.color;
-    const select = document.getElementById(selectId);
-    
-    if (select) {
-        select.value = color;
-        select.dispatchEvent(new Event('change'));
-    }
-    
-    // Update visual selection
-    const widget = dot.closest('.color-grid-widget');
-    if (widget) {
-        widget.querySelectorAll('.color-dot').forEach(d => {
-            d.classList.remove('selected');
-        });
-        dot.classList.add('selected');
-    }
-}
-
-// Set initial selection when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    const select = document.getElementById('id_colour');
-    if (select && select.value) {
-        const selectedDot = document.querySelector(`[data-color="${select.value}"]`);
-        if (selectedDot) {
-            selectColorDot(selectedDot, 'id_colour');
-        }
-    } else {
-        // Default to first color
-        const firstDot = document.querySelector('.color-dot');
-        if (firstDot && select) {
-            selectColorDot(firstDot, 'id_colour');
-        }
-    }
-});
-</script>
 {% endblock %}
 
 {% block content %}
