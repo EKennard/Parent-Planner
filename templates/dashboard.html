@@ -132,28 +132,30 @@
         <div class="space-y-4">
             {% if active_entries %}
                     {% for entry in active_entries|slice:":10" %}
-                    <div class="border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow entry-card border-l-8 border-t-4
+                    <div class="border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow entry-card border-l-8 border-t-4 relative
                          {% if entry.entry_type == 'note' %}border-t-green-600
                          {% elif entry.entry_type == 'task' %}border-t-amber-600
                          {% elif entry.entry_type == 'event' %}border-t-violet-600{% endif %}" 
                          data-entry-type="{{ entry.entry_type }}" 
                          style="border-left-color: {{ entry.child.colour }};">
-                        <div class="flex justify-between items-start">
+                        
+                        <!-- Discrete Entry Type Tag - Top Left Corner -->
+                        <div class="absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded-md border-2
+                            {% if entry.entry_type == 'note' %}bg-green-100 text-green-800 border-green-600
+                            {% elif entry.entry_type == 'task' %}bg-amber-100 text-amber-800 border-amber-600
+                            {% elif entry.entry_type == 'event' %}bg-violet-100 text-violet-800 border-violet-600{% endif %}">
+                            {% if entry.entry_type == 'note' %}NOTE
+                            {% elif entry.entry_type == 'task' %}TASK
+                            {% elif entry.entry_type == 'event' %}EVENT{% endif %}
+                        </div>
+
+                        <div class="flex justify-between items-start pt-6">
                             <!-- Main Content -->
                             <div class="flex-1 pr-4">
                                 <!-- Entry Header -->
                                 <div class="mb-2">
                                     <div class="flex items-center mb-1">
                                         <h3 class="text-lg font-semibold text-gray-900 mr-3">{{ entry.title }}</h3>
-                                        <!-- Color-coded Entry Type Tag -->
-                                        <span class="entry-type-tag text-xs font-bold px-2 py-1 rounded-full
-                                            {% if entry.entry_type == 'note' %}bg-green-100 text-green-800
-                                            {% elif entry.entry_type == 'task' %}bg-amber-100 text-amber-800
-                                            {% elif entry.entry_type == 'event' %}bg-violet-100 text-violet-800{% endif %}">
-                                            {% if entry.entry_type == 'note' %}📝 NOTE
-                                            {% elif entry.entry_type == 'task' %}✅ TASK
-                                            {% elif entry.entry_type == 'event' %}📅 EVENT{% endif %}
-                                        </span>
                                     </div>
                                     <div class="flex items-center space-x-2 text-sm">
                                         <span class="font-medium" style="color: {{ entry.child.colour }};">{{ entry.child.name }}</span>
