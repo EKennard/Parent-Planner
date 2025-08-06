@@ -133,6 +133,22 @@ class entryForm(forms.ModelForm):
         if not child:
             raise forms.ValidationError('Please select a child for this entry.')
         return child
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        entry_type = cleaned_data.get('entry_type')
+        start_time = cleaned_data.get('start_time')
+        end_time = cleaned_data.get('end_time')
+        
+        # Validate event times (start_time and end_time)
+        if entry_type == 'event' and start_time and end_time:
+            if end_time <= start_time:
+                raise forms.ValidationError({
+                    'end_time': 'End time must be after start time.',
+                    'start_time': 'Start time must be before end time.'
+                })
+        
+        return cleaned_data
         
     class Meta:
         model = Entry
