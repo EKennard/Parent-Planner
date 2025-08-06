@@ -115,7 +115,7 @@ def child_entries(request, child_id):
         if form.is_valid():
             entry = form.save()
             messages.success(request, f'Added {entry.get_entry_type_display().lower()} for {child.name}!')
-            return redirect('childEntries', child_id=child.id)
+            return redirect('child_entries', child_id=child.id)
     else:
         form = entryForm(parent=parent, initial={'child': child})
     entries = Entry.objects.filter(child=child).defer('is_completed').order_by('-created_at')
@@ -144,7 +144,7 @@ def edit_entry(request, entry_id):
         if form.is_valid():
             form.save()
             messages.success(request, f'Updated {entry.get_entry_type_display().lower()}: {entry.title}')
-            return redirect('childEntries', child_id=entry.child.id)
+            return redirect('child_entries', child_id=entry.child.id)
     else:
         form = entryForm(instance=entry, parent=parent)
     return render(request, 'planner/editEntry.html', {
@@ -167,7 +167,7 @@ def delete_entry(request, entry_id):
         entry_type = entry.get_entry_type_display()
         entry.delete()
         messages.success(request, f'Deleted {entry_type.lower()}: {entry_title}')
-    return redirect('childEntries', child_id=child_id)
+    return redirect('child_entries', child_id=child_id)
 
 #----------------------edit child view----------------------------
 
