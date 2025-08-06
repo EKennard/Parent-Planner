@@ -2,6 +2,58 @@
 
 {% block title %}Add Child - ParentPlanner{% endblock %}
 
+{% block extra_head %}
+<style>
+/* Custom styling for color radio buttons */
+.color-radio-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.color-radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: white;
+}
+
+.color-radio-group label:hover {
+    border-color: #9ca3af;
+    background-color: #f9fafb;
+}
+
+.color-radio-group input[type="radio"] {
+    margin: 0;
+}
+
+.color-radio-group input[type="radio"]:checked + span {
+    font-weight: 600;
+}
+
+.color-radio-group label:has(input:checked) {
+    border-color: #4f46e5;
+    background-color: #eef2ff;
+}
+
+.color-radio-group .flex {
+    width: 100%;
+}
+
+.color-radio-group span[style*="background-color"] {
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    border: 2px solid #d1d5db;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+</style>
+{% endblock %}
+
 {% block content %}
     <div class="max-w-2xl mx-auto">
         <div class="mb-6">
