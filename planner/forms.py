@@ -118,12 +118,22 @@ class entryForm(forms.ModelForm):
             if not self.fields['child'].queryset.exists():
                 self.fields['child'].help_text = 'You must add at least one child profile before creating entries.'
                 self.fields['child'].widget.attrs['disabled'] = True
+        
+        # Add CSS classes to all fields
+        for field_name, field in self.fields.items():
+            if isinstance(field.widget, forms.Textarea):
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
+            else:
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
     
     def clean_child(self):
         child = self.cleaned_data.get('child')
         if not child:
             raise forms.ValidationError('Please select a child for this entry.')
         return child
+        
     class Meta:
         model = Entry
         fields = ['title', 'child', 'category', 'entry_type', 'description','priority', 'due_date', 'start_time', 'end_time', 'location']
