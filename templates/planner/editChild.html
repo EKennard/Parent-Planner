@@ -4,112 +4,128 @@
 
 {% block content %}
     <div class="max-w-2xl mx-auto">
-        <div class="mb-6">
-            <h1 class="text-3xl font-bold text-gray-900">Edit {{ child.name }}'s Profile</h1>
-            <p class="text-gray-600 mt-2">Update child information</p>
+        <!-- Modern Header -->
+        <div class="bg-white border-2 border-primary shadow-lg mb-8">
+            <div class="border-b-2 border-primary bg-gray-50 px-6 py-4">
+                <h1 class="text-3xl font-black text-gray-900 uppercase tracking-wide">Edit {{ child.name }}'s Profile</h1>
+                <p class="text-gray-600 font-medium mt-2">Update child information</p>
+            </div>
         </div>
         
-        <div class="bg-white shadow-lg rounded-lg p-8">
+        <!-- Modern Form Container -->
+        <div class="bg-white border-2 border-primary shadow-lg">
             {% if messages %}
-                {% for message in messages %}
-                    <div class="mb-4 p-4 rounded-md {% if message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200{% elif message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+                <div class="p-6 border-b-2 border-primary">
+                    {% for message in messages %}
+                        <div class="mb-4 p-4 border-2 {% if message.tags == 'success' %}bg-green-50 text-green-700 border-green-600{% elif message.tags == 'error' %}bg-red-50 text-red-700 border-red-600{% else %}bg-blue-50 text-blue-700 border-blue-600{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
 
-            <form method="post" enctype="multipart/form-data" class="space-y-6">
-                {% csrf_token %}
+            <div class="p-8">
+                <form method="post" enctype="multipart/form-data" class="space-y-8">
+                    {% csrf_token %}
 
-                <!-- Basic Information -->
-                <div class="space-y-4">
-                    <h2 class="text-xl font-semibold text-gray-900">Basic Information</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Basic Information -->
+                    <div class="space-y-6">
+                        <h2 class="text-xl font-black text-gray-900 uppercase tracking-wide border-b-2 border-primary pb-2">Basic Information</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="{{ form.name.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.name.label }} *</label>
+                                {{ form.name }}
+                                {% if form.name.help_text %}
+                                    <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.name.help_text }}</p>
+                                {% endif %}
+                                {% if form.name.errors %}
+                                    <div class="text-red-600 text-sm mt-1 font-medium">{{ form.name.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div>
+                                <label for="{{ form.birth_date.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.birth_date.label }}</label>
+                                {{ form.birth_date }}
+                                {% if form.birth_date.help_text %}
+                                    <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.birth_date.help_text }}</p>
+                                {% endif %}
+                                {% if form.birth_date.errors %}
+                                    <div class="text-red-600 text-sm mt-1 font-medium">{{ form.birth_date.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- School Information -->
+                    <div class="space-y-6 border-t-2 border-primary pt-6">
+                        <h2 class="text-xl font-black text-gray-900 uppercase tracking-wide border-b-2 border-primary pb-2">School Information</h2>
+
                         <div>
-                            <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.name.label }} *</label>
-                            {{ form.name }}
-                            {% if form.name.help_text %}
-                                <p class="text-sm text-gray-500 mt-1">{{ form.name.help_text }}</p>
+                            <label for="{{ form.school.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.school.label }}</label>
+                            {{ form.school }}
+                            {% if form.school.help_text %}
+                                <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.school.help_text }}</p>
                             {% endif %}
-                            {% if form.name.errors %}
-                                <div class="text-red-600 text-sm mt-1">{{ form.name.errors }}</div>
+                            {% if form.school.errors %}
+                                <div class="text-red-600 text-sm mt-1 font-medium">{{ form.school.errors }}</div>
                             {% endif %}
                         </div>
                         
-                        <div>
-                            <label for="{{ form.birth_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.birth_date.label }}</label>
-                            {{ form.birth_date }}
-                            {% if form.birth_date.help_text %}
-                                <p class="text-sm text-gray-500 mt-1">{{ form.birth_date.help_text }}</p>
-                            {% endif %}
-                            {% if form.birth_date.errors %}
-                                <div class="text-red-600 text-sm mt-1">{{ form.birth_date.errors }}</div>
-                            {% endif %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="{{ form.year.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.year.label }}</label>
+                                {{ form.year }}
+                                {% if form.year.help_text %}
+                                    <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.year.help_text }}</p>
+                                {% endif %}
+                                {% if form.year.errors %}
+                                    <div class="text-red-600 text-sm mt-1 font-medium">{{ form.year.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div>
+                                <label for="{{ form.class_name.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.class_name.label }}</label>
+                                {{ form.class_name }}
+                                {% if form.class_name.help_text %}
+                                    <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.class_name.help_text }}</p>
+                                {% endif %}
+                                {% if form.class_name.errors %}
+                                    <div class="text-red-600 text-sm mt-1 font-medium">{{ form.class_name.errors }}</div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- School Information -->
-                <div class="space-y-4">
-                    <h2 class="text-xl font-semibold text-gray-900">School Information</h2>
-
-                    <div>
-                        <label for="{{ form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.school.label }}</label>
-                        {{ form.school }}
-                        {% if form.school.help_text %}
-                            <p class="text-sm text-gray-500 mt-1">{{ form.school.help_text }}</p>
-                        {% endif %}
-                        {% if form.school.errors %}
-                            <div class="text-red-600 text-sm mt-1">{{ form.school.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="{{ form.year.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.year.label }}</label>
-                            {{ form.year }}
-                            {% if form.year.help_text %}
-                                <p class="text-sm text-gray-500 mt-1">{{ form.year.help_text }}</p>
-                            {% endif %}
-                            {% if form.year.errors %}
-                                <div class="text-red-600 text-sm mt-1">{{ form.year.errors }}</div>
-                            {% endif %}
-                        </div>
+                    <!-- Personalization -->
+                    <div class="space-y-6 border-t-2 border-primary pt-6">
+                        <h2 class="text-xl font-black text-gray-900 uppercase tracking-wide border-b-2 border-primary pb-2">Personalization</h2>
                         
                         <div>
-                            <label for="{{ form.class_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.class_name.label }}</label>
-                            {{ form.class_name }}
-                            {% if form.class_name.help_text %}
-                                <p class="text-sm text-gray-500 mt-1">{{ form.class_name.help_text }}</p>
+                            <label for="{{ form.colour.id_for_label }}" class="block text-sm font-black text-gray-700 mb-2 uppercase tracking-wide">{{ form.colour.label }}</label>
+                            {{ form.colour }}
+                            {% if form.colour.help_text %}
+                                <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.colour.help_text }}</p>
                             {% endif %}
-                            {% if form.class_name.errors %}
-                                <div class="text-red-600 text-sm mt-1">{{ form.class_name.errors }}</div>
+                            {% if form.colour.errors %}
+                                <div class="text-red-600 text-sm mt-1 font-medium">{{ form.colour.errors }}</div>
                             {% endif %}
                         </div>
                     </div>
-                </div>
-
-                <!-- Personalization -->
-                <div class="space-y-4">
-                    <h2 class="text-xl font-semibold text-gray-900">Personalization</h2>
                     
-                    <div>
-                        <label for="{{ form.colour.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">{{ form.colour.label }}</label>
-                        {{ form.colour }}
-                        {% if form.colour.help_text %}
-                            <p class="text-sm text-gray-500 mt-1">{{ form.colour.help_text }}</p>
-                        {% endif %}
-                        {% if form.colour.errors %}
-                            <div class="text-red-600 text-sm mt-1">{{ form.colour.errors }}</div>
-                        {% endif %}
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 pt-8 border-t-2 border-primary">
+                        <button type="submit" class="bg-primary hover:bg-secondary text-white font-bold py-3 px-8 border-2 border-primary transition-all duration-200 uppercase tracking-wide hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                            Update Profile
+                        </button>
+                        <a href="{% url 'dashboard' %}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 border-2 border-gray-500 transition-all duration-200 uppercase tracking-wide">
+                            Cancel
+                        </a>
                     </div>
-                </div>
-                
-                <div class="flex gap-4 pt-6">
-                    <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                        Update Profile
-                    </button>
+                </form>
+            </div>
+        </div>
                     <a href="{% url 'dashboard' %}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md transition duration-200">
                         Cancel
                     </a>
