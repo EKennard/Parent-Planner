@@ -27,6 +27,15 @@
                 <form method="post" id="entryForm" class="space-y-8">
                     {% csrf_token %}
                     
+                    <!-- Display non-field errors -->
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <div class="mb-4 p-4 border-2 bg-red-50 text-red-700 border-red-600">
+                                <p class="font-medium">{{ error }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
                     <!-- Basic Information -->
                     <div class="space-y-6">
                         <h2 class="text-xl font-normal text-gray-900 tracking-wide pb-2">Basic Information</h2>
@@ -115,6 +124,11 @@
                                     {% if form.due_date.help_text %}
                                         <p class="mt-1 text-xs text-gray-500 font-medium">{{ form.due_date.help_text }}</p>
                                     {% endif %}
+                                    {% if form.due_date.errors %}
+                                        {% for error in form.due_date.errors %}
+                                            <p class="mt-1 text-sm text-red-600 font-medium">{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -132,6 +146,11 @@
                                     {% if form.start_time.help_text %}
                                         <p class="mt-1 text-xs text-gray-500 font-medium">{{ form.start_time.help_text }}</p>
                                     {% endif %}
+                                    {% if form.start_time.errors %}
+                                        {% for error in form.start_time.errors %}
+                                            <p class="mt-1 text-sm text-red-600 font-medium">{{ error }}</p>
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
                                 
                                 <div>
@@ -141,6 +160,11 @@
                                     {{ form.end_time }}
                                     {% if form.end_time.help_text %}
                                         <p class="mt-1 text-xs text-gray-500 font-medium">{{ form.end_time.help_text }}</p>
+                                    {% endif %}
+                                    {% if form.end_time.errors %}
+                                        {% for error in form.end_time.errors %}
+                                            <p class="mt-1 text-sm text-red-600 font-medium">{{ error }}</p>
+                                        {% endfor %}
                                     {% endif %}
                                 </div>
                             </div>
@@ -171,224 +195,63 @@
         </div>
     </div>
 
-    <script>
-        function toggleEntryFields() {
-            const entryType = document.getElementById('{{ form.entry_type.id_for_label }}').value;
-            const taskFields = document.getElementById('taskFields');
-            const eventFields = document.getElementById('eventFields');
-            
-            // Hide all conditional fields initially
-            taskFields.style.display = 'none';
-            eventFields.style.display = 'none';
+    </div>
 
-            // Show relevant fields based on entry type
-            if (entryType === 'task') {
-                taskFields.style.display = 'block';
-            } else if (entryType === 'event') {
-                eventFields.style.display = 'block';
-            }
-        }
-        
-        function updateEndTimeConstraint() {
-            const startTimeField = document.getElementById('{{ form.start_time.id_for_label }}');
-            const endTimeField = document.getElementById('{{ form.end_time.id_for_label }}');
+    <script>
+        // Page-specific initialization for addEntry.html
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Flatpickr for combined datetime fields
+            const dueDateInput = document.getElementById('{{ form.due_date.id_for_label }}');
+            const startTimeInput = document.getElementById('{{ form.start_time.id_for_label }}');
+            const endTimeInput = document.getElementById('{{ form.end_time.id_for_label }}');
             
-            if (!startTimeField || !endTimeField) return;
-            
-            const startTime = startTimeField.value;
-            if (startTime) {
-                // Set minimum end time to 1 minute after start time
-                const startDate = new Date(startTime);
-                startDate.setMinutes(startDate.getMinutes() + 1);
-                
-                // Format for datetime-local input (YYYY-MM-DDTHH:MM)
-                const minEndTime = startDate.toISOString().slice(0, 16);
-                endTimeField.setAttribute('min', minEndTime);
-                
-                // Smart default: If no end time set, auto-set to 1 hour after start
-                if (!endTimeField.value) {
-                    const defaultEndDate = new Date(startTime);
-                    defaultEndDate.setHours(defaultEndDate.getHours() + 1);
-                    const defaultEndTime = defaultEndDate.toISOString().slice(0, 16);
-                    endTimeField.value = defaultEndTime;
-                    
-                    // Add a subtle visual indication
-                    endTimeField.style.backgroundColor = '#f0f9ff';
-                    setTimeout(() => {
-                        endTimeField.style.backgroundColor = '';
-                    }, 1000);
-                }
-                
-                // If current end time is now invalid due to constraint, clear it
-                if (endTimeField.value && endTimeField.value <= startTime) {
-                    endTimeField.value = '';
-                }
-            } else {
-                // Remove constraint if no start time
-                endTimeField.removeAttribute('min');
-            }
-        }
-        
-        function validateEventTimes() {
-            const startTimeField = document.getElementById('{{ form.start_time.id_for_label }}');
-            const endTimeField = document.getElementById('{{ form.end_time.id_for_label }}');
-            
-            if (!startTimeField || !endTimeField) return true;
-            
-            const startTime = startTimeField.value;
-            const endTime = endTimeField.value;
-            
-            // Only validate if both times are set
-            if (startTime && endTime) {
-                const startDate = new Date(startTime);
-                const endDate = new Date(endTime);
-                
-                if (endDate <= startDate) {
-                    // Remove any existing error messages
-                    const existingError = endTimeField.parentNode.querySelector('.time-validation-error');
-                    if (existingError) existingError.remove();
-                    
-                    // Add error message
-                    const errorDiv = document.createElement('p');
-                    errorDiv.className = 'mt-1 text-sm text-red-600 font-medium time-validation-error';
-                    errorDiv.textContent = 'End time must be after start time';
-                    endTimeField.parentNode.appendChild(errorDiv);
-                    
-                    // Style the input as invalid
-                    endTimeField.style.borderColor = '#DC2626';
-                    return false;
-                } else {
-                    // Remove error message if validation passes
-                    const existingError = endTimeField.parentNode.querySelector('.time-validation-error');
-                    if (existingError) existingError.remove();
-                    
-                    // Reset border color
-                    endTimeField.style.borderColor = '';
-                    return true;
-                }
-            }
-            return true;
-        }
-        
-        function validateTaskDate() {
-            const dueDateField = document.getElementById('{{ form.due_date.id_for_label }}');
-            
-            if (!dueDateField) return true;
-            
-            const dueDate = dueDateField.value;
-            
-            if (dueDate) {
-                const dueDateObj = new Date(dueDate);
-                const now = new Date();
-                
-                if (dueDateObj < now) {
-                    // Remove any existing error messages
-                    const existingError = dueDateField.parentNode.querySelector('.date-validation-error');
-                    if (existingError) existingError.remove();
-                    
-                    // Add warning message (not blocking, just informative)
-                    const warningDiv = document.createElement('p');
-                    warningDiv.className = 'mt-1 text-sm text-amber-600 font-medium date-validation-error';
-                    warningDiv.textContent = 'Due date is in the past';
-                    dueDateField.parentNode.appendChild(warningDiv);
-                    
-                    // Style the input as warning
-                    dueDateField.style.borderColor = '#F59E0B';
-                } else {
-                    // Remove warning message
-                    const existingError = dueDateField.parentNode.querySelector('.date-validation-error');
-                    if (existingError) existingError.remove();
-                    
-                    // Reset border color
-                    dueDateField.style.borderColor = '';
-                }
-            }
-            return true;
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add event listener to entry type field
-            const entryTypeField = document.getElementById('{{ form.entry_type.id_for_label }}');
-            if (entryTypeField) {
-                entryTypeField.addEventListener('change', toggleEntryFields);
-                toggleEntryFields(); // Initial call
-            }
-            
-            // Add event listeners for time validation
-            const startTimeField = document.getElementById('{{ form.start_time.id_for_label }}');
-            const endTimeField = document.getElementById('{{ form.end_time.id_for_label }}');
-            const dueDateField = document.getElementById('{{ form.due_date.id_for_label }}');
-            
-            if (startTimeField) {
-                startTimeField.addEventListener('change', function() {
-                    updateEndTimeConstraint();
-                    validateEventTimes();
-                });
-                startTimeField.addEventListener('blur', function() {
-                    updateEndTimeConstraint();
-                    validateEventTimes();
-                });
-            }
-            
-            if (endTimeField) {
-                endTimeField.addEventListener('change', validateEventTimes);
-                endTimeField.addEventListener('blur', validateEventTimes);
-                
-                // Add helpful message when user tries to select invalid time
-                endTimeField.addEventListener('input', function() {
-                    const startTime = startTimeField ? startTimeField.value : null;
-                    if (startTime && endTimeField.value && endTimeField.value <= startTime) {
-                        // Show a gentle hint
-                        const existingHint = endTimeField.parentNode.querySelector('.time-hint');
-                        if (!existingHint) {
-                            const hintDiv = document.createElement('p');
-                            hintDiv.className = 'mt-1 text-xs text-blue-600 font-medium time-hint';
-                            hintDiv.textContent = 'Please select a time after ' + new Date(startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                            endTimeField.parentNode.appendChild(hintDiv);
-                            
-                            // Remove hint after 3 seconds
-                            setTimeout(() => {
-                                if (hintDiv.parentNode) hintDiv.remove();
-                            }, 3000);
-                        }
+            // Initialize datetime pickers for addEntry.html (combined date+time)
+            if (dueDateInput) {
+                flatpickr(dueDateInput, {
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i:S",
+                    altInput: true,
+                    altFormat: "d-m-Y at H:i",
+                    time_24hr: false,
+                    minuteIncrement: 15,
+                    onChange: function(selectedDates, dateStr, instance) {
+                        if (window.validateTaskDate) window.validateTaskDate();
                     }
                 });
             }
             
-            if (dueDateField) {
-                dueDateField.addEventListener('change', validateTaskDate);
-                dueDateField.addEventListener('blur', validateTaskDate);
-            }
-            
-            // Form submission validation
-            const form = document.getElementById('entryForm');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    const isEventTimeValid = validateEventTimes();
-                    
-                    if (!isEventTimeValid) {
-                        e.preventDefault();
-                        
-                        // Show a general error message
-                        const errorMessage = document.createElement('div');
-                        errorMessage.className = 'mb-4 p-4 border-2 bg-red-50 text-red-700 border-red-600';
-                        errorMessage.textContent = 'Please fix the validation errors before submitting.';
-                        
-                        // Insert at the top of the form
-                        const formContainer = form.parentNode;
-                        formContainer.insertBefore(errorMessage, form);
-                        
-                        // Remove the message after 5 seconds
-                        setTimeout(() => {
-                            errorMessage.remove();
-                        }, 5000);
-                        
-                        // Scroll to the error
-                        errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        
-                        return false;
+            if (startTimeInput) {
+                flatpickr(startTimeInput, {
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i:S",
+                    altInput: true,
+                    altFormat: "d-m-Y at H:i",
+                    time_24hr: false,
+                    minuteIncrement: 15,
+                    onChange: function(selectedDates, dateStr, instance) {
+                        if (window.updateEndTimeConstraint) window.updateEndTimeConstraint();
+                        if (window.validateEventTimes) window.validateEventTimes();
                     }
                 });
+            }
+            
+            if (endTimeInput) {
+                flatpickr(endTimeInput, {
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i:S",
+                    altInput: true,
+                    altFormat: "d-m-Y at H:i",
+                    time_24hr: false,
+                    minuteIncrement: 15,
+                    onChange: function(selectedDates, dateStr, instance) {
+                        if (window.validateEventTimes) window.validateEventTimes();
+                    }
+                });
+            }
+            
+            // Initialize shared form validation
+            if (window.initializeFormValidation) {
+                window.initializeFormValidation();
             }
         });
     </script>

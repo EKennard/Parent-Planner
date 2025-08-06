@@ -2,31 +2,29 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Parent, Child, Entry
-import random
 from datetime import date
+
 
 # generates random colour code from predefined choices
 def generate_random_color():
-    from .models import Child
+    """Generate a random color from Child.COLOR_CHOICES."""
     import random
     color_choices = [choice[0] for choice in Child.COLOR_CHOICES]
     return random.choice(color_choices)
+
 
 class registrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')         
+        fields = ('username', 'email', 'password1', 'password2')
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Customize password help text
-        # self.fields['password1'].help_text = 'Your password must contain at least 8 characters and cannot be entirely numeric.'
-        # self.fields['password2'].help_text = 'Enter the same password as before, for verification.'
+        # Remove help text for cleaner UI
         self.fields['password1'].help_text = None
         self.fields['password2'].help_text = None
-        # Optional: Customize other field help text
-        # self.fields['username'].help_text = 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'
         self.fields['username'].help_text = None
         
         # Custom error messages
@@ -78,6 +76,7 @@ class registrationForm(UserCreationForm):
             Parent.objects.create(user=user)
         return user
 
+
 class childForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -108,6 +107,7 @@ class childForm(forms.ModelForm):
             'birth_date': forms.DateInput(attrs={'type': 'date'}),
             'colour': forms.Select(attrs={'style': 'display: none;'}),
         }
+
 
 class entryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -152,11 +152,11 @@ class entryForm(forms.ModelForm):
         
     class Meta:
         model = Entry
-        fields = ['title', 'child', 'category', 'entry_type', 'description','priority', 'due_date', 'start_time', 'end_time', 'location']
+        fields = ['title', 'child', 'category', 'entry_type', 'description', 'priority', 'due_date', 'start_time', 'end_time', 'location']
         widgets = {
-            'due_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'due_date': forms.DateTimeInput(attrs={'type': 'text', 'placeholder': 'Select date and time'}),
+            'start_time': forms.DateTimeInput(attrs={'type': 'text', 'placeholder': 'Select start time'}),
+            'end_time': forms.DateTimeInput(attrs={'type': 'text', 'placeholder': 'Select end time'}),
             'description': forms.Textarea(attrs={'rows': 4}),
         }
 

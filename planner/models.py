@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-
-
 # --------------------------- category model ----------------------------
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -11,7 +9,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
 
 
 # --------------------------- child model ----------------------------
@@ -22,14 +19,14 @@ class Child(models.Model):
     COLOR_CHOICES = [
         ('#FF6B6B', 'Coral Red'),
         ('#4ECDC4', 'Turquoise'),
-        ("#0D6A80", 'Sky Blue'),
+        ('#0D6A80', 'Sky Blue'),
         ('#96CEB4', 'Mint Green'),
-        ("#D1D811", 'Sunny Yellow'),
+        ('#D1D811', 'Sunny Yellow'),
         ('#DDA0DD', 'Plum Purple'),
-        ("#AD6A0D", 'Peach Orange'),
-        ("#8516EE", 'Light Blue'),
-        ("#0CEB0C", 'Pale Green'),
-        ("#BE12E0", 'Bright Pink'),
+        ('#AD6A0D', 'Peach Orange'),
+        ('#8516EE', 'Light Blue'),
+        ('#0CEB0C', 'Pale Green'),
+        ('#BE12E0', 'Bright Pink'),
     ]
     
     parent = models.ForeignKey('Parent', on_delete=models.CASCADE)
@@ -44,7 +41,6 @@ class Child(models.Model):
         return self.name
 
 
-
 # --------------------------- entry model ----------------------------
 
 class Entry(models.Model):
@@ -56,7 +52,7 @@ class Entry(models.Model):
         ('event', 'Event'),
     ]
     
-    #priority types 
+    # priority types 
     PRIORITY_CHOICES = [
         ('low', 'Low'),       
         ('medium', 'Medium'), 
@@ -98,11 +94,10 @@ class Entry(models.Model):
         return f"{self.get_entry_type_display()}: {self.title}"
 
 
-
-
 # --------------------------- parent model ----------------------------
 
 class Parent(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    
     def __str__(self):
         return f"Parent: {self.user.username}"   

@@ -98,6 +98,11 @@ def add_entry(request):
             entry_type = entry.get_entry_type_display().lower()
             messages.success(request, f'Added {entry_type} for {entry.child.name}!')
             return redirect('child_entries', child_id=entry.child.id)
+        else:
+            # Add error message when form validation fails
+            print("Form errors:", form.errors)  # Debug print
+            print("Form data:", request.POST)  # Debug print
+            messages.error(request, 'Please correct the errors below and try again.')
     else:
         form = entryForm(parent=parent)
     return render(request, 'planner/addEntry.html', {'form': form})
