@@ -232,11 +232,11 @@
                                 <!-- Essential Date/Time Info -->
                                 {% if entry.entry_type == 'task' and entry.due_date %}
                                 <div class="text-sm text-amber-700 font-normal mb-3 tracking-wider">
-                                    📅 Due: {{ entry.due_date|date:"M d, Y g:i A" }}
+                                    📅 Due: {{ entry.due_date|date:"D jS M Y \a\t g:i A" }}
                                 </div>
                                 {% elif entry.entry_type == 'event' and entry.start_time %}
                                 <div class="text-sm text-violet-700 font-normal mb-3 tracking-wider">
-                                    🕒 {{ entry.start_time|date:"M d, Y g:i A" }}
+                                    🕒 {{ entry.start_time|date:"D jS M Y \a\t g:i A" }}
                                     {% if entry.end_time %} - {{ entry.end_time|date:"g:i A" }}{% endif %}
                                     {% if entry.location %}
                                     <br>📍 {{ entry.location }}
@@ -256,9 +256,9 @@
                                     </button>
                                     <div id="details-{{ entry.id }}" class="hidden mt-3 p-4 bg-gray-50 border-2 border-gray-300 text-sm">
                                         <div class="grid grid-cols-2 gap-3 text-xs">
-                                            <div><strong class="font-normal tracking-wider">Created:</strong> {{ entry.created_at|date:"M d, Y g:i A" }}</div>
+                                            <div><strong class="font-normal tracking-wider">Created:</strong> {{ entry.created_at|date:"D jS M Y \a\t g:i A" }}</div>
                                             {% if entry.updated_at != entry.created_at %}
-                                            <div><strong class="font-normal tracking-wider">Updated:</strong> {{ entry.updated_at|date:"M d, Y g:i A" }}</div>
+                                            <div><strong class="font-normal tracking-wider">Updated:</strong> {{ entry.updated_at|date:"D jS M Y \a\t g:i A" }}</div>
                                             {% endif %}
                                             {% if entry.description %}
                                             <div class="col-span-2 mt-3"><strong class="font-normal tracking-wider">Full Description:</strong><br>{{ entry.description }}</div>

@@ -86,7 +86,7 @@
                                                 {% if entry.category and entry.category != 'none' %}
                                                 <span class="bg-gray-100 text-gray-700 px-3 py-1 text-xs font-normal tracking-wider border">{{ entry.get_category_display }}</span>
                                                 {% endif %}
-                                                <span class="text-gray-500 font-medium">{{ entry.created_at|date:"M d, Y" }}</span>
+                                                <span class="text-gray-500 font-medium">{{ entry.created_at|date:"D jS M Y" }}</span>
                                             </div>
                                         </div>
                                         
@@ -106,13 +106,13 @@
                                                 {% endif %}
                                                 {% if entry.due_date %}
                                                     <span class="bg-red-100 text-red-800 px-3 py-1 text-xs font-normal tracking-wider border-2 border-red-600">
-                                                        Due: {{ entry.due_date|date:"M d, Y g:i A" }}
+                                                        Due: {{ entry.due_date|date:"D jS M Y \a\t g:i A" }}
                                                     </span>
                                                 {% endif %}
                                             {% elif entry.entry_type == 'event' %}
                                                 {% if entry.start_time %}
                                                     <span class="bg-violet-100 text-violet-800 px-3 py-1 text-xs font-normal tracking-wider border-2 border-violet-600">
-                                                        {{ entry.start_time|date:"M d, Y g:i A" }}
+                                                        {{ entry.start_time|date:"D jS M Y \a\t g:i A" }}
                                                     </span>
                                                 {% endif %}
                                                 {% if entry.location %}
