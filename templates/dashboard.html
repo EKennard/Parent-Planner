@@ -7,60 +7,61 @@
 {% load static %}
 <script src="{% static 'js/dashboard.js' %}" defer></script>
 <style>
-/* Expandable card animations */
-.entry-card {
-    transition: all 0.3s ease;
-}
-
-.entry-card:hover {
-    transform: translateY(-1px);
-}
-
-/* Expandable details with proper animation */
-[id^="entry-details-"] {
-    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    overflow: hidden;
-    max-height: 0;
-    opacity: 0;
-}
-
-[id^="entry-details-"]:not(.hidden) {
-    max-height: 1000px;
-    opacity: 1;
-}
-
-/* Toggle icon animation */
-[id^="toggle-icon-"] {
-    transition: transform 0.2s ease-in-out;
-}
-
-/* Smooth expand animation */
-.expanding {
-    animation: expandIn 0.3s ease-out;
-}
-
-@keyframes expandIn {
-    from {
-        opacity: 0;
-        max-height: 0;
-    }
-    to {
-        opacity: 1;
-        max-height: 500px;
-    }
-}
-
-/* Mobile optimizations */
-@media (max-width: 640px) {
+    /* Expandable card animations */
     .entry-card {
-        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
     }
-    
-    .entry-type-tag {
-        font-size: 0.65rem;
-        padding: 0.125rem 0.25rem;
+
+    .entry-card:hover {
+        transform: translateY(-1px);
     }
-}
+
+    /* Expandable details with proper animation */
+    [id^="entry-details-"] {
+        transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+    }
+
+    [id^="entry-details-"]:not(.hidden) {
+        max-height: 1000px;
+        opacity: 1;
+    }
+
+    /* Toggle icon animation */
+    [id^="toggle-icon-"] {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    /* Smooth expand animation */
+    .expanding {
+        animation: expandIn 0.3s ease-out;
+    }
+
+    @keyframes expandIn {
+        from {
+            opacity: 0;
+            max-height: 0;
+        }
+
+        to {
+            opacity: 1;
+            max-height: 500px;
+        }
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 640px) {
+        .entry-card {
+            margin-bottom: 0.5rem;
+        }
+
+        .entry-type-tag {
+            font-size: 0.65rem;
+            padding: 0.125rem 0.25rem;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -69,7 +70,8 @@
 {% if messages %}
 <div class="mb-3 sm:mb-6 px-3 sm:px-0">
     {% for message in messages %}
-    <div class="border-l-4 p-2 sm:p-4 mb-2 sm:mb-4 text-sm sm:text-base {% if message.tags == 'success' %}bg-green-50 border-green-500 text-green-800{% elif message.tags == 'error' %}bg-red-50 border-red-500 text-red-800{% else %}bg-blue-50 border-blue-500 text-blue-800{% endif %}">
+    <div
+        class="border-l-4 p-2 sm:p-4 mb-2 sm:mb-4 text-sm sm:text-base {% if message.tags == 'success' %}bg-green-50 border-green-500 text-green-800{% elif message.tags == 'error' %}bg-red-50 border-red-500 text-red-800{% else %}bg-blue-50 border-blue-500 text-blue-800{% endif %}">
         <div class="flex items-center">
             <span class="font-medium">{{ message }}</span>
         </div>
@@ -81,7 +83,8 @@
 <!-- Compact Stats Bar -->
 <div class="grid grid-cols-4 gap-1 sm:gap-3 mb-3 sm:mb-6 px-3 sm:px-0">
     <!-- Total Entries Card -->
-    <div class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+    <div
+        class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
         <div class="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-gradient-to-r from-green-500 to-violet-500"></div>
         <div class="p-1.5 sm:p-3">
             <div class="text-center">
@@ -92,7 +95,8 @@
     </div>
 
     <!-- Notes Card -->
-    <div class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+    <div
+        class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
         <div class="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-green-500"></div>
         <div class="p-1.5 sm:p-3">
             <div class="text-center">
@@ -103,7 +107,8 @@
     </div>
 
     <!-- Tasks Card -->
-    <div class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+    <div
+        class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
         <div class="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-amber-500"></div>
         <div class="p-1.5 sm:p-3">
             <div class="text-center">
@@ -114,7 +119,8 @@
     </div>
 
     <!-- Events Card -->
-    <div class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+    <div
+        class="bg-white border border-primary shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300">
         <div class="absolute top-0 left-0 w-full h-0.5 sm:h-1 bg-violet-500"></div>
         <div class="p-1.5 sm:p-3">
             <div class="text-center">
@@ -124,8 +130,13 @@
         </div>
     </div>
 </div>
-<!-- Modern Family Management Section -->
-<div class="bg-white border-2 border-primary shadow-lg mb-4 sm:mb-8 mx-3 sm:mx-0">
+
+<!-- Two-Column Layout for Tablets and Above -->
+<div class="flex flex-col md:flex-row gap-4 md:gap-6 mx-3 sm:mx-0">
+    <!-- Left Column: Your Children Section - Fixed optimal width -->
+    <div class="w-full md:w-80 lg:w-96 md:flex-shrink-0">
+        <!-- Modern Family Management Section -->
+        <div class="bg-white border-2 border-primary shadow-lg mb-4 md:mb-0">
     <!-- Family Management Header -->
     <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
         <div class="flex justify-between items-center">
@@ -133,9 +144,9 @@
                 <h2 class="text-lg sm:text-2xl font-normal text-gray-900 tracking-wide">Your Children</h2>
             </div>
             <div>
-                <a href="{% url 'add_child' %}" 
-                   class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center"
-                   title="Add Child">
+                <a href="{% url 'add_child' %}"
+                    class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center"
+                    title="Add Child">
                     <i class="fas fa-plus"></i>
                 </a>
             </div>
@@ -145,19 +156,19 @@
     <!-- Children Cards Container -->
     <div class="p-3 sm:p-6">
         {% if children %}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+        <div class="grid grid-cols-1 gap-3 sm:gap-6">
             {% for child in children %}
             <div class="bg-gray-50 border-2 border-gray-300 shadow-md hover:shadow-xl hover:border-gray-400 transition-all duration-300 group cursor-pointer relative"
-                 onclick="window.location.href='{% url 'child_entries' child.id %}'">
+                onclick="window.location.href='{% url 'child_entries' child.id %}'">
                 <!-- Child Color Accent Bar -->
                 <div class="h-1 w-full" style="background-color: {{ child.colour }};"></div>
-                
+
                 <!-- Main Content Area -->
                 <div class="p-3 flex items-center justify-between">
                     <!-- Left Side: Avatar and Info -->
                     <div class="flex items-center">
-                        <div class="w-8 h-8 border-2 border-primary flex items-center justify-center text-sm font-normal text-white mr-3" 
-                             style="background-color: {{ child.colour }};">
+                        <div class="w-8 h-8 border-2 border-primary flex items-center justify-center text-sm font-normal text-white mr-3"
+                            style="background-color: {{ child.colour }};">
                             {{ child.name|first|upper }}
                         </div>
                         <div>
@@ -174,16 +185,15 @@
                     <!-- Right Side: Action Icons Stacked -->
                     <div class="flex flex-col gap-1">
                         <!-- Edit Icon -->
-                        <a href="{% url 'edit_child' child.id %}" 
-                           class="w-6 h-6 bg-green-600 hover:bg-green-700 text-white border border-green-800 flex items-center justify-center transition-all duration-200 z-10 rounded-sm"
-                           onclick="event.stopPropagation();"
-                           title="Edit {{ child.name }}'s profile">
+                        <a href="{% url 'edit_child' child.id %}"
+                            class="w-6 h-6 bg-green-600 hover:bg-green-700 text-white border border-green-800 flex items-center justify-center transition-all duration-200 z-10 rounded-sm"
+                            onclick="event.stopPropagation();" title="Edit {{ child.name }}'s profile">
                             <i class="fas fa-pencil-alt text-xs"></i>
                         </a>
-                        
+
                         <!-- Manage Icon -->
                         <div class="w-6 h-6 bg-primary border border-primary flex items-center justify-center"
-                             title="Click to manage entries">
+                            title="Click to manage entries">
                             <span class="text-white text-xs">→</span>
                         </div>
                     </div>
@@ -193,12 +203,13 @@
         </div>
         {% else %}
         <div class="text-center py-4 sm:py-8">
-            <div class="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-6 bg-gray-100 border-2 border-primary flex items-center justify-center">
+            <div
+                class="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-6 bg-gray-100 border-2 border-primary flex items-center justify-center">
                 <div class="w-8 h-8 sm:w-12 sm:h-12 bg-primary border-2 border-primary"></div>
             </div>
-            <a href="{% url 'add_child' %}" 
-               class="bg-primary hover:bg-secondary text-white font-normal px-4 py-2 sm:px-8 sm:py-4 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg text-sm sm:text-base inline-flex items-center gap-2"
-               title="Add Your First Child">
+            <a href="{% url 'add_child' %}"
+                class="bg-primary hover:bg-secondary text-white font-normal px-4 py-2 sm:px-8 sm:py-4 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg text-sm sm:text-base inline-flex items-center gap-2"
+                title="Add Your First Child">
                 <i class="fas fa-plus"></i>
                 <span>Add Your First Child</span>
             </a>
@@ -206,218 +217,235 @@
         {% endif %}
     </div>
 </div>
-
-    <!-- Modern Active Timeline Section -->
-    <div class="bg-white border-2 border-primary shadow-lg mx-3 sm:mx-0">
-        <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h2 class="text-lg sm:text-2xl font-normal text-gray-900 tracking-wide">Timeline</h2>
-                </div>
-                {% if children %}
-                <div>
-                    <a href="{% url 'add_entry' %}" 
-                       class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center"
-                       title="Add Entry">
-                        <i class="fas fa-plus"></i>
-                    </a>
-                </div>
-                {% endif %}
+    </div>
+    
+    <!-- Right Column: Timeline Section - Expands to fill remaining space -->
+    <div class="w-full md:flex-1">
+        <!-- Modern Active Timeline Section -->
+        <div class="bg-white border-2 border-primary shadow-lg">
+    <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <h2 class="text-lg sm:text-2xl font-normal text-gray-900 tracking-wide">Timeline</h2>
             </div>
-            
-            <!-- Modern Filter Toggle Buttons -->
-            <div class="flex flex-wrap gap-1 sm:gap-2 mt-3">
-                <button onclick="toggleEntryType('note')" id="filter-note" 
-                        class="filter-btn active bg-green-600 hover:bg-green-700 text-white px-3 py-1 sm:px-6 sm:py-2 text-xs sm:text-sm font-normal transition-all duration-200 tracking-wide border-2 sm:border-4 border-green-800 hover:shadow-md">
-                    Notes
-                </button>
-                <button onclick="toggleEntryType('task')" id="filter-task" 
-                        class="filter-btn active bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 sm:px-6 sm:py-2 text-xs sm:text-sm font-normal transition-all duration-200 tracking-wide border-2 sm:border-4 border-amber-800 hover:shadow-md">
-                    Tasks
-                </button>
-                <button onclick="toggleEntryType('event')" id="filter-event" 
-                        class="filter-btn active bg-violet-600 hover:bg-violet-700 text-white px-3 py-1 sm:px-6 sm:py-2 text-xs sm:text-sm font-normal transition-all duration-200 tracking-wide border-2 sm:border-4 border-violet-800 hover:shadow-md">
-                    Events
-                </button>
+            {% if children %}
+            <div>
+                <a href="{% url 'add_entry' %}"
+                    class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center"
+                    title="Add Entry">
+                    <i class="fas fa-plus"></i>
+                </a>
             </div>
+            {% endif %}
         </div>
 
-        <div class="p-3 sm:p-6 space-y-2 sm:space-y-4">
-            {% if active_entries %}
-                    {% for entry in active_entries|slice:":10" %}
-                    <!-- Expandable Entry Card -->
-                    <div class="bg-white border border-gray-300 border-l-4 sm:border-l-8 border-t-2 sm:border-t-4 hover:shadow-lg transition-all duration-300 entry-card relative cursor-pointer
-                         {% if entry.entry_type == 'note' %}border-t-green-600
-                         {% elif entry.entry_type == 'task' %}border-t-amber-600
-                         {% elif entry.entry_type == 'event' %}border-t-violet-600{% endif %}" 
-                         data-entry-type="{{ entry.entry_type }}" 
-                         style="border-left-color: {{ entry.child.colour }};"
-                         onclick="toggleEntryDetails({{ entry.id }})">
-                        
-                        <!-- Compact Entry Type Tag - Top Left Corner -->
-                        <div class="absolute top-0 left-0 text-xs font-normal px-1 py-0.5 tracking-wider
+        <!-- Modern Filter Toggle Buttons -->
+        <div class="flex gap-1 sm:gap-2 mt-3">
+            <button onclick="toggleEntryType('note')" id="filter-note"
+                class="filter-btn active bg-green-600 hover:bg-green-700 text-white flex-1 py-1 sm:py-2 text-xs sm:text-sm font-normal transition-all duration-200 tracking-wide border-2 sm:border-4 border-green-800 hover:shadow-md">
+                Notes
+            </button>
+            <button onclick="toggleEntryType('task')" id="filter-task"
+                class="filter-btn active bg-amber-600 hover:bg-amber-700 text-white flex-1 py-1 sm:py-2 text-xs sm:text-sm font-normal transition-all duration-200 tracking-wide border-2 sm:border-4 border-amber-800 hover:shadow-md">
+                Tasks
+            </button>
+            <button onclick="toggleEntryType('event')" id="filter-event"
+                class="filter-btn active bg-violet-600 hover:bg-violet-700 text-white flex-1 py-1 sm:py-2 text-xs sm:text-sm font-normal transition-all duration-200 tracking-wide border-2 sm:border-4 border-violet-800 hover:shadow-md">
+                Events
+            </button>
+        </div>
+    </div>
+
+    <div class="p-3 sm:p-6 space-y-2 sm:space-y-4">
+        {% if active_entries %}
+        {% for entry in active_entries|slice:":10" %}
+        <!-- Expandable Entry Card -->
+        <div class="bg-white border border-gray-300 border-l-4 sm:border-l-8 border-t-2 sm:border-t-4 hover:shadow-lg transition-all duration-300 entry-card relative cursor-pointer
+                        {% if entry.entry_type == 'note' %}border-t-green-600
+                        {% elif entry.entry_type == 'task' %}border-t-amber-600
+                        {% elif entry.entry_type == 'event' %}border-t-violet-600{% endif %}"
+            data-entry-type="{{ entry.entry_type }}" style="border-left-color: {{ entry.child.colour }};"
+            onclick="toggleEntryDetails({{ entry.id }})">
+
+            <!-- Compact Entry Type Tag - Top Left Corner -->
+            <div class="absolute top-0 left-0 text-xs font-normal px-1 py-0.5 tracking-wider
                             {% if entry.entry_type == 'note' %}bg-green-100 text-green-800
                             {% elif entry.entry_type == 'task' %}bg-amber-100 text-amber-800
                             {% elif entry.entry_type == 'event' %}bg-violet-100 text-violet-800{% endif %}">
-                            {% if entry.entry_type == 'note' %}NOTE
-                            {% elif entry.entry_type == 'task' %}TASK
-                            {% elif entry.entry_type == 'event' %}EVENT{% endif %}
+                {% if entry.entry_type == 'note' %}NOTE
+                {% elif entry.entry_type == 'task' %}TASK
+                {% elif entry.entry_type == 'event' %}EVENT{% endif %}
+            </div>
+
+            <!-- Expand/Collapse Indicator -->
+            <div class="absolute top-1 right-1 sm:top-2 sm:right-2 text-gray-400 text-xs sm:text-sm transition-transform duration-200"
+                id="toggle-icon-{{ entry.id }}">
+                ▼
+            </div>
+
+            <!-- Main Card Content (Always Visible) -->
+            <div class="p-2 sm:p-3 pt-4 sm:pt-6">
+                <!-- Compact Header -->
+                <div class="mb-2">
+                    <h3 class="text-base sm:text-lg font-normal text-gray-900 mb-1 tracking-wide pr-6">{{ entry.title }}
+                    </h3>
+                    <div class="flex items-center space-x-2 text-xs">
+                        <span class="font-normal tracking-wide" style="color: {{ entry.child.colour }};">{{ entry.child.name }}</span>
+
+                        <!-- Essential Date/Time (Compact) -->
+                        {% if entry.entry_type == 'task' and entry.due_date %}
+                        <span class="text-gray-400">•</span>
+                        <span class="text-amber-700 font-normal">
+                            📅 {{ entry.due_date|date:"M j, g:i A" }}
+                        </span>
+                        {% elif entry.entry_type == 'event' and entry.start_time %}
+                        <span class="text-gray-400">•</span>
+                        <span class="text-violet-700 font-normal">
+                            🕒 {{ entry.start_time|date:"M j, g:i A" }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Expandable Details Section -->
+                <div id="entry-details-{{ entry.id }}"
+                    class="hidden transition-all duration-300 ease-in-out border-t border-gray-200 pt-3 mt-3">
+                    <!-- Full Date/Time Information -->
+                    <div class="mb-3">
+                        {% if entry.entry_type == 'task' and entry.due_date %}
+                        <div class="text-sm text-amber-700 font-normal mb-2 tracking-wider">
+                            📅 Due: {{ entry.due_date|date:"D jS M Y \a\t g:i A" }}
                         </div>
-
-                        <!-- Expand/Collapse Indicator -->
-                        <div class="absolute top-1 right-1 sm:top-2 sm:right-2 text-gray-400 text-xs sm:text-sm transition-transform duration-200" id="toggle-icon-{{ entry.id }}">
-                            ▼
+                        {% elif entry.entry_type == 'event' and entry.start_time %}
+                        <div class="text-sm text-violet-700 font-normal mb-2 tracking-wider">
+                            🕒 {{ entry.start_time|date:"D jS M Y \a\t g:i A" }}
+                            {% if entry.end_time %} - {{ entry.end_time|date:"g:i A" }}{% endif %}
+                            {% if entry.location %}
+                            <br>📍 {{ entry.location }}
+                            {% endif %}
                         </div>
+                        {% endif %}
+                    </div>
 
-                        <!-- Main Card Content (Always Visible) -->
-                        <div class="p-2 sm:p-3 pt-4 sm:pt-6">
-                            <!-- Compact Header -->
-                            <div class="mb-2">
-                                <h3 class="text-base sm:text-lg font-normal text-gray-900 mb-1 tracking-wide pr-6">{{ entry.title }}</h3>
-                                <div class="flex items-center space-x-2 text-xs">
-                                    <span class="font-normal tracking-wide" style="color: {{ entry.child.colour }};">{{ entry.child.name }}</span>
-                                    
-                                    <!-- Essential Date/Time (Compact) -->
-                                    {% if entry.entry_type == 'task' and entry.due_date %}
-                                    <span class="text-gray-400">•</span>
-                                    <span class="text-amber-700 font-normal">
-                                        📅 {{ entry.due_date|date:"M j, g:i A" }}
-                                    </span>
-                                    {% elif entry.entry_type == 'event' and entry.start_time %}
-                                    <span class="text-gray-400">•</span>
-                                    <span class="text-violet-700 font-normal">
-                                        🕒 {{ entry.start_time|date:"M j, g:i A" }}
-                                    </span>
-                                    {% endif %}
-                                </div>
-                            </div>
+                    <!-- Additional Information -->
+                    <div class="space-y-2 mb-3">
+                        {% if entry.category and entry.category != 'none' %}
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-gray-500">Category:</span>
+                            <span
+                                class="bg-gray-100 text-gray-700 px-2 py-1 text-xs font-normal tracking-wider border rounded-sm">{{
+                                entry.get_category_display }}</span>
+                        </div>
+                        {% endif %}
 
-                            <!-- Expandable Details Section -->
-                            <div id="entry-details-{{ entry.id }}" class="hidden transition-all duration-300 ease-in-out border-t border-gray-200 pt-3 mt-3">
-                                <!-- Full Date/Time Information -->
-                                <div class="mb-3">
-                                    {% if entry.entry_type == 'task' and entry.due_date %}
-                                    <div class="text-sm text-amber-700 font-normal mb-2 tracking-wider">
-                                        📅 Due: {{ entry.due_date|date:"D jS M Y \a\t g:i A" }}
-                                    </div>
-                                    {% elif entry.entry_type == 'event' and entry.start_time %}
-                                    <div class="text-sm text-violet-700 font-normal mb-2 tracking-wider">
-                                        🕒 {{ entry.start_time|date:"D jS M Y \a\t g:i A" }}
-                                        {% if entry.end_time %} - {{ entry.end_time|date:"g:i A" }}{% endif %}
-                                        {% if entry.location %}
-                                        <br>📍 {{ entry.location }}
-                                        {% endif %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <!-- Additional Information -->
-                                <div class="space-y-2 mb-3">
-                                    {% if entry.category and entry.category != 'none' %}
-                                    <div class="flex items-center space-x-2">
-                                        <span class="text-xs text-gray-500">Category:</span>
-                                        <span class="bg-gray-100 text-gray-700 px-2 py-1 text-xs font-normal tracking-wider border rounded-sm">{{ entry.get_category_display }}</span>
-                                    </div>
-                                    {% endif %}
-                                    
-                                    {% if entry.priority and entry.entry_type == 'task' %}
-                                    <div class="flex items-center space-x-2">
-                                        <span class="text-xs text-gray-500">Priority:</span>
-                                        <span class="text-xs font-normal px-2 py-1 tracking-wider border rounded-sm
+                        {% if entry.priority and entry.entry_type == 'task' %}
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-gray-500">Priority:</span>
+                            <span class="text-xs font-normal px-2 py-1 tracking-wider border rounded-sm
                                             {% if entry.priority == 'high' %}bg-red-100 text-red-800 border-red-600
                                             {% elif entry.priority == 'medium' %}bg-yellow-100 text-yellow-800 border-yellow-600
                                             {% else %}bg-gray-100 text-gray-800 border-gray-600{% endif %}">
-                                            {{ entry.get_priority_display }}
-                                        </span>
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <!-- Description -->
-                                {% if entry.description %}
-                                <div class="mb-3">
-                                    <p class="text-sm text-gray-700 font-medium leading-relaxed">{{ entry.description }}</p>
-                                </div>
-                                {% endif %}
-
-                                <!-- Metadata -->
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-500 mb-3">
-                                    <div><strong class="font-normal">Created:</strong> {{ entry.created_at|date:"M j, Y g:i A" }}</div>
-                                    {% if entry.updated_at != entry.created_at %}
-                                    <div><strong class="font-normal">Updated:</strong> {{ entry.updated_at|date:"M j, Y g:i A" }}</div>
-                                    {% endif %}
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div class="flex flex-wrap gap-2 pt-2 border-t border-gray-100">
-                                    <!-- Completion Checkbox -->
-                                    {% if entry.entry_type == 'task' %}
-                                    <div class="flex items-center mr-3">
-                                        <input type="checkbox" id="complete-{{ entry.id }}" 
-                                               {% if entry.is_completed %}checked{% endif %}
-                                               onchange="event.stopPropagation(); toggleCompletion({{ entry.id }})"
-                                               class="w-4 h-4 text-green-600 bg-gray-100 border border-gray-400 focus:ring-green-500">
-                                        <label for="complete-{{ entry.id }}" class="ml-1 text-xs text-gray-700 cursor-pointer font-normal tracking-wide">
-                                            {% if entry.is_completed %}Done{% else %}To Do{% endif %}
-                                        </label>
-                                    </div>
-                                    {% endif %}
-
-                                    <!-- Quick Actions -->
-                                    <a href="{% url 'edit_entry' entry.id %}" 
-                                       onclick="event.stopPropagation()"
-                                       class="bg-green-600 hover:bg-green-700 text-white text-xs font-normal py-1 px-2 text-center transition-all duration-200 tracking-wide border border-green-800 hover:shadow-md rounded-sm"
-                                       title="Edit Entry">
-                                        <i class="fas fa-pencil-alt"></i>
-                                    </a>
-                                    
-                                    <form method="post" action="{% url 'quick_delete_entry' entry.id %}" style="display: inline-block;" 
-                                          onsubmit="event.stopPropagation(); return confirm('Delete \'{{ entry.title }}\'?')">
-                                        {% csrf_token %}
-                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-xs font-normal py-1 px-2 transition-all duration-200 tracking-wide border border-red-800 hover:shadow-md rounded-sm"
-                                                title="Delete Entry">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
+                                {{ entry.get_priority_display }}
+                            </span>
                         </div>
+                        {% endif %}
                     </div>
-                    {% endfor %}
 
-                <!-- Show More Section -->
-                {% if active_entries|length > 10 %}
-                <div class="text-center py-3 sm:py-6 border-t-2 border-primary">
-                    <p class="text-gray-600 mb-2 sm:mb-4 font-medium text-sm sm:text-base">Showing first 10 entries</p>
-                    {% if children %}
-                    <a href="{% url 'add_entry' %}" class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 sm:py-3 sm:px-6 border border-green-800 transition-all duration-200 tracking-wide hover:shadow-lg text-sm sm:text-base">
-                        Add New Entry
-                    </a>
-                    {% endif %}
-                </div>
-                {% endif %}
-                {% else %}
-                <div class="text-center py-6 sm:py-12">
-                    <div class="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-6 bg-gray-100 border-2 border-primary flex items-center justify-center">
-                        <div class="w-8 h-8 sm:w-12 sm:h-12 bg-primary border-2 border-primary"></div>
+                    <!-- Description -->
+                    {% if entry.description %}
+                    <div class="mb-3">
+                        <p class="text-sm text-gray-700 font-medium leading-relaxed">{{ entry.description }}</p>
                     </div>
-                    <h3 class="text-lg sm:text-2xl font-normal text-gray-900 tracking-wide mb-2 sm:mb-3">No entries yet</h3>
-                    {% if children %}
-                    <p class="text-gray-600 font-medium mb-3 sm:mb-6 max-w-md mx-auto text-sm sm:text-base">Start by adding notes, tasks, or events for your children</p>
-                    <a href="{% url 'add_entry' %}" class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 sm:py-3 sm:px-6 border border-green-800 transition-all duration-200 tracking-wide hover:shadow-lg text-sm sm:text-base">
-                        Add First Entry
-                    </a>
-                    {% else %}
-                    <p class="text-gray-600 font-medium mb-3 sm:mb-6 max-w-md mx-auto text-sm sm:text-base">Add a child profile first, then you can start creating entries</p>
-                    <a href="{% url 'add_child' %}" class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 sm:py-3 sm:px-6 border border-green-800 transition-all duration-200 tracking-wide hover:shadow-lg text-sm sm:text-base">
-                        Add Child Profile
-                    </a>
                     {% endif %}
+
+                    <!-- Metadata -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-500 mb-3">
+                        <div><strong class="font-normal">Created:</strong> {{ entry.created_at|date:"M j, Y g:i A" }}
+                        </div>
+                        {% if entry.updated_at != entry.created_at %}
+                        <div><strong class="font-normal">Updated:</strong> {{ entry.updated_at|date:"M j, Y g:i A" }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-2 pt-2 border-t border-gray-100">
+                        <!-- Completion Checkbox -->
+                        {% if entry.entry_type == 'task' %}
+                        <div class="flex items-center mr-3">
+                            <input type="checkbox" id="complete-{{ entry.id }}" {% if entry.is_completed %}checked{% endif %} onchange="event.stopPropagation(); toggleCompletion({{ entry.id }})"
+                                class="w-4 h-4 text-green-600 bg-gray-100 border border-gray-400 focus:ring-green-500">
+                            <label for="complete-{{ entry.id }}"
+                                class="ml-1 text-xs text-gray-700 cursor-pointer font-normal tracking-wide">
+                                {% if entry.is_completed %}Done{% else %}To Do{% endif %}
+                            </label>
+                        </div>
+                        {% endif %}
+
+                        <!-- Quick Actions -->
+                        <a href="{% url 'edit_entry' entry.id %}" onclick="event.stopPropagation()"
+                            class="bg-green-600 hover:bg-green-700 text-white text-xs font-normal py-1 px-2 text-center transition-all duration-200 tracking-wide border border-green-800 hover:shadow-md rounded-sm"
+                            title="Edit Entry">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+
+                        <form method="post" action="{% url 'quick_delete_entry' entry.id %}"
+                            style="display: inline-block;"
+                            onsubmit="event.stopPropagation(); return confirm('Delete \'{{ entry.title }}\'?')">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="bg-red-600 hover:bg-red-700 text-white text-xs font-normal py-1 px-2 transition-all duration-200 tracking-wide border border-red-800 hover:shadow-md rounded-sm"
+                                title="Delete Entry">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                {% endif %}
+            </div>
         </div>
-    </div>
-</div>
+        {% endfor %}
 
+        <!-- Show More Section -->
+        {% if active_entries|length > 10 %}
+        <div class="text-center py-3 sm:py-6 border-t-2 border-primary">
+            <p class="text-gray-600 mb-2 sm:mb-4 font-medium text-sm sm:text-base">Showing first 10 entries</p>
+            {% if children %}
+            <a href="{% url 'add_entry' %}"
+                class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 sm:py-3 sm:px-6 border border-green-800 transition-all duration-200 tracking-wide hover:shadow-lg text-sm sm:text-base">
+                Add New Entry
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-6 sm:py-12">
+            <div
+                class="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-6 bg-gray-100 border-2 border-primary flex items-center justify-center">
+                <div class="w-8 h-8 sm:w-12 sm:h-12 bg-primary border-2 border-primary"></div>
+            </div>
+            <h3 class="text-lg sm:text-2xl font-normal text-gray-900 tracking-wide mb-2 sm:mb-3">No entries yet</h3>
+            {% if children %}
+            <p class="text-gray-600 font-medium mb-3 sm:mb-6 max-w-md mx-auto text-sm sm:text-base">Start by adding
+                notes, tasks, or events for your children</p>
+            <a href="{% url 'add_entry' %}"
+                class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 sm:py-3 sm:px-6 border border-green-800 transition-all duration-200 tracking-wide hover:shadow-lg text-sm sm:text-base">
+                Add First Entry
+            </a>
+            {% else %}
+            <p class="text-gray-600 font-medium mb-3 sm:mb-6 max-w-md mx-auto text-sm sm:text-base">Add a child profile
+                first, then you can start creating entries</p>
+            <a href="{% url 'add_child' %}"
+                class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 sm:py-3 sm:px-6 border border-green-800 transition-all duration-200 tracking-wide hover:shadow-lg text-sm sm:text-base">
+                Add Child Profile
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    </div>
+    <!-- End Right Column: Timeline Section -->
 </div>
+<!-- End Two-column layout wrapper -->
+
 {% endblock %}
