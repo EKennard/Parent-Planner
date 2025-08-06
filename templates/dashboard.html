@@ -210,7 +210,7 @@
                             <!-- Action Panel (Right Side) -->
                             <div class="flex flex-col items-center space-y-2 min-w-[120px]">
                                 <!-- Completion Checkbox -->
-                                {% if entry.entry_type == 'task' or entry.entry_type == 'event' %}
+                                {% if entry.entry_type == 'task' %}
                                 <div class="flex items-center mb-2">
                                     <input type="checkbox" id="complete-{{ entry.id }}" 
                                            {% if entry.is_completed %}checked{% endif %}
