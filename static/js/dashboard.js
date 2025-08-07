@@ -5,6 +5,51 @@
 
 console.log('Dashboard.js loaded successfully');
 
+// Immediately define global functions to prevent "not defined" errors
+window.toggleEntryDetails = function(entryId) {
+    console.log('toggleEntryDetails called with entryId:', entryId);
+    
+    // Check if DashboardUtils exists, if not wait for it
+    if (!window.DashboardUtils) {
+        console.log('DashboardUtils not ready, waiting...');
+        // Retry after a short delay
+        setTimeout(() => {
+            if (window.DashboardUtils) {
+                window.DashboardUtils.toggleEntryDetails(entryId);
+            } else {
+                console.error('DashboardUtils still not available!');
+            }
+        }, 100);
+        return;
+    }
+    
+    window.DashboardUtils.toggleEntryDetails(entryId);
+};
+
+window.toggleDetails = function(detailsId) {
+    if (window.DashboardUtils) {
+        window.DashboardUtils.toggleDetails(detailsId);
+    }
+};
+
+window.toggleCompletion = function(entryId) {
+    if (window.DashboardUtils) {
+        window.DashboardUtils.toggleCompletion(entryId);
+    }
+};
+
+window.confirmDelete = function(entryTitle, deleteUrl) {
+    if (window.DashboardUtils) {
+        window.DashboardUtils.confirmDelete(entryTitle, deleteUrl);
+    }
+};
+
+window.toggleEntryType = function(entryType) {
+    if (window.DashboardUtils) {
+        window.DashboardUtils.toggleEntryType(entryType);
+    }
+};
+
 // Global dashboard utilities
 window.DashboardUtils = {
     // Entry filtering system
@@ -241,37 +286,19 @@ window.DashboardUtils = {
     }
 };
 
-// Export functions to global scope for compatibility with existing HTML onclick attributes
-window.toggleEntryDetails = function(entryId) {
-    console.log('toggleEntryDetails called with entryId:', entryId);
-    
-    // Check if DashboardUtils exists
-    if (!window.DashboardUtils) {
-        console.error('DashboardUtils not found!');
-        return;
-    }
-    
-    window.DashboardUtils.toggleEntryDetails(entryId);
-};
-
-window.toggleDetails = function(detailsId) {
-    window.DashboardUtils.toggleDetails(detailsId);
-};
-
-window.toggleCompletion = function(entryId) {
-    window.DashboardUtils.toggleCompletion(entryId);
-};
-
-window.confirmDelete = function(entryTitle, deleteUrl) {
-    window.DashboardUtils.confirmDelete(entryTitle, deleteUrl);
-};
-
-window.toggleEntryType = function(entryType) {
-    window.DashboardUtils.toggleEntryType(entryType);
-};
-
-// Initialize on page load
+// Initialize on page load with multiple fallbacks
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOMContentLoaded event fired, initializing dashboard...');
     window.DashboardUtils.initialize();
 });
+
+// Also ensure it runs if DOM is already loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded event fired, initializing dashboard...');
+        window.DashboardUtils.initialize();
+    });
+} else {
+    console.log('DOM already loaded, initializing dashboard immediately...');
+    window.DashboardUtils.initialize();
+}

@@ -5,7 +5,18 @@
 {% block extra_head %}
 <!-- Dashboard-specific JavaScript -->
 {% load static %}
-<script src="{% static 'js/dashboard.js' %}" defer></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+    // Ensure functions are available immediately after script loads
+    console.log('Dashboard template script running...');
+    
+    // Double-check that our functions are available
+    if (typeof toggleEntryDetails === 'undefined') {
+        console.error('toggleEntryDetails not defined - script loading issue!');
+    } else {
+        console.log('toggleEntryDetails is available');
+    }
+</script>
 <style>
     /* Expandable card animations */
     .entry-card {
