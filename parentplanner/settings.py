@@ -144,9 +144,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Static files configuration for Heroku
+if 'DATABASE_URL' in os.environ:  # This means we're on Heroku
+    # Use whitenoise for static files
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    # Force collection of static files
+    COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -175,6 +182,16 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Keep this for compatibility
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
+
+# Disable default allauth messages
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'
+ACCOUNT_LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+# Disable specific messages
+ACCOUNT_SESSION_REMEMBER = None
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # CSRF and Security Settings for Production
 import os

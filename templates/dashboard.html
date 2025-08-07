@@ -7,15 +7,96 @@
 {% load static %}
 <script src="{% static 'js/dashboard.js' %}"></script>
 <script>
-    // Ensure functions are available immediately after script loads
+    // Fallback JavaScript embedded in template for Heroku reliability
     console.log('Dashboard template script running...');
+    
+    // Define critical functions inline as fallback
+    if (typeof window.toggleEntryDetails === 'undefined') {
+        console.log('Creating fallback toggleEntryDetails function');
+        
+        window.toggleEntryDetails = function(entryId) {
+            console.log('Fallback toggleEntryDetails called with:', entryId);
+            
+            const detailsSection = document.getElementById('entry-details-' + entryId);
+            const toggleIcon = document.getElementById('toggle-icon-' + entryId);
+            
+            if (!detailsSection || !toggleIcon) {
+                console.error('Could not find elements for entry:', entryId);
+                return;
+            }
+            
+            if (detailsSection.classList.contains('hidden')) {
+                // Expand the card
+                detailsSection.classList.remove('hidden');
+                toggleIcon.style.transform = 'rotate(180deg)';
+                toggleIcon.textContent = '▲';
+            } else {
+                // Collapse the card
+                detailsSection.classList.add('hidden');
+                toggleIcon.style.transform = 'rotate(0deg)';
+                toggleIcon.textContent = '▼';
+            }
+        };
+        
+        window.toggleEntryType = function(entryType) {
+            console.log('Fallback toggleEntryType called with:', entryType);
+            // Basic filter functionality
+            const entries = document.querySelectorAll('.entry-card[data-entry-type="' + entryType + '"]');
+            const button = document.getElementById('filter-' + entryType);
+            
+            if (!button) return;
+            
+            const isActive = button.classList.contains('border-4');
+            
+            if (isActive) {
+                // Hide entries
+                entries.forEach(entry => entry.style.display = 'none');
+                button.classList.remove('border-4');
+                button.classList.add('border');
+            } else {
+                // Show entries  
+                entries.forEach(entry => entry.style.display = 'block');
+                button.classList.remove('border');
+                button.classList.add('border-4');
+            }
+        };
+        
+        window.toggleCompletion = function(entryId) {
+            console.log('Fallback toggleCompletion called with:', entryId);
+            const checkbox = document.getElementById('complete-' + entryId);
+            if (checkbox) {
+                // Basic toggle without AJAX fallback
+                const label = checkbox.nextElementSibling;
+                if (label) {
+                    label.textContent = checkbox.checked ? 'Done' : 'To Do';
+                }
+            }
+        };
+    }
     
     // Double-check that our functions are available
     if (typeof toggleEntryDetails === 'undefined') {
-        console.error('toggleEntryDetails not defined - script loading issue!');
+        console.error('toggleEntryDetails STILL not defined - serious issue!');
     } else {
         console.log('toggleEntryDetails is available');
     }
+    
+    // Ensure initialization happens
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, ensuring filter buttons are initialized...');
+        
+        // Initialize filter buttons
+        const filterButtons = ['filter-note', 'filter-task', 'filter-event'];
+        filterButtons.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn && !btn.classList.contains('border-4')) {
+                btn.classList.add('border-4');
+                if (id === 'filter-note') btn.classList.add('border-green-800');
+                if (id === 'filter-task') btn.classList.add('border-amber-800');
+                if (id === 'filter-event') btn.classList.add('border-violet-800');
+            }
+        });
+    });
 </script>
 <style>
     /* Expandable card animations */
@@ -81,12 +162,15 @@
 {% if messages %}
 <div class="mb-3 sm:mb-6 px-3 sm:px-0">
     {% for message in messages %}
+    {# Filter out unwanted allauth messages #}
+    {% if "Successfully signed in" not in message|stringformat:"s" and "You have signed out" not in message|stringformat:"s" %}
     <div
         class="border-l-4 p-2 sm:p-4 mb-2 sm:mb-4 text-sm sm:text-base {% if message.tags == 'success' %}bg-green-50 border-green-500 text-green-800{% elif message.tags == 'error' %}bg-red-50 border-red-500 text-red-800{% else %}bg-blue-50 border-blue-500 text-blue-800{% endif %}">
         <div class="flex items-center">
             <span class="font-medium">{{ message }}</span>
         </div>
     </div>
+    {% endif %}
     {% endfor %}
 </div>
 {% endif %}
