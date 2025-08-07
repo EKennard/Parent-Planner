@@ -41,8 +41,21 @@ def dashboard(request):
     children = Child.objects.filter(parent=parent)
     all_entries = Entry.objects.filter(child__parent=parent).defer('is_completed')
     
+    # Handle note form submission
+    if request.method == 'POST' and 'add_note' in request.POST:
+        note_form = noteForm(request.POST, parent=parent)
+        if note_form.is_valid():
+            note = note_form.save()
+            messages.success(request, 'Note added successfully!')
+            return redirect('dashboard')
+    else:
+        note_form = noteForm(parent=parent)
+    
     # Exclude notes from the main timeline
     active_entries = all_entries.exclude(entry_type='note').order_by('-created_at')
+    
+    # Get notes separately for the notes section
+    notes = all_entries.filter(entry_type='note').order_by('-created_at')
     
     # Calculate counts
     total_entries = all_entries.count()
@@ -58,6 +71,8 @@ def dashboard(request):
         'notes_count': notes_count,
         'tasks_count': tasks_count,
         'events_count': events_count,
+        'note_form': note_form,
+        'notes': notes,
     }
     return render(request, 'dashboard.html', context)
 

@@ -8,7 +8,7 @@
         <!-- Modern Header -->
         <div class="bg-white border-2 border-primary shadow-lg mb-4 sm:mb-8">
             <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
-                <h1 class="text-xl sm:text-2xl md:text-3xl font-normal text-gray-900 tracking-wide">Edit Entry: {{ entry.title }}</h1>
+                <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-gray-900 tracking-wide responsive-text-2xl">Edit Entry: {{ entry.title }}</h1>
                 <p class="text-gray-600 font-medium mt-1 sm:mt-2 text-sm sm:text-base">Child: {{ entry.child.name }}</p>
             </div>
         </div>
@@ -75,7 +75,7 @@
 
                 <!-- Task-specific fields -->
                 <div id="taskFields" class="space-y-3 sm:space-y-6 border-t-2 border-primary pt-3 sm:pt-6">
-                    <h3 class="text-lg sm:text-xl font-normal text-amber-600 tracking-wide">Task Details</h3>
+                    <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-amber-600 tracking-wide responsive-text-2xl">Task Details</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
                         <div>
                             <label for="{{ form.priority.id_for_label }}" class="block text-xs sm:text-sm font-normal text-gray-700 mb-1 sm:mb-2 tracking-wide">{{ form.priority.label }}</label>
@@ -102,7 +102,7 @@
 
                 <!-- Event-specific fields -->
                 <div id="eventFields" class="space-y-3 sm:space-y-6 border-t-2 border-primary pt-3 sm:pt-6">
-                    <h3 class="text-lg sm:text-xl font-normal text-violet-600 tracking-wide">Event Details</h3>
+                    <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-violet-600 tracking-wide responsive-text-2xl">Event Details</h3>
                     
                     <!-- Event Date -->
                     <div>

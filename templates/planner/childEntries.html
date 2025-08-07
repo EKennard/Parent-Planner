@@ -25,7 +25,7 @@
                                 {{ child.name|first|upper }}
                             </div>
                             <div>
-                                <h1 class="text-lg font-normal text-gray-900 tracking-wide">{{ child.name }}'s Entries</h1>
+                                <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-gray-900 tracking-wide responsive-text-2xl">{{ child.name }}'s Entries</h1>
                                 <p class="text-gray-600 font-medium text-xs">{{ entries.count }} tasks/events, {{ notes.count }} notes</p>
                             </div>
                         </div>
@@ -41,9 +41,9 @@
                 <div class="flex space-x-4 h-full" style="width: 200%;">
                     <!-- Timeline Section (50% of container width) -->
                     <div class="w-1/2 bg-white border-2 border-primary shadow-lg h-full flex flex-col">
-                        <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 flex-shrink-0">
+                        <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0">
                             <div class="mb-2">
-                                <h3 class="text-lg font-normal text-gray-900 tracking-wide">Tasks & Events</h3>
+                                <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-gray-900 tracking-wide">Tasks & Events</h3>
                             </div>
                             <div class="flex items-center justify-between">
                                 <nav class="flex gap-1">
@@ -213,7 +213,7 @@
                     <div class="w-1/2 bg-white border-2 border-primary shadow-lg h-full flex flex-col">
                         <div class="border-b-2 border-primary bg-green-50 px-3 py-2 flex-shrink-0">
                             <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-normal text-green-700 tracking-wide flex items-center">
+                                <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-green-700 tracking-wide flex items-center">
                                     <i class="fas fa-sticky-note mr-2"></i>
                                     Notes
                                 </h3>
@@ -317,8 +317,8 @@
             <!-- Left Column: Child Info (narrow sidebar) -->
             <div class="md:col-span-2 lg:col-span-2 xl:col-span-2 h-full">
                 <div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
-                    <div class="border-b-2 border-primary bg-gray-50 px-4 py-3">
-                        <h2 class="text-lg font-normal text-gray-900 tracking-wide">Child Profile</h2>
+                    <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
+                        <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-gray-900 tracking-wide responsive-text-2xl">Child Profile</h2>
                     </div>
                     <div class="p-4">
                         <div class="text-center mb-4">
@@ -367,9 +367,9 @@
             <!-- Middle Column: Timeline -->
             <div class="md:col-span-6 lg:col-span-6 xl:col-span-6 h-full">
                 <div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
-                    <div class="border-b-2 border-primary bg-gray-50 px-4 py-3 flex-shrink-0">
+                    <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0">
                         <div class="mb-2">
-                            <h3 class="text-xl font-normal text-gray-900 tracking-wide">Tasks & Events</h3>
+                            <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-gray-900 tracking-wide">Tasks & Events</h3>
                         </div>
                         <div class="flex items-center justify-between">
                             <nav class="flex gap-2">
@@ -539,9 +539,9 @@
             <!-- Right Column: Notes (wider sidebar) -->
             <div class="md:col-span-4 lg:col-span-4 xl:col-span-4 h-full">
                 <div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
-                    <div class="border-b-2 border-primary bg-green-50 px-4 py-3 flex-shrink-0">
+                    <div class="border-b-2 border-primary bg-green-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-normal text-green-700 tracking-wide flex items-center">
+                            <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-normal text-green-700 tracking-wide flex items-center responsive-text-2xl">
                                 <i class="fas fa-sticky-note mr-2"></i>
                                 Notes
                             </h3>
