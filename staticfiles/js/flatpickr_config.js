@@ -61,7 +61,7 @@ window.FlatpickrUtils = {
     },
 
     /**
-     * Common Flatpickr configuration object
+     * Common Flatpickr configuration object for datetime inputs
      * Provides consistent settings across all datetime inputs
      */
     getDefaultConfig: function() {
@@ -69,9 +69,25 @@ window.FlatpickrUtils = {
             enableTime: true,
             dateFormat: "Y-m-d H:i:S",
             altInput: true,
-            altFormat: "d-m-Y at H:i",
+            altFormat: "d-m-Y H:i",
             time_24hr: false,
             minuteIncrement: 15,
+            onReady: this.applyCustomFlatpickrStyles,
+            onOpen: this.applyCustomFlatpickrStyles,
+            onMonthChange: this.applyCustomFlatpickrStyles,
+            onYearChange: this.applyCustomFlatpickrStyles
+        };
+    },
+
+    /**
+     * Configuration for date-only inputs (no time)
+     */
+    getDateOnlyConfig: function() {
+        return {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d-m-Y",
             onReady: this.applyCustomFlatpickrStyles,
             onOpen: this.applyCustomFlatpickrStyles,
             onMonthChange: this.applyCustomFlatpickrStyles,
@@ -109,17 +125,23 @@ window.FlatpickrUtils = {
      */
     autoInitialize: function() {
         document.addEventListener('DOMContentLoaded', () => {
-            // Common datetime input selectors
-            const selectors = [
+            // DateTime input selectors
+            const datetimeSelectors = [
                 'input[type="datetime-local"]',
-                'input[name*="date"]',
-                'input[name*="time"]',
                 '#id_due_date',
                 '#id_start_time', 
                 '#id_end_time'
             ];
             
-            selectors.forEach(selector => {
+            // Date-only input selectors (these will not get Flatpickr - native HTML5 only)
+            const nativeDateSelectors = [
+                '#id_event_date',
+                '#id_task_due_date',
+                '#id_birth_date'  // Child birth date uses native HTML5 date picker
+            ];
+            
+            // Initialize datetime pickers
+            datetimeSelectors.forEach(selector => {
                 const inputs = document.querySelectorAll(selector);
                 inputs.forEach(input => {
                     // Skip if already initialized
@@ -128,6 +150,9 @@ window.FlatpickrUtils = {
                     this.initializeDatetimePicker(input);
                 });
             });
+            
+            // Initialize date-only pickers - REMOVED, letting them use native HTML5 date inputs
+            // The nativeDateSelectors above will use pure HTML5 date pickers with no Flatpickr
         });
     }
 };

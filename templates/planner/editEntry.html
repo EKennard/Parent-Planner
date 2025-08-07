@@ -3,7 +3,8 @@
 {% block title %}Edit Entry - {{ entry.title }}{% endblock %}
 
 {% block content %}
-    <div class="max-w-2xl mx-auto px-3 sm:px-4">
+<div class="px-3 sm:px-6 py-4 sm:py-6">
+    <div class="max-w-2xl mx-auto">
         <!-- Modern Header -->
         <div class="bg-white border-2 border-primary shadow-lg mb-4 sm:mb-8">
             <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
@@ -75,17 +76,25 @@
                 <!-- Task-specific fields -->
                 <div id="taskFields" class="space-y-3 sm:space-y-6 border-t-2 border-primary pt-3 sm:pt-6">
                     <h3 class="text-lg sm:text-xl font-normal text-amber-600 tracking-wide">Task Details</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
                         <div>
                             <label for="{{ form.priority.id_for_label }}" class="block text-xs sm:text-sm font-normal text-gray-700 mb-1 sm:mb-2 tracking-wide">{{ form.priority.label }}</label>
                             {{ form.priority }}
                         </div>
 
                         <div>
-                            <label for="{{ form.due_date.id_for_label }}" class="block text-xs sm:text-sm font-normal text-gray-700 mb-1 sm:mb-2 tracking-wide">{{ form.due_date.label }}</label>
-                            {{ form.due_date }}
-                            {% if form.due_date.help_text %}
-                                <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.due_date.help_text }}</p>
+                            <label for="{{ form.task_due_date.id_for_label }}" class="block text-xs sm:text-sm font-normal text-gray-700 mb-1 sm:mb-2 tracking-wide">Due Date</label>
+                            {{ form.task_due_date }}
+                            {% if form.task_due_date.help_text %}
+                                <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.task_due_date.help_text }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.task_due_time.id_for_label }}" class="block text-xs sm:text-sm font-normal text-gray-700 mb-1 sm:mb-2 tracking-wide">Due Time (Optional)</label>
+                            {{ form.task_due_time }}
+                            {% if form.task_due_time.help_text %}
+                                <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.task_due_time.help_text }}</p>
                             {% endif %}
                         </div>
                     </div>
@@ -94,20 +103,33 @@
                 <!-- Event-specific fields -->
                 <div id="eventFields" class="space-y-3 sm:space-y-6 border-t-2 border-primary pt-3 sm:pt-6">
                     <h3 class="text-lg sm:text-xl font-normal text-violet-600 tracking-wide">Event Details</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
+                    
+                    <!-- Event Date -->
+                    <div>
+                        <label for="{{ form.event_date.id_for_label }}" class="block text-xs sm:text-sm font-normal text-gray-700 mb-1 sm:mb-2 tracking-wide">Event Date</label>
+                        {{ form.event_date }}
+                        {% if form.event_date.help_text %}
+                            <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.event_date.help_text }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Event Times -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label for="{{ form.start_time.id_for_label }}" class="block text-xs sm:text-sm font-normal text-gray-700 mb-1 sm:mb-2 tracking-wide">{{ form.start_time.label }}</label>
-                            {{ form.start_time }}
-                            {% if form.start_time.help_text %}
-                                <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.start_time.help_text }}</p>
+                            <label for="{{ form.event_start_time.id_for_label }}" class="block text-xs sm:text-sm font-normal text-gray-700 mb-1 sm:mb-2 tracking-wide">Start Time (Optional)</label>
+                            {{ form.event_start_time }}
+                            {% if form.event_start_time.help_text %}
+                                <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.event_start_time.help_text }}</p>
                             {% endif %}
                         </div>
 
                         <div>
-                            <label for="{{ form.end_time.id_for_label }}" class="block text-xs sm:text-sm font-normal text-gray-700 mb-1 sm:mb-2 tracking-wide">{{ form.end_time.label }}</label>
-                            {{ form.end_time }}
-                            {% if form.end_time.help_text %}
-                                <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.end_time.help_text }}</p>
+                            <label for="{{ form.event_end_time.id_for_label }}" class="block text-xs sm:text-sm font-normal text-gray-700 mb-1 sm:mb-2 tracking-wide">
+                                <span class="text-gray-400 text-xs">to</span> End Time (Optional)
+                            </label>
+                            {{ form.event_end_time }}
+                            {% if form.event_end_time.help_text %}
+                                <p class="text-xs text-gray-500 mt-1 font-medium">{{ form.event_end_time.help_text }}</p>
                             {% endif %}
                         </div>
                     </div>
@@ -137,41 +159,58 @@
     <script>
         // Page-specific initialization for editEntry.html
         document.addEventListener('DOMContentLoaded', function () {
-            // Initialize datetime pickers using the global utility
-            const dueDateInput = document.getElementById('{{ form.due_date.id_for_label }}');
-            const startTimeInput = document.getElementById('{{ form.start_time.id_for_label }}');
-            const endTimeInput = document.getElementById('{{ form.end_time.id_for_label }}');
+            console.log('Edit Entry form initialized');
             
-            // Initialize datetime pickers with form-specific validation callbacks
-            if (dueDateInput) {
-                window.FlatpickrUtils.initializeDatetimePicker(dueDateInput, {
-                    onChange: function(selectedDates, dateStr, instance) {
-                        if (window.validateTaskDate) window.validateTaskDate();
-                    }
-                });
+            // Get entry type and show/hide appropriate fields on page load
+            const entryTypeField = document.getElementById('{{ form.entry_type.id_for_label }}');
+            const taskFields = document.getElementById('taskFields');
+            const eventFields = document.getElementById('eventFields');
+            
+            function toggleFields() {
+                const entryType = entryTypeField ? entryTypeField.value : '';
+                console.log('Entry type changed to:', entryType);
+                
+                if (entryType === 'task') {
+                    taskFields.style.display = 'block';
+                    eventFields.style.display = 'none';
+                } else if (entryType === 'event') {
+                    eventFields.style.display = 'block';
+                    taskFields.style.display = 'none';
+                } else {
+                    taskFields.style.display = 'none';
+                    eventFields.style.display = 'none';
+                }
             }
             
-            if (startTimeInput) {
-                window.FlatpickrUtils.initializeDatetimePicker(startTimeInput, {
-                    onChange: function(selectedDates, dateStr, instance) {
-                        if (window.updateEndTimeConstraint) window.updateEndTimeConstraint();
-                        if (window.validateEventTimes) window.validateEventTimes();
-                    }
-                });
+            // Initialize field visibility
+            toggleFields();
+            
+            // Listen for entry type changes
+            if (entryTypeField) {
+                entryTypeField.addEventListener('change', toggleFields);
             }
             
-            if (endTimeInput) {
-                window.FlatpickrUtils.initializeDatetimePicker(endTimeInput, {
-                    onChange: function(selectedDates, dateStr, instance) {
-                        if (window.validateEventTimes) window.validateEventTimes();
+            // Time validation for events
+            const eventStartTime = document.getElementById('{{ form.event_start_time.id_for_label }}');
+            const eventEndTime = document.getElementById('{{ form.event_end_time.id_for_label }}');
+            
+            function validateEventTimes() {
+                if (eventStartTime && eventEndTime && eventStartTime.value && eventEndTime.value) {
+                    if (eventStartTime.value >= eventEndTime.value) {
+                        eventEndTime.setCustomValidity('End time must be after start time');
+                    } else {
+                        eventEndTime.setCustomValidity('');
                     }
-                });
+                }
             }
             
-            // Initialize shared form validation
-            if (window.initializeFormValidation) {
-                window.initializeFormValidation();
+            if (eventStartTime) {
+                eventStartTime.addEventListener('change', validateEventTimes);
+            }
+            if (eventEndTime) {
+                eventEndTime.addEventListener('change', validateEventTimes);
             }
         });
     </script>
+</div>
 {% endblock %}

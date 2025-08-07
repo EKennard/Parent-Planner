@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import registrationForm, childForm, entryForm
+from .forms import registrationForm, childForm, entryForm, noteForm
 from .models import Parent, Child, Entry, Category
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -40,7 +40,9 @@ def dashboard(request):
     parent, _ = Parent.objects.get_or_create(user=request.user)
     children = Child.objects.filter(parent=parent)
     all_entries = Entry.objects.filter(child__parent=parent).defer('is_completed')
-    active_entries = all_entries.order_by('-created_at')
+    
+    # Exclude notes from the main timeline
+    active_entries = all_entries.exclude(entry_type='note').order_by('-created_at')
     
     # Calculate counts
     total_entries = all_entries.count()
@@ -115,7 +117,19 @@ def child_entries(request, child_id):
     if not parent:
         return redirect('register')
     child = get_object_or_404(Child, id=child_id, parent=parent)
-    if request.method == 'POST':
+    
+    # Handle note creation separately
+    if request.method == 'POST' and 'add_note' in request.POST:
+        note_form = noteForm(request.POST, parent=parent)
+        if note_form.is_valid():
+            note = note_form.save()
+            messages.success(request, f'Added note for {child.name}!')
+            return redirect('child_entries', child_id=child.id)
+    else:
+        note_form = noteForm(parent=parent, initial={'child': child})
+    
+    # Handle regular entry creation
+    if request.method == 'POST' and 'add_entry' in request.POST:
         form = entryForm(request.POST, parent=parent)
         if form.is_valid():
             entry = form.save()
@@ -123,14 +137,22 @@ def child_entries(request, child_id):
             return redirect('child_entries', child_id=child.id)
     else:
         form = entryForm(parent=parent, initial={'child': child})
-    entries = Entry.objects.filter(child=child).defer('is_completed').order_by('-created_at')
+    
+    # Get all entries excluding notes
+    entries = Entry.objects.filter(child=child).exclude(entry_type='note').defer('is_completed').order_by('-created_at')
     entry_type_filter = request.GET.get('type')
-    if entry_type_filter in ['note', 'task', 'event']:
+    if entry_type_filter in ['task', 'event']:
         entries = entries.filter(entry_type=entry_type_filter)
+    
+    # Get notes separately, ordered by most recent first
+    notes = Entry.objects.filter(child=child, entry_type='note').order_by('-created_at')
+    
     return render(request, 'planner/childEntries.html', {
         'child': child,
         'form': form,
+        'note_form': note_form,
         'entries': entries,
+        'notes': notes,
         'entry_type_filter': entry_type_filter,
         'categories': Category.objects.all(),
     })

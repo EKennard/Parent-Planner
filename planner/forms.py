@@ -84,6 +84,26 @@ class childForm(forms.ModelForm):
             self.fields['colour'].initial = generate_random_color()
         # Make sure colour field is required so user must select a color
         self.fields['colour'].required = True
+        
+        # Set custom label and help text for birth date
+        self.fields['birth_date'].label = 'Date of Birth'
+        self.fields['birth_date'].help_text = 'Optional - leave blank if you prefer not to specify'
+        
+        # Add CSS classes to all fields for consistent styling
+        for field_name, field in self.fields.items():
+            if field_name == 'birth_date':
+                # Keep only the child-date-input class for birth date - no conflicting Tailwind classes
+                field.widget.attrs.update({
+                    'class': 'child-date-input'
+                })
+            elif field_name == 'colour':
+                continue  # Colour field has special styling
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
+            else:
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
     
     def clean_birth_date(self):
         birth_date = self.cleaned_data.get('birth_date')
@@ -104,7 +124,11 @@ class childForm(forms.ModelForm):
         model = Child
         fields = ['name', 'birth_date', 'school', 'year', 'class_name', 'colour']
         widgets = {
-            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+            'birth_date': forms.DateInput(attrs={
+                'type': 'date',
+                'placeholder': 'Select date of birth (optional)',
+                'class': 'child-date-input'
+            }),
             'colour': forms.Select(attrs={'style': 'display: none;'}),
         }
 
@@ -119,9 +143,32 @@ class entryForm(forms.ModelForm):
                 self.fields['child'].help_text = 'You must add at least one child profile before creating entries.'
                 self.fields['child'].widget.attrs['disabled'] = True
         
-        # Add CSS classes to all fields
+        # Set custom labels for the new event fields
+        self.fields['event_date'].label = 'Event Date'
+        self.fields['event_start_time'].label = 'Start Time'
+        self.fields['event_end_time'].label = 'End Time'
+        
+        # Set custom labels for the new task fields
+        self.fields['task_due_date'].label = 'Due Date'
+        self.fields['task_due_time'].label = 'Due Time'
+        
+        # Add help text
+        self.fields['event_date'].help_text = 'Required for events'
+        self.fields['event_start_time'].help_text = 'Optional - leave blank for all-day events'
+        self.fields['event_end_time'].help_text = 'Optional - leave blank for open-ended events'
+        self.fields['task_due_date'].help_text = 'Optional - leave blank if no specific due date'
+        self.fields['task_due_time'].help_text = 'Optional - leave blank if no specific due time'
+        
+        # Add CSS classes to all fields while preserving special date/time classes
         for field_name, field in self.fields.items():
-            if isinstance(field.widget, forms.Textarea):
+            # Skip fields that have special widget classes defined in Meta
+            if field_name in ['event_date', 'event_start_time', 'event_end_time', 'task_due_date', 'task_due_time']:
+                # Keep ONLY the existing classes from widgets - no conflicting Tailwind classes
+                existing_class = field.widget.attrs.get('class', '')
+                field.widget.attrs.update({
+                    'class': existing_class.strip()
+                })
+            elif isinstance(field.widget, forms.Textarea):
                 field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
             elif isinstance(field.widget, forms.Select):
                 field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
@@ -139,8 +186,10 @@ class entryForm(forms.ModelForm):
         entry_type = cleaned_data.get('entry_type')
         start_time = cleaned_data.get('start_time')
         end_time = cleaned_data.get('end_time')
+        event_start_time = cleaned_data.get('event_start_time')
+        event_end_time = cleaned_data.get('event_end_time')
         
-        # Validate event times (start_time and end_time)
+        # Validate event times (start_time and end_time for existing datetime fields)
         if entry_type == 'event' and start_time and end_time:
             if end_time <= start_time:
                 raise forms.ValidationError({
@@ -148,15 +197,88 @@ class entryForm(forms.ModelForm):
                     'start_time': 'Start time must be before end time.'
                 })
         
+        # Validate new separate event times
+        if entry_type == 'event' and event_start_time and event_end_time:
+            if event_end_time <= event_start_time:
+                raise forms.ValidationError({
+                    'event_end_time': 'End time must be after start time.',
+                    'event_start_time': 'Start time must be before end time.'
+                })
+        
         return cleaned_data
         
     class Meta:
         model = Entry
-        fields = ['title', 'child', 'category', 'entry_type', 'description', 'priority', 'due_date', 'start_time', 'end_time', 'location']
+        fields = ['title', 'child', 'category', 'entry_type', 'description', 'priority', 'due_date', 'start_time', 'end_time', 'event_date', 'event_start_time', 'event_end_time', 'task_due_date', 'task_due_time', 'location']
         widgets = {
             'due_date': forms.DateTimeInput(attrs={'type': 'text', 'placeholder': 'Select date and time'}),
             'start_time': forms.DateTimeInput(attrs={'type': 'text', 'placeholder': 'Select start time'}),
             'end_time': forms.DateTimeInput(attrs={'type': 'text', 'placeholder': 'Select end time'}),
+            'event_date': forms.DateInput(attrs={
+                'type': 'date', 
+                'placeholder': 'Select event date',
+                'class': 'event-date-input'
+            }),
+            'event_start_time': forms.TimeInput(attrs={
+                'type': 'time', 
+                'placeholder': 'Start time (optional)',
+                'class': 'event-time-input'
+            }),
+            'event_end_time': forms.TimeInput(attrs={
+                'type': 'time', 
+                'placeholder': 'End time (optional)',
+                'class': 'event-time-input'
+            }),
+            'task_due_date': forms.DateInput(attrs={
+                'type': 'date', 
+                'placeholder': 'Select due date (optional)',
+                'class': 'task-date-input'
+            }),
+            'task_due_time': forms.TimeInput(attrs={
+                'type': 'time', 
+                'placeholder': 'Due time (optional)',
+                'class': 'task-time-input'
+            }),
             'description': forms.Textarea(attrs={'rows': 4}),
+        }
+
+
+class noteForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        parent = kwargs.pop('parent', None)
+        super().__init__(*args, **kwargs)
+        if parent:
+            self.fields['child'].queryset = Child.objects.filter(parent=parent)
+            if not self.fields['child'].queryset.exists():
+                self.fields['child'].help_text = 'You must add at least one child profile before creating notes.'
+                self.fields['child'].widget.attrs['disabled'] = True
+        
+        # Set entry type to note and hide it
+        self.initial['entry_type'] = 'note'
+        
+        # Add CSS classes to all fields
+        for field_name, field in self.fields.items():
+            if field_name == 'entry_type':
+                continue  # Hidden field
+            elif isinstance(field.widget, forms.Textarea):
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
+            elif isinstance(field.widget, forms.Select):
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
+            else:
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
+    
+    def clean_child(self):
+        child = self.cleaned_data.get('child')
+        if not child:
+            raise forms.ValidationError('Please select a child for this note.')
+        return child
+        
+    class Meta:
+        model = Entry
+        fields = ['title', 'child', 'category', 'entry_type', 'description']
+        widgets = {
+            'entry_type': forms.HiddenInput(),
+            'description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Write your note here...'}),
+            'title': forms.TextInput(attrs={'placeholder': 'Note title...'}),
         }
 

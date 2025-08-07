@@ -3,7 +3,7 @@
 {% block title %}{{ child.name }}'s Entries - ParentPlanner{% endblock %}
 
 {% block content %}
-    <div class="max-w-4xl mx-auto px-3 sm:px-0">
+    <div class="h-full w-full px-3 sm:px-6 md:px-4 lg:px-6 py-4">
         {% if messages %}
             <div class="mb-3 sm:mb-6">
                 {% for message in messages %}
@@ -14,150 +14,672 @@
             </div>
         {% endif %}
 
-        <!-- Compact Child Header -->
-        <div class="bg-white border-2 border-primary shadow-lg mb-4 sm:mb-8">
-            <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-2 sm:space-x-4">
-                        <div class="w-10 h-10 sm:w-16 sm:h-16 border-2 border-primary flex items-center justify-center text-white font-normal text-lg sm:text-2xl tracking-wide" style="background-color: {{ child.colour }};">
-                            {{ child.name|first|upper }}
+        <!-- Mobile Layout: Horizontal Swipe -->
+        <div class="md:hidden">
+            <!-- Child Header (Fixed) -->
+            <div class="bg-white border-2 border-primary shadow-lg mb-4">
+                <div class="border-b-2 border-primary bg-gray-50 px-3 py-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-10 h-10 border-2 border-primary flex items-center justify-center text-white font-normal text-lg tracking-wide" style="background-color: {{ child.colour }};">
+                                {{ child.name|first|upper }}
+                            </div>
+                            <div>
+                                <h1 class="text-lg font-normal text-gray-900 tracking-wide">{{ child.name }}'s Entries</h1>
+                                <p class="text-gray-600 font-medium text-xs">{{ entries.count }} tasks/events, {{ notes.count }} notes</p>
+                            </div>
                         </div>
-                        <div>
-                            <h1 class="text-lg sm:text-2xl md:text-3xl font-normal text-gray-900 tracking-wide">{{ child.name }}'s Entries</h1>
-                            <p class="text-gray-600 font-medium text-xs sm:text-base">{{ entries.count }} total entries</p>
+                        <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 border-2 border-primary transition-all duration-200 tracking-wide text-xs hover:shadow-lg flex items-center justify-center">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Horizontal Swipe Container -->
+            <div class="overflow-x-auto" style="height: calc(100vh - 160px);">
+                <div class="flex space-x-4 h-full" style="width: 200%;">
+                    <!-- Timeline Section (50% of container width) -->
+                    <div class="w-1/2 bg-white border-2 border-primary shadow-lg h-full flex flex-col">
+                        <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 flex-shrink-0">
+                            <div class="mb-2">
+                                <h3 class="text-lg font-normal text-gray-900 tracking-wide">Tasks & Events</h3>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <nav class="flex gap-1">
+                                    <a href="?type=" class="py-1 px-2 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if not request.GET.type %}bg-primary text-white border-primary{% else %}bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary{% endif %}">
+                                        All
+                                    </a>
+                                    <a href="?type=task" class="py-1 px-2 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if request.GET.type == 'task' %}bg-amber-600 text-white border-amber-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-amber-600 hover:text-amber-600{% endif %}">
+                                        Tasks
+                                    </a>
+                                    <a href="?type=event" class="py-1 px-2 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if request.GET.type == 'event' %}bg-violet-600 text-white border-violet-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-violet-600 hover:text-violet-600{% endif %}">
+                                        Events
+                                    </a>
+                                </nav>
+                                <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal w-8 h-8 border-2 border-primary transition-all duration-200 tracking-wide text-xs hover:shadow-lg flex items-center justify-center">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Entry Form -->
+                        <div id="entryForm" class="hidden border-b-2 border-primary bg-gray-25 p-3">
+                            <form method="post" class="space-y-3">
+                                {% csrf_token %}
+                                <input type="hidden" name="add_entry" value="1">
+                                
+                                <div>
+                                    <label for="{{ form.title.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Title</label>
+                                    {{ form.title }}
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ form.entry_type.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Type</label>
+                                    {{ form.entry_type }}
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ form.category.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Category</label>
+                                    {{ form.category }}
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ form.description.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+                                    {{ form.description }}
+                                </div>
+                                
+                                <!-- Task Fields -->
+                                <div id="taskFields" style="display: none;">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label for="{{ form.task_due_date.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Due Date</label>
+                                            {{ form.task_due_date }}
+                                        </div>
+                                        <div>
+                                            <label for="{{ form.task_due_time.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Due Time</label>
+                                            {{ form.task_due_time }}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="{{ form.priority.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Priority</label>
+                                        {{ form.priority }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Event Fields -->
+                                <div id="eventFields" style="display: none;">
+                                    <div>
+                                        <label for="{{ form.event_date.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Event Date</label>
+                                        {{ form.event_date }}
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label for="{{ form.event_start_time.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Start Time</label>
+                                            {{ form.event_start_time }}
+                                        </div>
+                                        <div>
+                                            <label for="{{ form.event_end_time.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">End Time</label>
+                                            {{ form.event_end_time }}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="{{ form.location.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Location</label>
+                                        {{ form.location }}
+                                    </div>
+                                </div>
+                                
+                                {{ form.child }}
+                                
+                                <div class="flex gap-2">
+                                    <button type="submit" class="bg-primary hover:bg-secondary text-white font-normal py-1 px-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs">
+                                        Save Entry
+                                    </button>
+                                    <button type="button" onclick="toggleEntryForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Timeline Content -->
+                        <div class="p-3 overflow-y-auto flex-1">
+                            {% if entries %}
+                                <div class="space-y-2">
+                                    {% for entry in entries %}
+                                        <div class="{% if entry.entry_type == 'task' %}bg-amber-50 border-l-4 border-amber-600{% elif entry.entry_type == 'event' %}bg-violet-50 border-l-4 border-violet-600{% endif %} p-3 {% if entry.entry_type == 'task' %}hover:bg-amber-100{% elif entry.entry_type == 'event' %}hover:bg-violet-100{% endif %} transition-all duration-200">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <h4 class="font-medium text-gray-900 mb-1">{{ entry.title }}</h4>
+                                                    {% if entry.description %}
+                                                        <p class="text-gray-700 text-xs mb-2">{{ entry.description }}</p>
+                                                    {% endif %}
+                                                    <div class="flex flex-wrap gap-1 mb-1">
+                                                        {% if entry.entry_type == 'task' %}
+                                                            <span class="bg-amber-600 text-white px-2 py-0.5 text-xs rounded-sm font-medium">Task</span>
+                                                            {% if entry.priority %}
+                                                                <span class="bg-gray-200 text-gray-700 px-2 py-0.5 text-xs rounded-sm">{{ entry.get_priority_display }}</span>
+                                                            {% endif %}
+                                                        {% elif entry.entry_type == 'event' %}
+                                                            <span class="bg-violet-600 text-white px-2 py-0.5 text-xs rounded-sm font-medium">Event</span>
+                                                            {% if entry.location %}
+                                                                <span class="bg-gray-200 text-gray-700 px-2 py-0.5 text-xs rounded-sm">📍 {{ entry.location }}</span>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                        {% if entry.category and entry.category != 'none' %}
+                                                            <span class="bg-gray-200 text-gray-700 px-2 py-0.5 text-xs rounded-sm">{{ entry.get_category_display }}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <p class="text-xs text-gray-500">
+                                                        {% if entry.entry_type == 'task' and entry.task_due_date %}
+                                                            Due: {{ entry.task_due_date|date:"M j, Y" }}{% if entry.task_due_time %} at {{ entry.task_due_time|time:"g:i A" }}{% endif %}
+                                                        {% elif entry.entry_type == 'event' and entry.event_date %}
+                                                            {{ entry.event_date|date:"M j, Y" }}{% if entry.event_start_time %} from {{ entry.event_start_time|time:"g:i A" }}{% endif %}{% if entry.event_end_time %} to {{ entry.event_end_time|time:"g:i A" }}{% endif %}
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                                <div class="flex gap-1 ml-2">
+                                                    <a href="{% url 'edit_entry' entry.id %}" class="w-5 h-5 {% if entry.entry_type == 'task' %}bg-amber-600 hover:bg-amber-700 border-amber-800{% elif entry.entry_type == 'event' %}bg-violet-600 hover:bg-violet-700 border-violet-800{% endif %} text-white border flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit">
+                                                        <i class="fas fa-pencil-alt text-xs"></i>
+                                                    </a>
+                                                    <form method="post" action="{% url 'delete_entry' entry.id %}" style="display: inline;" onsubmit="return confirm('Delete this entry?')">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="w-5 h-5 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Delete">
+                                                            <i class="fas fa-trash text-xs"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-6">
+                                    <div class="w-12 h-12 mx-auto mb-3 bg-gray-100 border-2 border-gray-300 flex items-center justify-center rounded-lg">
+                                        <i class="fas fa-calendar-check text-lg text-gray-400"></i>
+                                    </div>
+                                    <h4 class="text-sm font-medium text-gray-900 mb-1">No entries yet</h4>
+                                    <p class="text-gray-600 text-xs mb-3">Add your first task or event!</p>
+                                    <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal py-1 px-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        Add Entry
+                                    </button>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
-                    <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 sm:px-6 sm:py-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center">
-                        <i class="fas fa-plus sm:mr-2"></i>
-                        <span class="hidden sm:inline">Add Entry</span>
-                    </a>
+
+                    <!-- Notes Section (50% of container width) -->
+                    <div class="w-1/2 bg-white border-2 border-primary shadow-lg h-full flex flex-col">
+                        <div class="border-b-2 border-primary bg-green-50 px-3 py-2 flex-shrink-0">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-normal text-green-700 tracking-wide flex items-center">
+                                    <i class="fas fa-sticky-note mr-2"></i>
+                                    Notes
+                                </h3>
+                                <button onclick="toggleNotesForm()" class="bg-green-600 hover:bg-green-700 text-white font-normal px-3 py-2 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs hover:shadow-lg">
+                                    <i class="fas fa-plus mr-1"></i>
+                                    Add Note
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Notes Form -->
+                        <div id="notesForm" class="hidden border-b-2 border-green-600 bg-green-25 p-3">
+                            <form method="post" class="space-y-3">
+                                {% csrf_token %}
+                                <input type="hidden" name="add_note" value="1">
+                                
+                                <div>
+                                    <label for="{{ note_form.title.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Title</label>
+                                    {{ note_form.title }}
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ note_form.category.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Category (Optional)</label>
+                                    {{ note_form.category }}
+                                </div>
+                                
+                                <div>
+                                    <label for="{{ note_form.description.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Note</label>
+                                    {{ note_form.description }}
+                                </div>
+                                
+                                {{ note_form.child }}
+                                {{ note_form.entry_type }}
+                                
+                                <div class="flex gap-2">
+                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs">
+                                        Save Note
+                                    </button>
+                                    <button type="button" onclick="toggleNotesForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Notes Content -->
+                        <div class="p-3 overflow-y-auto flex-1">
+                            {% if notes %}
+                                <div class="space-y-2">
+                                    {% for note in notes %}
+                                        <div class="bg-green-50 border-l-4 border-green-600 p-3 hover:bg-green-100 transition-all duration-200">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <h4 class="font-medium text-gray-900 mb-1">{{ note.title }}</h4>
+                                                    {% if note.description %}
+                                                        <p class="text-gray-700 text-xs mb-2">{{ note.description }}</p>
+                                                    {% endif %}
+                                                    {% if note.category and note.category != 'none' %}
+                                                        <span class="inline-block bg-gray-200 text-gray-700 px-2 py-0.5 text-xs rounded-sm mr-1">
+                                                            {{ note.get_category_display }}
+                                                        </span>
+                                                    {% endif %}
+                                                    <p class="text-xs text-gray-500 mt-1">{{ note.created_at|date:"M j, Y g:i A" }}</p>
+                                                </div>
+                                                <div class="flex gap-1 ml-2">
+                                                    <a href="{% url 'edit_entry' note.id %}" class="w-5 h-5 bg-green-600 hover:bg-green-700 text-white border border-green-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Note">
+                                                        <i class="fas fa-pencil-alt text-xs"></i>
+                                                    </a>
+                                                    <form method="post" action="{% url 'delete_entry' note.id %}" style="display: inline;" onsubmit="return confirm('Delete this note?')">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="w-5 h-5 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Delete Note">
+                                                            <i class="fas fa-trash text-xs"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-6">
+                                    <div class="w-12 h-12 mx-auto mb-3 bg-green-100 border-2 border-green-600 flex items-center justify-center rounded-lg">
+                                        <i class="fas fa-sticky-note text-lg text-green-600"></i>
+                                    </div>
+                                    <h4 class="text-sm font-medium text-gray-900 mb-1">No notes yet</h4>
+                                    <p class="text-gray-600 text-xs mb-3">Add your first note to get started!</p>
+                                    <button onclick="toggleNotesForm()" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        Add Note
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Compact Filter Tabs -->
-        <div class="bg-white border-2 border-primary shadow-lg mb-4 sm:mb-8">
-            <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-2">
-                <nav class="flex flex-wrap gap-1 sm:gap-2">
-                    <a href="?type=" class="py-1 px-2 sm:py-3 sm:px-6 border-2 font-normal text-xs sm:text-sm tracking-wide transition-all duration-200 {% if not request.GET.type %}bg-primary text-white border-primary{% else %}bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary{% endif %}">
-                        All
-                    </a>
-                    <a href="?type=note" class="py-1 px-2 sm:py-3 sm:px-6 border-2 font-normal text-xs sm:text-sm tracking-wide transition-all duration-200 {% if request.GET.type == 'note' %}bg-green-600 text-white border-green-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-green-600 hover:text-green-600{% endif %}">
-                        Notes
-                    </a>
-                    <a href="?type=task" class="py-1 px-2 sm:py-3 sm:px-6 border-2 font-normal text-xs sm:text-sm tracking-wide transition-all duration-200 {% if request.GET.type == 'task' %}bg-amber-600 text-white border-amber-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-amber-600 hover:text-amber-600{% endif %}">
-                        Tasks
-                    </a>
-                    <a href="?type=event" class="py-1 px-2 sm:py-3 sm:px-6 border-2 font-normal text-xs sm:text-sm tracking-wide transition-all duration-200 {% if request.GET.type == 'event' %}bg-violet-600 text-white border-violet-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-violet-600 hover:text-violet-600{% endif %}">
-                        Events
-                    </a>
-                </nav>
+        <!-- Desktop Layout: Three Columns -->
+        <div class="hidden md:grid md:grid-cols-12 gap-4 lg:gap-6" style="height: calc(100vh - 140px);">
+            <!-- Left Column: Child Info (narrow sidebar) -->
+            <div class="md:col-span-2 lg:col-span-2 xl:col-span-2 h-full">
+                <div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
+                    <div class="border-b-2 border-primary bg-gray-50 px-4 py-3">
+                        <h2 class="text-lg font-normal text-gray-900 tracking-wide">Child Profile</h2>
+                    </div>
+                    <div class="p-4">
+                        <div class="text-center mb-4">
+                            <div class="w-16 h-16 mx-auto border-2 border-primary flex items-center justify-center text-white font-normal text-2xl tracking-wide mb-3" style="background-color: {{ child.colour }};">
+                                {{ child.name|first|upper }}
+                            </div>
+                            <h1 class="text-xl font-normal text-gray-900 tracking-wide mb-1">{{ child.name }}</h1>
+                            {% if child.birth_date %}
+                                <p class="text-sm text-gray-600">Born {{ child.birth_date|date:"M j, Y" }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        {% if child.school or child.year or child.class_name %}
+                            <div class="border-t pt-4">
+                                <h3 class="text-sm font-medium text-gray-900 mb-2">School Info</h3>
+                                {% if child.school %}
+                                    <p class="text-sm text-gray-600 mb-1">📚 {{ child.school }}</p>
+                                {% endif %}
+                                {% if child.year %}
+                                    <p class="text-sm text-gray-600 mb-1">🎓 Year {{ child.year }}</p>
+                                {% endif %}
+                                {% if child.class_name %}
+                                    <p class="text-sm text-gray-600">👥 {{ child.class_name }}</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="border-t pt-4 mt-4">
+                            <h3 class="text-sm font-medium text-gray-900 mb-2">Activity Summary</h3>
+                            <div class="space-y-1">
+                                <p class="text-sm text-gray-600">📋 {{ entries.count }} tasks/events</p>
+                                <p class="text-sm text-gray-600">📝 {{ notes.count }} notes</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t">
+                            <a href="{% url 'add_entry' %}" class="w-full bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide text-sm hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add Entry
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Compact Entries Section -->
-        <div class="bg-white border-2 border-primary shadow-lg">
-            <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
-                <h3 class="text-lg sm:text-2xl font-normal text-gray-900 tracking-wide">Entries</h3>
-            </div>
-            
-            <div class="p-3 sm:p-6">
-                {% if entries %}
-                    <div class="space-y-2 sm:space-y-4">
-                        {% for entry in entries %}
-                            <div class="bg-white border border-gray-300 border-l-4 sm:border-l-8 border-t-2 sm:border-t-4 p-3 sm:p-6 hover:shadow-lg transition-all duration-300 relative
-                                 {% if entry.entry_type == 'note' %}border-t-green-600
-                                 {% elif entry.entry_type == 'task' %}border-t-amber-600
-                                 {% elif entry.entry_type == 'event' %}border-t-violet-600{% endif %}" 
-                                 style="border-left-color: {{ entry.child.colour }};">
-                                
-                                <!-- Compact Entry Type Tag - Top Left Corner -->
-                                <div class="absolute top-0 left-0 text-xs font-normal px-1 py-0.5 tracking-wider
-                                    {% if entry.entry_type == 'note' %}bg-green-100 text-green-800
-                                    {% elif entry.entry_type == 'task' %}bg-amber-100 text-amber-800
-                                    {% elif entry.entry_type == 'event' %}bg-violet-100 text-violet-800{% endif %}">
-                                    {% if entry.entry_type == 'note' %}NOTE
-                                    {% elif entry.entry_type == 'task' %}TASK
-                                    {% elif entry.entry_type == 'event' %}EVENT{% endif %}
+            <!-- Middle Column: Timeline -->
+            <div class="md:col-span-6 lg:col-span-6 xl:col-span-6 h-full">
+                <div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
+                    <div class="border-b-2 border-primary bg-gray-50 px-4 py-3 flex-shrink-0">
+                        <div class="mb-2">
+                            <h3 class="text-xl font-normal text-gray-900 tracking-wide">Tasks & Events</h3>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <nav class="flex gap-2">
+                                <a href="?type=" class="py-2 px-4 border-2 font-normal text-sm tracking-wide transition-all duration-200 {% if not request.GET.type %}bg-primary text-white border-primary{% else %}bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary{% endif %}">
+                                    All
+                                </a>
+                                <a href="?type=task" class="py-2 px-4 border-2 font-normal text-sm tracking-wide transition-all duration-200 {% if request.GET.type == 'task' %}bg-amber-600 text-white border-amber-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-amber-600 hover:text-amber-600{% endif %}">
+                                    Tasks
+                                </a>
+                                <a href="?type=event" class="py-2 px-4 border-2 font-normal text-sm tracking-wide transition-all duration-200 {% if request.GET.type == 'event' %}bg-violet-600 text-white border-violet-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-violet-600 hover:text-violet-600{% endif %}">
+                                    Events
+                                </a>
+                            </nav>
+                            <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal w-10 h-10 border-2 border-primary transition-all duration-200 tracking-wide text-sm hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Entry Form -->
+                    <div id="entryForm" class="hidden border-b-2 border-primary bg-gray-25 p-4">
+                        <form method="post" class="space-y-4">
+                            {% csrf_token %}
+                            <input type="hidden" name="add_entry" value="1">
+                            
+                            <div>
+                                <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                {{ form.title }}
+                            </div>
+                            
+                            <div>
+                                <label for="{{ form.entry_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                                {{ form.entry_type }}
+                            </div>
+                            
+                            <div>
+                                <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                {{ form.category }}
+                            </div>
+                            
+                            <div>
+                                <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                {{ form.description }}
+                            </div>
+                            
+                            <!-- Task Fields -->
+                            <div id="taskFields" style="display: none;">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="{{ form.task_due_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                                        {{ form.task_due_date }}
+                                    </div>
+                                    <div>
+                                        <label for="{{ form.task_due_time.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Due Time</label>
+                                        {{ form.task_due_time }}
+                                    </div>
                                 </div>
-
-                                <div class="flex items-start justify-between pt-4 sm:pt-8">
-                                    <div class="flex-1 pr-3 sm:pr-6">
-                                        <div class="mb-2 sm:mb-4">
-                                            <h4 class="text-base sm:text-xl font-normal text-gray-900 mb-1 sm:mb-2 tracking-wide">{{ entry.title }}</h4>
-                                            <div class="flex items-center space-x-2 text-xs sm:text-sm">
-                                                {% if entry.category and entry.category != 'none' %}
-                                                <span class="bg-gray-100 text-gray-700 px-2 py-1 text-xs font-normal tracking-wider border rounded-sm">{{ entry.get_category_display }}</span>
-                                                {% endif %}
-                                                <span class="text-gray-500 font-medium">{{ entry.created_at|date:"M j, Y" }}</span>
-                                            </div>
-                                        </div>
-                                        
-                                        {% if entry.description %}
-                                            <p class="text-gray-600 mb-2 sm:mb-3 font-medium text-sm">{{ entry.description|truncatewords:20 }}</p>
-                                        {% endif %}
-                                        
-                                        <div class="flex flex-wrap gap-1 sm:gap-2 text-xs">
-                                            {% if entry.entry_type == 'task' %}
-                                                {% if entry.priority %}
-                                                    <span class="text-xs font-normal px-2 py-1 tracking-wider border rounded-sm
-                                                        {% if entry.priority == 'high' %}bg-red-100 text-red-800 border-red-600
-                                                        {% elif entry.priority == 'medium' %}bg-yellow-100 text-yellow-800 border-yellow-600
-                                                        {% else %}bg-gray-100 text-gray-800 border-gray-600{% endif %}">
-                                                        {{ entry.get_priority_display }}
-                                                    </span>
-                                                {% endif %}
-                                                {% if entry.due_date %}
-                                                    <span class="bg-red-100 text-red-800 px-2 py-1 text-xs font-normal tracking-wider border border-red-600 rounded-sm">
-                                                        📅 {{ entry.due_date|date:"M j, g:i A" }}
-                                                    </span>
-                                                {% endif %}
-                                            {% elif entry.entry_type == 'event' %}
-                                                {% if entry.start_time %}
-                                                    <span class="bg-violet-100 text-violet-800 px-2 py-1 text-xs font-normal tracking-wider border border-violet-600 rounded-sm">
-                                                        🕒 {{ entry.start_time|date:"M j, g:i A" }}
-                                                    </span>
-                                                {% endif %}
-                                                {% if entry.location %}
-                                                    <span class="bg-gray-100 text-gray-800 px-2 py-1 text-xs font-normal tracking-wider border border-gray-600 rounded-sm">
-                                                        📍 {{ entry.location }}
-                                                    </span>
-                                                {% endif %}
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex flex-col gap-1">
-                                        <a href="{% url 'edit_entry' entry.id %}" class="w-6 h-6 bg-green-600 hover:bg-green-700 text-white border border-green-800 flex items-center justify-center transition-all duration-200 rounded-sm"
-                                           title="Edit Entry">
-                                            <i class="fas fa-pencil-alt text-xs"></i>
-                                        </a>
-                                        <form method="post" action="{% url 'delete_entry' entry.id %}" style="display: block;" onsubmit="return confirm('Delete this entry?')">
-                                            {% csrf_token %}
-                                            <button type="submit" class="w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm"
-                                                    title="Delete Entry">
-                                                <i class="fas fa-trash text-xs"></i>
-                                            </button>
-                                        </form>
-                                    </div>
+                                <div>
+                                    <label for="{{ form.priority.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                                    {{ form.priority }}
                                 </div>
                             </div>
-                        {% endfor %}
+                            
+                            <!-- Event Fields -->
+                            <div id="eventFields" style="display: none;">
+                                <div>
+                                    <label for="{{ form.event_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Event Date</label>
+                                    {{ form.event_date }}
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="{{ form.event_start_time.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+                                        {{ form.event_start_time }}
+                                    </div>
+                                    <div>
+                                        <label for="{{ form.event_end_time.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                                        {{ form.event_end_time }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="{{ form.location.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                    {{ form.location }}
+                                </div>
+                            </div>
+                            
+                            {{ form.child }}
+                            
+                            <div class="flex gap-2">
+                                <button type="submit" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide text-sm">
+                                    Save Entry
+                                </button>
+                                <button type="button" onclick="toggleEntryForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                {% else %}
-                    <div class="text-center py-6 sm:py-12">
-                        <div class="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-6 bg-gray-100 border-2 border-primary flex items-center justify-center">
-                            <div class="w-8 h-8 sm:w-12 sm:h-12 bg-primary border-2 border-primary"></div>
+                    
+                    <!-- Timeline Content -->
+                    <div class="p-4 flex-1 overflow-y-auto">
+                        {% if entries %}
+                            <div class="space-y-3">
+                                {% for entry in entries %}
+                                    <div class="{% if entry.entry_type == 'task' %}bg-amber-50 border-l-4 border-amber-600{% elif entry.entry_type == 'event' %}bg-violet-50 border-l-4 border-violet-600{% endif %} p-4 {% if entry.entry_type == 'task' %}hover:bg-amber-100{% elif entry.entry_type == 'event' %}hover:bg-violet-100{% endif %} transition-all duration-200">
+                                        <div class="flex justify-between items-start">
+                                            <div class="flex-1">
+                                                <h4 class="font-medium text-gray-900 mb-2">{{ entry.title }}</h4>
+                                                {% if entry.description %}
+                                                    <p class="text-gray-700 text-sm mb-2">{{ entry.description }}</p>
+                                                {% endif %}
+                                                <div class="flex flex-wrap gap-1 mb-2">
+                                                    {% if entry.entry_type == 'task' %}
+                                                        <span class="bg-amber-600 text-white px-2 py-1 text-xs rounded-sm font-medium">Task</span>
+                                                        {% if entry.priority %}
+                                                            <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">{{ entry.get_priority_display }}</span>
+                                                        {% endif %}
+                                                    {% elif entry.entry_type == 'event' %}
+                                                        <span class="bg-violet-600 text-white px-2 py-1 text-xs rounded-sm font-medium">Event</span>
+                                                        {% if entry.location %}
+                                                            <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">📍 {{ entry.location }}</span>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    {% if entry.category and entry.category != 'none' %}
+                                                        <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">{{ entry.get_category_display }}</span>
+                                                    {% endif %}
+                                                </div>
+                                                <p class="text-xs text-gray-500">
+                                                    {% if entry.entry_type == 'task' and entry.task_due_date %}
+                                                        Due: {{ entry.task_due_date|date:"M j, Y" }}{% if entry.task_due_time %} at {{ entry.task_due_time|time:"g:i A" }}{% endif %}
+                                                    {% elif entry.entry_type == 'event' and entry.event_date %}
+                                                        {{ entry.event_date|date:"M j, Y" }}{% if entry.event_start_time %} from {{ entry.event_start_time|time:"g:i A" }}{% endif %}{% if entry.event_end_time %} to {{ entry.event_end_time|time:"g:i A" }}{% endif %}
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                            <div class="flex gap-1 ml-4">
+                                                <a href="{% url 'edit_entry' entry.id %}" class="w-6 h-6 {% if entry.entry_type == 'task' %}bg-amber-600 hover:bg-amber-700 border-amber-800{% elif entry.entry_type == 'event' %}bg-violet-600 hover:bg-violet-700 border-violet-800{% endif %} text-white border flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit">
+                                                    <i class="fas fa-pencil-alt text-xs"></i>
+                                                </a>
+                                                <form method="post" action="{% url 'delete_entry' entry.id %}" style="display: inline;" onsubmit="return confirm('Delete this entry?')">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Delete">
+                                                        <i class="fas fa-trash text-xs"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 border-2 border-gray-300 flex items-center justify-center rounded-lg">
+                                    <i class="fas fa-calendar-check text-2xl text-gray-400"></i>
+                                </div>
+                                <h4 class="text-lg font-medium text-gray-900 mb-2">No entries yet</h4>
+                                <p class="text-gray-600 text-sm mb-4">Add your first task or event!</p>
+                                <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide text-sm">
+                                    <i class="fas fa-plus mr-1"></i>
+                                    Add Entry
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Notes (wider sidebar) -->
+            <div class="md:col-span-4 lg:col-span-4 xl:col-span-4 h-full">
+                <div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
+                    <div class="border-b-2 border-primary bg-green-50 px-4 py-3 flex-shrink-0">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-normal text-green-700 tracking-wide flex items-center">
+                                <i class="fas fa-sticky-note mr-2"></i>
+                                Notes
+                            </h3>
+                            <button onclick="toggleNotesForm()" class="bg-green-600 hover:bg-green-700 text-white font-normal px-3 py-2 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs hover:shadow-lg">
+                                <i class="fas fa-plus"></i>
+                            </button>
                         </div>
-                        <h3 class="text-lg sm:text-2xl font-normal text-gray-900 tracking-wide mb-2 sm:mb-3">No entries yet</h3>
-                        <p class="text-gray-600 font-medium mb-3 sm:mb-6 text-sm sm:text-base">Add your first entry to get started!</p>
-                        <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 sm:py-3 sm:px-6 border-2 border-primary transition-all duration-200 tracking-wide text-sm sm:text-base inline-flex items-center gap-2">
-                            <i class="fas fa-plus"></i>
-                            <span>Add Entry</span>
-                        </a>
                     </div>
-                {% endif %}
+                    
+                    <!-- Notes Form -->
+                    <div id="notesForm" class="hidden border-b-2 border-green-600 bg-green-25 p-4">
+                        <form method="post" class="space-y-4">
+                            {% csrf_token %}
+                            <input type="hidden" name="add_note" value="1">
+                            
+                            <div>
+                                <label for="{{ note_form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                {{ note_form.title }}
+                            </div>
+                            
+                            <div>
+                                <label for="{{ note_form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Category (Optional)</label>
+                                {{ note_form.category }}
+                            </div>
+                            
+                            <div>
+                                <label for="{{ note_form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Note</label>
+                                {{ note_form.description }}
+                            </div>
+                            
+                            {{ note_form.child }}
+                            {{ note_form.entry_type }}
+                            
+                            <div class="flex gap-2">
+                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 border-2 border-green-600 transition-all duration-200 tracking-wide text-sm">
+                                    Save Note
+                                </button>
+                                <button type="button" onclick="toggleNotesForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Notes Content -->
+                    <div class="p-4 flex-1 overflow-y-auto">
+                        {% if notes %}
+                            <div class="space-y-3">
+                                {% for note in notes %}
+                                    <div class="bg-green-50 border-l-4 border-green-600 p-4 hover:bg-green-100 transition-all duration-200">
+                                        <div class="flex justify-between items-start">
+                                            <div class="flex-1">
+                                                <h4 class="font-medium text-gray-900 mb-2">{{ note.title }}</h4>
+                                                {% if note.description %}
+                                                    <p class="text-gray-700 text-sm mb-2">{{ note.description }}</p>
+                                                {% endif %}
+                                                {% if note.category and note.category != 'none' %}
+                                                    <span class="inline-block bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm mr-2">
+                                                        {{ note.get_category_display }}
+                                                    </span>
+                                                {% endif %}
+                                                <p class="text-xs text-gray-500 mt-2">{{ note.created_at|date:"M j, Y g:i A" }}</p>
+                                            </div>
+                                            <div class="flex gap-1 ml-4">
+                                                <a href="{% url 'edit_entry' note.id %}" class="w-6 h-6 bg-green-600 hover:bg-green-700 text-white border border-green-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Note">
+                                                    <i class="fas fa-pencil-alt text-xs"></i>
+                                                </a>
+                                                <form method="post" action="{% url 'delete_entry' note.id %}" style="display: inline;" onsubmit="return confirm('Delete this note?')">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Delete Note">
+                                                        <i class="fas fa-trash text-xs"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-8">
+                                <div class="w-16 h-16 mx-auto mb-4 bg-green-100 border-2 border-green-600 flex items-center justify-center rounded-lg">
+                                    <i class="fas fa-sticky-note text-2xl text-green-600"></i>
+                                </div>
+                                <h4 class="text-lg font-medium text-gray-900 mb-2">No notes yet</h4>
+                                <p class="text-gray-600 text-sm mb-4">Add your first note to get started!</p>
+                                <button onclick="toggleNotesForm()" class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 border-2 border-green-600 transition-all duration-200 tracking-wide text-sm">
+                                    <i class="fas fa-plus mr-1"></i>
+                                    Add Note
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block extra_head %}
+    <script>
+        function toggleNotesForm() {
+            const form = document.getElementById('notesForm');
+            form.classList.toggle('hidden');
+        }
+        
+        function toggleNotesForm() {
+            const form = document.getElementById('notesForm');
+            form.classList.toggle('hidden');
+        }
+        
+        function toggleEntryForm() {
+            const form = document.getElementById('entryForm');
+            form.classList.toggle('hidden');
+        }
+        
+        // Show/hide fields based on entry type selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const entryTypeField = document.getElementById('id_entry_type');
+            if (entryTypeField) {
+                entryTypeField.addEventListener('change', function() {
+                    const taskFields = document.getElementById('taskFields');
+                    const eventFields = document.getElementById('eventFields');
+                    
+                    // Hide all fields first
+                    taskFields.style.display = 'none';
+                    eventFields.style.display = 'none';
+                    
+                    // Show relevant fields
+                    if (this.value === 'task') {
+                        taskFields.style.display = 'block';
+                    } else if (this.value === 'event') {
+                        eventFields.style.display = 'block';
+                    }
+                });
+                
+                // Trigger change event on page load
+                entryTypeField.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
 {% endblock %}

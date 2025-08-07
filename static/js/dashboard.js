@@ -149,7 +149,7 @@ console.log('Dashboard.js loading...');
 // Global dashboard utilities
 window.DashboardUtils = {
     // Entry filtering system
-    activeFilters: new Set(['note', 'task', 'event']), // All types visible by default
+    activeFilters: new Set(['task', 'event']), // All types visible by default (notes moved to child pages)
 
     /**
      * Toggle expandable entry card details
@@ -284,10 +284,7 @@ window.DashboardUtils = {
             // Hide this type - remove bold outline
             this.activeFilters.delete(entryType);
             button.classList.remove('border-4');
-            if (entryType === 'note') {
-                button.classList.remove('border-green-800');
-                button.classList.add('border', 'border-green-600');
-            } else if (entryType === 'task') {
+            if (entryType === 'task') {
                 button.classList.remove('border-amber-800');
                 button.classList.add('border', 'border-amber-600');
             } else if (entryType === 'event') {
@@ -299,10 +296,7 @@ window.DashboardUtils = {
             this.activeFilters.add(entryType);
             button.classList.remove('border');
             button.classList.add('border-4');
-            if (entryType === 'note') {
-                button.classList.remove('border-green-600');
-                button.classList.add('border-green-800');
-            } else if (entryType === 'task') {
+            if (entryType === 'task') {
                 button.classList.remove('border-amber-600');
                 button.classList.add('border-amber-800');
             } else if (entryType === 'event') {

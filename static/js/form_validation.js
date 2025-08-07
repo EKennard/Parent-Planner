@@ -4,7 +4,7 @@
  */
 
 /**
- * Updates end time constraints based on start time
+ * Updates end time constraints based on start time (Native HTML5)
  */
 function updateEndTimeConstraint() {
     const startTimeField = document.getElementById('id_start_time');
@@ -14,38 +14,42 @@ function updateEndTimeConstraint() {
     
     const startTime = startTimeField.value;
     if (startTime) {
-        // Parse the start time for Flatpickr
-        const startDate = new Date(startTime);
+        // Set minimum end time to start time
+        endTimeField.min = startTime;
         
-        // Update end time Flatpickr minDate
-        if (endTimeField._flatpickr) {
-            const minEndDate = new Date(startDate);
-            minEndDate.setMinutes(minEndDate.getMinutes() + 1);
-            endTimeField._flatpickr.set('minDate', minEndDate);
+        // Smart default: If no end time set, auto-set to 1 hour after start
+        if (!endTimeField.value) {
+            // Parse start time and add 1 hour
+            const [hours, minutes] = startTime.split(':');
+            const startHour = parseInt(hours, 10);
+            const startMinute = parseInt(minutes, 10);
             
-            // Smart default: If no end time set, auto-set to 1 hour after start
-            if (!endTimeField.value) {
-                const defaultEndDate = new Date(startDate);
-                defaultEndDate.setHours(defaultEndDate.getHours() + 1);
-                endTimeField._flatpickr.setDate(defaultEndDate);
-                
-                // Add visual indication
-                endTimeField.style.backgroundColor = '#f0f9ff';
-                setTimeout(() => {
-                    endTimeField.style.backgroundColor = '';
-                }, 1000);
+            let endHour = startHour + 1;
+            let endMinute = startMinute;
+            
+            // Handle hour overflow
+            if (endHour >= 24) {
+                endHour = 23;
+                endMinute = 59;
             }
+            
+            const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+            endTimeField.value = endTime;
+            
+            // Add visual indication
+            endTimeField.style.backgroundColor = '#f0f9ff';
+            setTimeout(() => {
+                endTimeField.style.backgroundColor = '';
+            }, 1000);
         }
     } else {
         // Remove constraint if no start time
-        if (endTimeField._flatpickr) {
-            endTimeField._flatpickr.set('minDate', null);
-        }
+        endTimeField.removeAttribute('min');
     }
 }
 
 /**
- * Validates event start and end times
+ * Validates event start and end times (Native HTML5)
  */
 function validateEventTimes() {
     const startTimeField = document.getElementById('id_start_time');
@@ -58,10 +62,8 @@ function validateEventTimes() {
     
     // Only validate if both times are set
     if (startTime && endTime) {
-        const startDate = new Date(startTime);
-        const endDate = new Date(endTime);
-        
-        if (endDate <= startDate) {
+        // Compare time strings directly (HH:MM format)
+        if (endTime <= startTime) {
             // Remove any existing error messages
             const existingError = endTimeField.parentNode.querySelector('.time-validation-error');
             if (existingError) existingError.remove();
@@ -89,7 +91,7 @@ function validateEventTimes() {
 }
 
 /**
- * Validates task due date
+ * Validates task due date (Native HTML5)
  */
 function validateTaskDate() {
     const dueDateField = document.getElementById('id_due_date');
@@ -99,11 +101,12 @@ function validateTaskDate() {
     const dueDate = dueDateField.value;
     
     if (dueDate) {
-        // Parse Flatpickr format (Y-m-d H:i)
-        const dueDateObj = new Date(dueDate);
-        const now = new Date();
+        // Parse HTML5 date format (YYYY-MM-DD)
+        const dueDateObj = new Date(dueDate + 'T00:00:00');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time for date comparison
         
-        if (dueDateObj < now) {
+        if (dueDateObj < today) {
             // Remove any existing error messages
             const existingError = dueDateField.parentNode.querySelector('.date-validation-error');
             if (existingError) existingError.remove();

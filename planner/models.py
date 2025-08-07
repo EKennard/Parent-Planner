@@ -85,6 +85,13 @@ class Entry(models.Model):
     is_completed = models.BooleanField(default=False)
     start_time = models.DateTimeField(blank=True, null=True)
     end_time = models.DateTimeField(blank=True, null=True)
+    # Separate date and time fields for events
+    event_date = models.DateField(blank=True, null=True)
+    event_start_time = models.TimeField(blank=True, null=True)
+    event_end_time = models.TimeField(blank=True, null=True)
+    # Separate date and time fields for tasks
+    task_due_date = models.DateField(blank=True, null=True)
+    task_due_time = models.TimeField(blank=True, null=True)
     location = models.CharField(max_length=200, blank=True)
 
     class Meta:
