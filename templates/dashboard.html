@@ -153,87 +153,24 @@
                 }
             }
         });
-
-        // Ensure all edit forms are hidden initially (they should already be with style="display: none")
-        const editForms = document.querySelectorAll('[id^="childEdit"]');
-        editForms.forEach(form => {
-            form.style.display = 'none';
-        });
     });
 
     function toggleChildEdit(childId) {
-        const editForm = document.getElementById(`childEdit${childId}`);
+        // Find forms for both mobile and desktop with correct IDs
+        const mobileForm = document.getElementById(`childEdit${childId}Mobile`);
+        const desktopForm = document.getElementById(`childEdit${childId}Desktop`);
         
-        if (!editForm) {
-            console.log(`Edit form not found for child ${childId}`);
-            return;
-        }
-        
-        // Get child name from the child card
+        // Get child name for selection
         const childCard = document.querySelector(`[data-child-id="${childId}"]`);
         const childNameElement = childCard ? childCard.querySelector('h3') : null;
         const childName = childNameElement ? childNameElement.textContent.trim() : `Child ${childId}`;
         
-        // Always select the child first (filter entries and update UI)
+        // Select the child first (filter entries and update UI)
         selectChild(childId, childName);
         
-        const isVisible = editForm.style.display === 'block';
-        
-        if (isVisible) {
-            // Hide the form
-            editForm.style.display = 'none';
-        } else {
-            // Hide all other edit forms first
-            const allEditForms = document.querySelectorAll('[id^="childEdit"]');
-            allEditForms.forEach(form => {
-                form.style.display = 'none';
-            });
-            
-            // Get the position of the child card to position the form
-            const rect = childCard.getBoundingClientRect();
-            
-            // Calculate better positioning - ensure it's visible
-            const topPosition = Math.max(rect.bottom + window.scrollY + 10, 100); // At least 100px from top
-            const leftPosition = Math.max(rect.left + window.scrollX, 50); // At least 50px from left
-            
-            // Position the form fixed to break out of all container constraints
-            // First, remove all existing classes that might interfere
-            editForm.className = '';
-            
-            // Move form to body to ensure it's not clipped by containers
-            if (editForm.parentElement !== document.body) {
-                document.body.appendChild(editForm);
-            }
-            
-            editForm.style.setProperty('display', 'block', 'important');
-            editForm.style.setProperty('visibility', 'visible', 'important');
-            editForm.style.setProperty('opacity', '1', 'important');
-            editForm.style.setProperty('height', 'auto', 'important');
-            editForm.style.setProperty('overflow', 'visible', 'important');
-            editForm.style.position = 'fixed';
-            editForm.style.top = topPosition + 'px';
-            editForm.style.left = leftPosition + 'px';
-            editForm.style.width = '320px';
-            editForm.style.zIndex = '10000';
-            editForm.style.backgroundColor = 'white';
-            editForm.style.border = '2px solid #8B5CF6';  // Purple border to match theme
-            editForm.style.borderRadius = '12px';
-            editForm.style.padding = '20px';
-            editForm.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
-            
-            // Add click-outside-to-close functionality
-            const closeFormOnClickOutside = (event) => {
-                if (!editForm.contains(event.target) && !childCard.contains(event.target)) {
-                    editForm.style.display = 'none';
-                    document.removeEventListener('click', closeFormOnClickOutside);
-                }
-            };
-            
-            // Add the event listener with a small delay to prevent immediate closing
-            setTimeout(() => {
-                document.addEventListener('click', closeFormOnClickOutside);
-            }, 100);
-        }
+        // Toggle the forms exactly like other forms
+        if (mobileForm) mobileForm.classList.toggle('hidden');
+        if (desktopForm) desktopForm.classList.toggle('hidden');
     }
     
     // Filter only entries and notes, NOT child cards
@@ -267,11 +204,11 @@
     function showAllChildren() {
         selectedChildId = null;
         
-        // Hide all edit forms first
-        const allEditForms = document.querySelectorAll('[id^="childEdit"]');
-        allEditForms.forEach(form => {
-            form.style.display = 'none';
-        });
+        // Hide all edit forms first (close any open child edit forms)
+        const allEditFormsMobile = document.querySelectorAll('[id^="childEdit"][id$="Mobile"]');
+        const allEditFormsDesktop = document.querySelectorAll('[id^="childEdit"][id$="Desktop"]');
+        allEditFormsMobile.forEach(form => form.classList.add('hidden'));
+        allEditFormsDesktop.forEach(form => form.classList.add('hidden'));
         
         // Show all content entries (but child cards should always be visible)
         const entries = document.querySelectorAll('[data-child-id]');
@@ -393,7 +330,7 @@
                                 </div>
                                 
                                 <!-- Child Edit Form Dropdown -->
-                                <div id="childEdit{{ child.id }}" class="border-t-2 border-secondary bg-purple-25 p-3" style="display: none;">
+                                <div id="childEdit{{ child.id }}Mobile" class="hidden border-t-2 border-secondary bg-purple-25 p-3">
                                     <form method="post" action="{% url 'edit_child' child.id %}" class="space-y-3">
                                         {% csrf_token %}
                                         
@@ -958,7 +895,7 @@
                                     </div>
                                     
                                     <!-- Child Edit Form Dropdown -->
-                                    <div id="childEdit{{ child.id }}" class="border-t-2 border-secondary bg-purple-25 p-4" style="display: none;">
+                                    <div id="childEdit{{ child.id }}Desktop" class="hidden border-t-2 border-secondary bg-purple-25 p-4">
                                         <form method="post" action="{% url 'edit_child' child.id %}" class="space-y-4">
                                             {% csrf_token %}
                                             
