@@ -330,82 +330,82 @@
                                 </div>
                                 
                                 <!-- Child Edit Form Dropdown -->
-                                <div id="childEdit{{ child.id }}Mobile" class="hidden border-t-2 border-secondary bg-purple-25 p-3">
-                                    <form method="post" action="{% url 'edit_child' child.id %}" class="space-y-3">
+                                <div id="childEdit{{ child.id }}Mobile" class="hidden border-t-2 border-secondary bg-purple-25 p-2 rounded-none" style="border-radius: 0;">
+                                    <form method="post" action="{% url 'edit_child' child.id %}" class="space-y-2">
                                         {% csrf_token %}
                                         
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700 mb-1">Name</label>
                                             <input type="text" name="name" value="{{ child.name }}" 
-                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs">
+                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs rounded-none" style="border-radius: 0;">
                                         </div>
                                         
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700 mb-1">Date of Birth</label>
                                             <input type="date" name="birth_date" value="{{ child.birth_date|date:'Y-m-d' }}" 
-                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs">
+                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs rounded-none" style="border-radius: 0;">
                                         </div>
                                         
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700 mb-1">School</label>
                                             <input type="text" name="school" value="{{ child.school|default:'' }}" 
-                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs">
+                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs rounded-none" style="border-radius: 0;">
                                         </div>
                                         
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700 mb-1">Year</label>
                                             <input type="text" name="year" value="{{ child.year|default:'' }}" 
-                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs">
+                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs rounded-none" style="border-radius: 0;">
                                         </div>
                                         
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700 mb-1">Class</label>
                                             <input type="text" name="class_name" value="{{ child.class_name|default:'' }}" 
-                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs">
+                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs rounded-none" style="border-radius: 0;">
                                         </div>
                                         
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700 mb-1">Color</label>
                                             <div class="flex gap-1 flex-wrap">
-                                                <div class="color-dot-small w-4 h-4 border cursor-pointer {{ child.colour|yesno:'selected,' }}" 
-                                                     data-color="#FF6B6B" style="background-color: #FF6B6B;" 
+                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none {{ child.colour|yesno:'selected,' }}" 
+                                                     data-color="#FF6B6B" style="background-color: #FF6B6B; border-radius: 0;" 
                                                      onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-4 h-4 border cursor-pointer" 
-                                                     data-color="#4ECDC4" style="background-color: #4ECDC4;" 
+                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
+                                                     data-color="#4ECDC4" style="background-color: #4ECDC4; border-radius: 0;" 
                                                      onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-4 h-4 border cursor-pointer" 
-                                                     data-color="#0D6A80" style="background-color: #0D6A80;" 
+                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
+                                                     data-color="#0D6A80" style="background-color: #0D6A80; border-radius: 0;" 
                                                      onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-4 h-4 border cursor-pointer" 
-                                                     data-color="#96CEB4" style="background-color: #96CEB4;" 
+                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
+                                                     data-color="#96CEB4" style="background-color: #96CEB4; border-radius: 0;" 
                                                      onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-4 h-4 border cursor-pointer" 
-                                                     data-color="#D1D811" style="background-color: #D1D811;" 
+                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
+                                                     data-color="#D1D811" style="background-color: #D1D811; border-radius: 0;" 
                                                      onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-4 h-4 border cursor-pointer" 
-                                                     data-color="#DDA0DD" style="background-color: #DDA0DD;" 
+                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
+                                                     data-color="#DDA0DD" style="background-color: #DDA0DD; border-radius: 0;" 
                                                      onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-4 h-4 border cursor-pointer" 
-                                                     data-color="#AD6A0D" style="background-color: #AD6A0D;" 
+                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
+                                                     data-color="#AD6A0D" style="background-color: #AD6A0D; border-radius: 0;" 
                                                      onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-4 h-4 border cursor-pointer" 
-                                                     data-color="#8516EE" style="background-color: #8516EE;" 
+                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
+                                                     data-color="#8516EE" style="background-color: #8516EE; border-radius: 0;" 
                                                      onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-4 h-4 border cursor-pointer" 
-                                                     data-color="#0CEB0C" style="background-color: #0CEB0C;" 
+                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
+                                                     data-color="#0CEB0C" style="background-color: #0CEB0C; border-radius: 0;" 
                                                      onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-4 h-4 border cursor-pointer" 
-                                                     data-color="#BE12E0" style="background-color: #BE12E0;" 
+                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
+                                                     data-color="#BE12E0" style="background-color: #BE12E0; border-radius: 0;" 
                                                      onclick="selectChildColor(this, '{{ child.id }}')"></div>
                                             </div>
                                             <input type="hidden" name="colour" value="{{ child.colour }}" id="childColor{{ child.id }}">
                                         </div>
                                         
-                                        <div class="flex gap-1">
-                                            <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-2 border-2 border-secondary transition-all duration-200 tracking-wide text-xs">
+                                        <div class="flex gap-1 pt-1">
+                                            <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-2 border-2 border-secondary transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
                                                 Save
                                             </button>
-                                            <button type="button" onclick="toggleChildEdit({{ child.id }})" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs">
+                                            <button type="button" onclick="toggleChildEdit({{ child.id }})" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
                                                 Cancel
                                             </button>
                                         </div>
@@ -417,18 +417,18 @@
                     </div>
                     
                     <!-- Child Form Mobile -->
-                    <div id="childFormMobile" class="hidden border-b-2 border-secondary bg-purple-25 p-3">
-                        <form method="post" class="space-y-3">
+                    <div id="childFormMobile" class="hidden border-b-2 border-secondary bg-purple-25 p-2 rounded-none" style="border-radius: 0;">
+                        <form method="post" class="space-y-2">
                             {% csrf_token %}
                             <input type="hidden" name="add_child" value="1">
                             
                             <div>
-                                <label for="{{ child_form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                <label for="{{ child_form.name.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Name</label>
                                 {{ child_form.name }}
                             </div>
                             
                             <div>
-                                <label for="{{ child_form.birth_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ child_form.birth_date.label }}</label>
+                                <label for="{{ child_form.birth_date.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">{{ child_form.birth_date.label }}</label>
                                 {{ child_form.birth_date }}
                                 {% if child_form.birth_date.help_text %}
                                     <p class="text-xs text-gray-500 mt-1">{{ child_form.birth_date.help_text }}</p>
@@ -436,97 +436,97 @@
                             </div>
                             
                             <div>
-                                <label for="{{ child_form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">School</label>
+                                <label for="{{ child_form.school.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">School</label>
                                 {{ child_form.school }}
                             </div>
                             
                             <div>
-                                <label for="{{ child_form.year.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                                <label for="{{ child_form.year.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Year</label>
                                 {{ child_form.year }}
                             </div>
                             
                             <div>
-                                <label for="{{ child_form.class_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                                <label for="{{ child_form.class_name.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Class</label>
                                 {{ child_form.class_name }}
                             </div>
                             
                             <div>
-                                <label for="{{ child_form.colour.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Colour</label>
+                                <label for="{{ child_form.colour.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Colour</label>
                                 <!-- Hidden select field -->
                                 {{ child_form.colour }}
                                 
                                 <!-- Custom color grid -->
-                                <div class="color-grid-widget" data-target="{{ child_form.colour.id_for_label }}">
+                                <div class="color-grid-widget rounded-none" data-target="{{ child_form.colour.id_for_label }}" style="border-radius: 0;">
                                     <div class="color-dots-grid">
-                                        <div class="color-dot selected" 
+                                        <div class="color-dot selected rounded-none" 
                                              data-color="#FF6B6B"
                                              onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #FF6B6B;"
+                                             style="background-color: #FF6B6B; border-radius: 0;"
                                              title="Coral Red">
                                         </div>
-                                        <div class="color-dot" 
+                                        <div class="color-dot rounded-none" 
                                              data-color="#4ECDC4"
                                              onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #4ECDC4;"
+                                             style="background-color: #4ECDC4; border-radius: 0;"
                                              title="Turquoise">
                                         </div>
-                                        <div class="color-dot" 
+                                        <div class="color-dot rounded-none" 
                                              data-color="#0D6A80"
                                              onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #0D6A80;"
+                                             style="background-color: #0D6A80; border-radius: 0;"
                                              title="Sky Blue">
                                         </div>
-                                        <div class="color-dot" 
+                                        <div class="color-dot rounded-none" 
                                              data-color="#96CEB4"
                                              onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #96CEB4;"
+                                             style="background-color: #96CEB4; border-radius: 0;"
                                              title="Mint Green">
                                         </div>
-                                        <div class="color-dot" 
+                                        <div class="color-dot rounded-none" 
                                              data-color="#D1D811"
                                              onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #D1D811;"
+                                             style="background-color: #D1D811; border-radius: 0;"
                                              title="Sunny Yellow">
                                         </div>
-                                        <div class="color-dot" 
+                                        <div class="color-dot rounded-none" 
                                              data-color="#DDA0DD"
                                              onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #DDA0DD;"
+                                             style="background-color: #DDA0DD; border-radius: 0;"
                                              title="Plum Purple">
                                         </div>
-                                        <div class="color-dot" 
+                                        <div class="color-dot rounded-none" 
                                              data-color="#AD6A0D"
                                              onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #AD6A0D;"
+                                             style="background-color: #AD6A0D; border-radius: 0;"
                                              title="Peach Orange">
                                         </div>
-                                        <div class="color-dot" 
+                                        <div class="color-dot rounded-none" 
                                              data-color="#8516EE"
                                              onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #8516EE;"
+                                             style="background-color: #8516EE; border-radius: 0;"
                                              title="Light Blue">
                                         </div>
-                                        <div class="color-dot" 
+                                        <div class="color-dot rounded-none" 
                                              data-color="#0CEB0C"
                                              onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #0CEB0C;"
+                                             style="background-color: #0CEB0C; border-radius: 0;"
                                              title="Pale Green">
                                         </div>
-                                        <div class="color-dot" 
+                                        <div class="color-dot rounded-none" 
                                              data-color="#BE12E0"
                                              onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #BE12E0;"
+                                             style="background-color: #BE12E0; border-radius: 0;"
                                              title="Bright Pink">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="flex gap-2">
-                                <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-2 px-4 border-2 border-secondary transition-all duration-200 tracking-wide text-sm">
+                            <div class="flex gap-1 pt-1">
+                                <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-2 border-2 border-secondary transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
                                     Add Child
                                 </button>
-                                <button type="button" onclick="toggleChildForm(true)" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm">
+                                <button type="button" onclick="toggleChildForm(true)" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
                                     Cancel
                                 </button>
                             </div>
@@ -564,8 +564,8 @@
                             </div>
                             
                             <!-- Entry Form -->
-                            <div id="entryFormMobile" class="hidden border-b-2 border-primary bg-gray-25 p-3">
-                                <form method="post" class="space-y-3">
+                            <div id="entryFormMobile" class="hidden border-b-2 border-primary bg-gray-25 p-2 rounded-none" style="border-radius: 0;">
+                                <form method="post" class="space-y-2">
                                     {% csrf_token %}
                                     <input type="hidden" name="add_entry" value="1">
                                     
@@ -594,11 +594,11 @@
                                         {{ form.description }}
                                     </div>
                                     
-                                    <div class="flex gap-2">
-                                        <button type="submit" class="bg-primary hover:bg-secondary text-white font-normal py-1 px-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs">
+                                    <div class="flex gap-1 pt-1">
+                                        <button type="submit" class="bg-primary hover:bg-secondary text-white font-normal py-1 px-2 border-2 border-primary transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
                                             Save Entry
                                         </button>
-                                        <button type="button" onclick="toggleEntryForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs">
+                                        <button type="button" onclick="toggleEntryForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
                                             Cancel
                                         </button>
                                     </div>
@@ -653,8 +653,8 @@
                             </div>
                             
                             <!-- Notes Form -->
-                            <div id="notesFormMobile" class="hidden border-b-2 border-green-600 bg-green-25 p-3">
-                                <form method="post" class="space-y-3">
+                            <div id="notesFormMobile" class="hidden border-b-2 border-green-600 bg-green-25 p-2 rounded-none" style="border-radius: 0;">
+                                <form method="post" class="space-y-2">
                                     {% csrf_token %}
                                     <input type="hidden" name="add_note" value="1">
                                     
@@ -680,11 +680,11 @@
                                     
                                     {{ note_form.entry_type }}
                                     
-                                    <div class="flex gap-2">
-                                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs">
+                                    <div class="flex gap-1 pt-1">
+                                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-2 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
                                             Save Note
                                         </button>
-                                        <button type="button" onclick="toggleNotesForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs">
+                                        <button type="button" onclick="toggleNotesForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
                                             Cancel
                                         </button>
                                     </div>
@@ -745,8 +745,8 @@
                         </div>
                         
                         <!-- Child Form -->
-                        <div id="childFormDesktop" class="hidden border-b-2 border-secondary bg-purple-25 p-4">
-                            <form method="post" class="space-y-4">
+                        <div id="childFormDesktop" class="hidden border-b-2 border-secondary bg-purple-25 p-3 rounded-none" style="border-radius: 0;">
+                            <form method="post" class="space-y-3">
                                 {% csrf_token %}
                                 <input type="hidden" name="add_child" value="1">
                                 
@@ -784,66 +784,66 @@
                                     {{ child_form.colour }}
                                     
                                     <!-- Custom color grid -->
-                                    <div class="color-grid-widget" data-target="{{ child_form.colour.id_for_label }}">
+                                    <div class="color-grid-widget rounded-none" data-target="{{ child_form.colour.id_for_label }}" style="border-radius: 0;">
                                         <div class="color-dots-grid">
-                                            <div class="color-dot selected" 
+                                            <div class="color-dot selected rounded-none" 
                                                  data-color="#FF6B6B"
                                                  onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #FF6B6B;"
+                                                 style="background-color: #FF6B6B; border-radius: 0;"
                                                  title="Coral Red">
                                             </div>
-                                            <div class="color-dot" 
+                                            <div class="color-dot rounded-none" 
                                                  data-color="#4ECDC4"
                                                  onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #4ECDC4;"
+                                                 style="background-color: #4ECDC4; border-radius: 0;"
                                                  title="Turquoise">
                                             </div>
-                                            <div class="color-dot" 
+                                            <div class="color-dot rounded-none" 
                                                  data-color="#0D6A80"
                                                  onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #0D6A80;"
+                                                 style="background-color: #0D6A80; border-radius: 0;"
                                                  title="Sky Blue">
                                             </div>
-                                            <div class="color-dot" 
+                                            <div class="color-dot rounded-none" 
                                                  data-color="#96CEB4"
                                                  onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #96CEB4;"
+                                                 style="background-color: #96CEB4; border-radius: 0;"
                                                  title="Mint Green">
                                             </div>
-                                            <div class="color-dot" 
+                                            <div class="color-dot rounded-none" 
                                                  data-color="#D1D811"
                                                  onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #D1D811;"
+                                                 style="background-color: #D1D811; border-radius: 0;"
                                                  title="Sunny Yellow">
                                             </div>
-                                            <div class="color-dot" 
+                                            <div class="color-dot rounded-none" 
                                                  data-color="#DDA0DD"
                                                  onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #DDA0DD;"
+                                                 style="background-color: #DDA0DD; border-radius: 0;"
                                                  title="Plum Purple">
                                             </div>
-                                            <div class="color-dot" 
+                                            <div class="color-dot rounded-none" 
                                                  data-color="#AD6A0D"
                                                  onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #AD6A0D;"
+                                                 style="background-color: #AD6A0D; border-radius: 0;"
                                                  title="Peach Orange">
                                             </div>
-                                            <div class="color-dot" 
+                                            <div class="color-dot rounded-none" 
                                                  data-color="#8516EE"
                                                  onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #8516EE;"
+                                                 style="background-color: #8516EE; border-radius: 0;"
                                                  title="Light Blue">
                                             </div>
-                                            <div class="color-dot" 
+                                            <div class="color-dot rounded-none" 
                                                  data-color="#0CEB0C"
                                                  onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #0CEB0C;"
+                                                 style="background-color: #0CEB0C; border-radius: 0;"
                                                  title="Pale Green">
                                             </div>
-                                            <div class="color-dot" 
+                                            <div class="color-dot rounded-none" 
                                                  data-color="#BE12E0"
                                                  onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #BE12E0;"
+                                                 style="background-color: #BE12E0; border-radius: 0;"
                                                  title="Bright Pink">
                                             </div>
                                         </div>
@@ -851,10 +851,10 @@
                                 </div>
                                 
                                 <div class="flex gap-2">
-                                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-2 px-4 border-2 border-secondary transition-all duration-200 tracking-wide text-sm">
+                                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-3 border-2 border-secondary transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                         Add Child
                                     </button>
-                                    <button type="button" onclick="toggleChildForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm">
+                                    <button type="button" onclick="toggleChildForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                         Cancel
                                     </button>
                                 </div>
@@ -895,82 +895,82 @@
                                     </div>
                                     
                                     <!-- Child Edit Form Dropdown -->
-                                    <div id="childEdit{{ child.id }}Desktop" class="hidden border-t-2 border-secondary bg-purple-25 p-4">
-                                        <form method="post" action="{% url 'edit_child' child.id %}" class="space-y-4">
+                                    <div id="childEdit{{ child.id }}Desktop" class="hidden border-t-2 border-secondary bg-purple-25 p-3 rounded-none" style="border-radius: 0;">
+                                        <form method="post" action="{% url 'edit_child' child.id %}" class="space-y-3">
                                             {% csrf_token %}
                                             
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
                                                 <input type="text" name="name" value="{{ child.name }}" 
-                                                       class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm">
+                                                       class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
                                             </div>
                                             
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
                                                 <input type="date" name="birth_date" value="{{ child.birth_date|date:'Y-m-d' }}" 
-                                                       class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm">
+                                                       class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
                                             </div>
                                             
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">School</label>
                                                 <input type="text" name="school" value="{{ child.school|default:'' }}" 
-                                                       class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm">
+                                                       class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
                                             </div>
                                             
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
                                                 <input type="text" name="year" value="{{ child.year|default:'' }}" 
-                                                       class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm">
+                                                       class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
                                             </div>
                                             
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">Class</label>
                                                 <input type="text" name="class_name" value="{{ child.class_name|default:'' }}" 
-                                                       class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm">
+                                                       class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
                                             </div>
                                             
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-1">Color</label>
-                                                <div class="flex gap-2 flex-wrap">
-                                                    <div class="color-dot-small w-6 h-6 border cursor-pointer {{ child.colour|yesno:'selected,' }}" 
-                                                         data-color="#FF6B6B" style="background-color: #FF6B6B;" 
+                                                <div class="flex gap-1 flex-wrap">
+                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none {{ child.colour|yesno:'selected,' }}" 
+                                                         data-color="#FF6B6B" style="background-color: #FF6B6B; border-radius: 0;" 
                                                          onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-6 h-6 border cursor-pointer" 
-                                                         data-color="#4ECDC4" style="background-color: #4ECDC4;" 
+                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                         data-color="#4ECDC4" style="background-color: #4ECDC4; border-radius: 0;" 
                                                          onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-6 h-6 border cursor-pointer" 
-                                                         data-color="#0D6A80" style="background-color: #0D6A80;" 
+                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                         data-color="#0D6A80" style="background-color: #0D6A80; border-radius: 0;" 
                                                          onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-6 h-6 border cursor-pointer" 
-                                                         data-color="#96CEB4" style="background-color: #96CEB4;" 
+                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                         data-color="#96CEB4" style="background-color: #96CEB4; border-radius: 0;" 
                                                          onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-6 h-6 border cursor-pointer" 
-                                                         data-color="#D1D811" style="background-color: #D1D811;" 
+                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                         data-color="#D1D811" style="background-color: #D1D811; border-radius: 0;" 
                                                          onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-6 h-6 border cursor-pointer" 
-                                                         data-color="#DDA0DD" style="background-color: #DDA0DD;" 
+                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                         data-color="#DDA0DD" style="background-color: #DDA0DD; border-radius: 0;" 
                                                          onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-6 h-6 border cursor-pointer" 
-                                                         data-color="#AD6A0D" style="background-color: #AD6A0D;" 
+                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                         data-color="#AD6A0D" style="background-color: #AD6A0D; border-radius: 0;" 
                                                          onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-6 h-6 border cursor-pointer" 
-                                                         data-color="#8516EE" style="background-color: #8516EE;" 
+                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                         data-color="#8516EE" style="background-color: #8516EE; border-radius: 0;" 
                                                          onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-6 h-6 border cursor-pointer" 
-                                                         data-color="#0CEB0C" style="background-color: #0CEB0C;" 
+                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                         data-color="#0CEB0C" style="background-color: #0CEB0C; border-radius: 0;" 
                                                          onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-6 h-6 border cursor-pointer" 
-                                                         data-color="#BE12E0" style="background-color: #BE12E0;" 
+                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                         data-color="#BE12E0" style="background-color: #BE12E0; border-radius: 0;" 
                                                          onclick="selectChildColor(this, '{{ child.id }}')"></div>
                                                 </div>
                                                 <input type="hidden" name="colour" value="{{ child.colour }}" id="childColor{{ child.id }}">
                                             </div>
                                             
                                             <div class="flex gap-2">
-                                                <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-2 px-4 border-2 border-secondary transition-all duration-200 tracking-wide text-sm">
+                                                <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-3 border-2 border-secondary transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                                     Save Changes
                                                 </button>
-                                                <button type="button" onclick="toggleChildEdit({{ child.id }})" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm">
+                                                <button type="button" onclick="toggleChildEdit({{ child.id }})" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                                     Cancel
                                                 </button>
                                             </div>
@@ -1011,12 +1011,12 @@
                         </div>
                         
                         <!-- Entry Form -->
-                        <div id="entryFormDesktop" class="hidden border-b-2 border-primary bg-gray-25 p-4">
-                            <form method="post" class="space-y-4">
+                        <div id="entryFormDesktop" class="hidden border-b-2 border-primary bg-gray-25 p-3 rounded-none" style="border-radius: 0;">
+                            <form method="post" class="space-y-3">
                                 {% csrf_token %}
                                 <input type="hidden" name="add_entry" value="1">
                                 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
                                         <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
                                         {{ form.title }}
@@ -1044,10 +1044,10 @@
                                 </div>
                                 
                                 <div class="flex gap-2">
-                                    <button type="submit" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide text-sm">
+                                    <button type="submit" class="bg-primary hover:bg-secondary text-white font-normal py-1 px-3 border-2 border-primary transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                         Save Entry
                                     </button>
-                                    <button type="button" onclick="toggleEntryForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm">
+                                    <button type="button" onclick="toggleEntryForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                         Cancel
                                     </button>
                                 </div>
@@ -1110,8 +1110,8 @@
                         </div>
                         
                         <!-- Notes Form -->
-                        <div id="notesFormDesktop" class="hidden border-b-2 border-green-600 bg-green-25 p-4">
-                            <form method="post" class="space-y-4">
+                        <div id="notesFormDesktop" class="hidden border-b-2 border-green-600 bg-green-25 p-3 rounded-none" style="border-radius: 0;">
+                            <form method="post" class="space-y-3">
                                 {% csrf_token %}
                                 <input type="hidden" name="add_note" value="1">
                                 
@@ -1138,10 +1138,10 @@
                                 {{ note_form.entry_type }}
                                 
                                 <div class="flex gap-2">
-                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 border-2 border-green-600 transition-all duration-200 tracking-wide text-sm">
+                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                         Save Note
                                     </button>
-                                    <button type="button" onclick="toggleNotesForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm">
+                                    <button type="button" onclick="toggleNotesForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                         Cancel
                                     </button>
                                 </div>

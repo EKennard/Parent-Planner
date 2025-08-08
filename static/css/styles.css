@@ -60,7 +60,7 @@ code, pre, .font-mono {
     background-color: #4F46E5;
     color: white;
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: 0;
     transition: background-color 0.2s;
     border: none;
     cursor: pointer;
@@ -76,7 +76,7 @@ code, pre, .font-mono {
     background-color: #7C3AED;
     color: white;
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: 0;
     transition: background-color 0.2s;
     border: none;
     cursor: pointer;
@@ -92,7 +92,7 @@ code, pre, .font-mono {
     background-color: #F59E0B;
     color: white;
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: 0;
     transition: background-color 0.2s;
     border: none;
     cursor: pointer;
@@ -107,7 +107,7 @@ code, pre, .font-mono {
 /* Card Styles */
 .card {
     background-color: #FFFFFF;
-    border-radius: 0.5rem;
+    border-radius: 0;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     padding: 1.5rem;
     border: 1px solid #E2E8F0;
@@ -115,7 +115,7 @@ code, pre, .font-mono {
 
 .child-card {
     background-color: #FFFFFF;
-    border-radius: 0.5rem;
+    border-radius: 0;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     padding: 1.5rem;
     border: 1px solid #E2E8F0;
@@ -129,7 +129,7 @@ code, pre, .font-mono {
 
 .stats-card {
     background-color: #FFFFFF;
-    border-radius: 0.5rem;
+    border-radius: 0;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     padding: 1.5rem;
     border: 1px solid #E2E8F0;
@@ -141,7 +141,7 @@ code, pre, .font-mono {
     width: 100%;
     padding: 0.5rem 0.75rem;
     border: 1px solid #E2E8F0;
-    border-radius: 0.375rem;
+    border-radius: 0;
     outline: none;
     font-family: 'Inter', sans-serif;
     background-color: #FFFFFF;
@@ -168,7 +168,7 @@ code, pre, .font-mono {
     border: 1px solid #22C55E;
     color: #166534;
     padding: 0.75rem 1rem;
-    border-radius: 0.375rem;
+    border-radius: 0;
     margin-bottom: 1rem;
     font-family: 'Inter', sans-serif;
 }
@@ -178,7 +178,7 @@ code, pre, .font-mono {
     border: 1px solid #EF4444;
     color: #DC2626;
     padding: 0.75rem 1rem;
-    border-radius: 0.375rem;
+    border-radius: 0;
     margin-bottom: 1rem;
     font-family: 'Inter', sans-serif;
 }
@@ -188,7 +188,7 @@ code, pre, .font-mono {
     border: 1px solid #F59E0B;
     color: #92400E;
     padding: 0.75rem 1rem;
-    border-radius: 0.375rem;
+    border-radius: 0;
     margin-bottom: 1rem;
     font-family: 'Inter', sans-serif;
 }
@@ -197,7 +197,7 @@ code, pre, .font-mono {
 .nav-link {
     color: #64748B;
     padding: 0.5rem 0.75rem;
-    border-radius: 0.375rem;
+    border-radius: 0;
     text-decoration: none;
     transition: color 0.2s;
     font-family: 'Inter', sans-serif;
@@ -281,4 +281,32 @@ code, pre, .font-mono {
         font-size: 1.875rem !important;
         line-height: 2.25rem !important;
     }
+}
+
+/* Crisp Corner Design - Override all rounded corners */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+select,
+textarea,
+button,
+.btn,
+.card,
+.form-control,
+.form-select {
+    border-radius: 0 !important;
+}
+
+/* Additional Django form widget overrides */
+.django-widget input,
+.django-widget select,
+.django-widget textarea {
+    border-radius: 0 !important;
 }

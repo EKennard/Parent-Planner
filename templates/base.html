@@ -53,7 +53,7 @@
         .task-time-input {
             background-color: #f8fafc !important;
             border: 2px solid #4F46E5 !important;
-            border-radius: 6px !important;
+            border-radius: 0 !important;
             padding: 0.75rem !important;
             font-weight: 400 !important;
             font-family: 'Poppins', 'Nunito', system-ui, sans-serif !important;
@@ -103,7 +103,7 @@
         select {
             background-color: #f8fafc !important;
             border: 2px solid #4F46E5 !important;
-            border-radius: 6px !important;
+            border-radius: 0 !important;
             padding: 0.75rem !important;
             font-weight: 400 !important;
             font-family: 'Poppins', 'Nunito', system-ui, sans-serif !important;
@@ -208,6 +208,35 @@
         
         [id^="toggle-icon-"] {
             transition: transform 0.2s ease-in-out;
+        }
+
+        /* CRISP CORNER DESIGN SYSTEM - OVERRIDE ALL ROUNDED ELEMENTS */
+        * {
+            border-radius: 0 !important;
+        }
+        
+        /* Comprehensive form element overrides */
+        input, select, textarea, button, 
+        .btn, .form-control, .form-select,
+        [class*="rounded"], [class*="border-radius"],
+        .card, .modal, .dropdown-menu,
+        .alert, .badge, .tooltip, .popover,
+        .nav-pills .nav-link, .nav-tabs .nav-link,
+        .breadcrumb, .pagination .page-link,
+        .progress, .progress-bar,
+        .list-group-item, .table,
+        div[class*="bg-"], span[class*="bg-"],
+        .color-dot, .color-dot-small,
+        [role="button"], [type="button"],
+        [type="submit"], [type="reset"] {
+            border-radius: 0 !important;
+        }
+        
+        /* Override any Tailwind rounded classes */
+        .rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-full,
+        .rounded-t, .rounded-r, .rounded-b, .rounded-l,
+        .rounded-tl, .rounded-tr, .rounded-br, .rounded-bl {
+            border-radius: 0 !important;
         }
     </style>
     {% block extra_head %}{% endblock %}
