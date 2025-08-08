@@ -1,15 +1,188 @@
 /**
  * Dashboard JavaScript Functionality
- * Handles entry filtering, completion toggling, and UI interactions
+ * Handles entry filtering, completion toggling, expandable cards, and UI interactions
+ * Enhanced for Heroku deployment reliability
  */
+
+console.log('Dashboard.js loading...');
+
+// Immediately define global functions to prevent "not defined" errors
+// Use try-catch for error handling
+(function() {
+    'use strict';
+    
+    console.log('Dashboard.js initializing functions...');
+
+    // Immediately define global functions to prevent "not defined" errors
+    window.toggleEntryDetails = function(entryId) {
+        console.log('toggleEntryDetails called with entryId:', entryId);
+        
+        try {
+            // Direct implementation without waiting for DashboardUtils
+            const detailsSection = document.getElementById('entry-details-' + entryId);
+            const toggleIcon = document.getElementById('toggle-icon-' + entryId);
+            
+            console.log('Details section found:', !!detailsSection);
+            console.log('Toggle icon found:', !!toggleIcon);
+            
+            if (!detailsSection || !toggleIcon) {
+                console.error('Could not find elements for entry:', entryId);
+                return;
+            }
+            
+            if (detailsSection.classList.contains('hidden')) {
+                // Expand the card
+                detailsSection.classList.remove('hidden');
+                toggleIcon.style.transform = 'rotate(180deg)';
+                toggleIcon.textContent = '▲';
+                console.log('Entry expanded:', entryId);
+            } else {
+                // Collapse the card
+                detailsSection.classList.add('hidden');
+                toggleIcon.style.transform = 'rotate(0deg)';
+                toggleIcon.textContent = '▼';
+                console.log('Entry collapsed:', entryId);
+            }
+        } catch (error) {
+            console.error('Error in toggleEntryDetails:', error);
+        }
+    };
+
+    window.toggleDetails = function(detailsId) {
+        try {
+            const details = document.getElementById(detailsId);
+            const button = details ? details.previousElementSibling : null;
+            
+            if (!details) return;
+            
+            if (details.classList.contains('hidden')) {
+                details.classList.remove('hidden');
+                if (button) button.innerHTML = 'Hide Details ▲';
+            } else {
+                details.classList.add('hidden');
+                if (button) button.innerHTML = 'View Details ▼';
+            }
+        } catch (error) {
+            console.error('Error in toggleDetails:', error);
+        }
+    };
+
+    window.toggleCompletion = function(entryId) {
+        try {
+            const checkbox = document.getElementById('complete-' + entryId);
+            const label = checkbox ? checkbox.nextElementSibling : null;
+            
+            if (!checkbox) return;
+            
+            // Use basic functionality that doesn't rely on external utilities
+            if (label) {
+                label.textContent = checkbox.checked ? 'Done' : 'To Do';
+            }
+            
+            // If DashboardUtils is available, use advanced functionality
+            if (window.DashboardUtils && window.DashboardUtils.toggleCompletion) {
+                window.DashboardUtils.toggleCompletion(entryId);
+            }
+        } catch (error) {
+            console.error('Error in toggleCompletion:', error);
+        }
+    };
+
+    window.confirmDelete = function(entryTitle, deleteUrl) {
+        try {
+            if (confirm('Are you sure you want to delete "' + entryTitle + '"? This action cannot be undone.')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = deleteUrl;
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrfmiddlewaretoken';
+                    csrfInput.value = csrfToken.value;
+                    form.appendChild(csrfInput);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        } catch (error) {
+            console.error('Error in confirmDelete:', error);
+        }
+    };
+
+    window.toggleEntryType = function(entryType) {
+        try {
+            // If DashboardUtils is available, use it; otherwise use basic functionality
+            if (window.DashboardUtils && window.DashboardUtils.toggleEntryType) {
+                window.DashboardUtils.toggleEntryType(entryType);
+            } else {
+                // Basic fallback functionality
+                const button = document.getElementById('filter-' + entryType);
+                const entries = document.querySelectorAll('.entry-card[data-entry-type="' + entryType + '"]');
+                
+                if (!button) return;
+                
+                const isActive = button.classList.contains('border-4');
+                
+                if (isActive) {
+                    // Hide entries
+                    entries.forEach(entry => entry.style.display = 'none');
+                    button.classList.remove('border-4');
+                    button.classList.add('border');
+                } else {
+                    // Show entries  
+                    entries.forEach(entry => entry.style.display = 'block');
+                    button.classList.remove('border');
+                    button.classList.add('border-4');
+                }
+            }
+        } catch (error) {
+            console.error('Error in toggleEntryType:', error);
+        }
+    };
+
+    console.log('Global functions defined successfully');
+})();
 
 // Global dashboard utilities
 window.DashboardUtils = {
     // Entry filtering system
-    activeFilters: new Set(['note', 'task', 'event']), // All types visible by default
+    activeFilters: new Set(['task', 'event']), // All types visible by default (notes moved to child pages)
 
     /**
-     * Toggle details section visibility
+     * Toggle expandable entry card details
+     */
+    toggleEntryDetails: function(entryId) {
+        console.log('Toggling entry:', entryId); // Debug logging
+        
+        const detailsSection = document.getElementById(`entry-details-${entryId}`);
+        const toggleIcon = document.getElementById(`toggle-icon-${entryId}`);
+        
+        console.log('Details section:', detailsSection);
+        console.log('Toggle icon:', toggleIcon);
+        
+        if (!detailsSection || !toggleIcon) {
+            console.error('Could not find elements for entry:', entryId);
+            return;
+        }
+        
+        if (detailsSection.classList.contains('hidden')) {
+            // Expand the card
+            detailsSection.classList.remove('hidden');
+            toggleIcon.style.transform = 'rotate(180deg)';
+            toggleIcon.textContent = '▲';
+        } else {
+            // Collapse the card
+            detailsSection.classList.add('hidden');
+            toggleIcon.style.transform = 'rotate(0deg)';
+            toggleIcon.textContent = '▼';
+        }
+    },
+
+    /**
+     * Toggle details section visibility (legacy support)
      */
     toggleDetails: function(detailsId) {
         const details = document.getElementById(detailsId);
@@ -111,10 +284,7 @@ window.DashboardUtils = {
             // Hide this type - remove bold outline
             this.activeFilters.delete(entryType);
             button.classList.remove('border-4');
-            if (entryType === 'note') {
-                button.classList.remove('border-green-800');
-                button.classList.add('border', 'border-green-600');
-            } else if (entryType === 'task') {
+            if (entryType === 'task') {
                 button.classList.remove('border-amber-800');
                 button.classList.add('border', 'border-amber-600');
             } else if (entryType === 'event') {
@@ -126,10 +296,7 @@ window.DashboardUtils = {
             this.activeFilters.add(entryType);
             button.classList.remove('border');
             button.classList.add('border-4');
-            if (entryType === 'note') {
-                button.classList.remove('border-green-600');
-                button.classList.add('border-green-800');
-            } else if (entryType === 'task') {
+            if (entryType === 'task') {
                 button.classList.remove('border-amber-600');
                 button.classList.add('border-amber-800');
             } else if (entryType === 'event') {
@@ -180,6 +347,8 @@ window.DashboardUtils = {
      * Initialize dashboard functionality
      */
     initialize: function() {
+        console.log('DashboardUtils.initialize() called');
+        
         // Set all filter buttons to active state with bold borders initially
         const noteBtn = document.getElementById('filter-note');
         const taskBtn = document.getElementById('filter-task');
@@ -202,27 +371,24 @@ window.DashboardUtils = {
                 }
             });
         });
+        
+        console.log('DashboardUtils initialization complete');
     }
 };
 
-// Export functions to global scope for compatibility with existing HTML onclick attributes
-window.toggleDetails = function(detailsId) {
-    window.DashboardUtils.toggleDetails(detailsId);
-};
-
-window.toggleCompletion = function(entryId) {
-    window.DashboardUtils.toggleCompletion(entryId);
-};
-
-window.confirmDelete = function(entryTitle, deleteUrl) {
-    window.DashboardUtils.confirmDelete(entryTitle, deleteUrl);
-};
-
-window.toggleEntryType = function(entryType) {
-    window.DashboardUtils.toggleEntryType(entryType);
-};
-
-// Initialize on page load
+// Initialize on page load with multiple fallbacks
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded event fired, initializing dashboard...');
     window.DashboardUtils.initialize();
 });
+
+// Also ensure it runs if DOM is already loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded event fired, initializing dashboard...');
+        window.DashboardUtils.initialize();
+    });
+} else {
+    console.log('DOM already loaded, initializing dashboard immediately...');
+    window.DashboardUtils.initialize();
+}

@@ -282,3 +282,100 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'You have been successfully logged out.')
     return redirect('home')
+
+
+#-----------------------------UNIFIED DASHBOARD VIEW---------------------------------
+@login_required
+def unified_dashboard(request, child_id=None):
+    """
+    Unified view that handles both dashboard (child_id=None) and child profile (child_id provided) modes.
+    Uses the same template with different context to ensure 100% consistency.
+    """
+    parent, _ = Parent.objects.get_or_create(user=request.user)
+    
+    # Determine mode and get child if in child mode
+    child = None
+    if child_id:
+        child = get_object_or_404(Child, id=child_id, parent=parent)
+    
+    # Handle note form submission
+    if request.method == 'POST' and 'add_note' in request.POST:
+        note_form = noteForm(request.POST, parent=parent)
+        if note_form.is_valid():
+            note = note_form.save()
+            if child:
+                messages.success(request, f'Added note for {child.name}!')
+                return redirect('unified_child_view', child_id=child.id)
+            else:
+                messages.success(request, 'Note added successfully!')
+                return redirect('unified_dashboard')
+    else:
+        if child:
+            note_form = noteForm(parent=parent, initial={'child': child})
+        else:
+            note_form = noteForm(parent=parent)
+
+    # Handle regular entry creation
+    if request.method == 'POST' and 'add_entry' in request.POST:
+        form = entryForm(request.POST, parent=parent)
+        if form.is_valid():
+            entry = form.save()
+            if child:
+                messages.success(request, f'Added {entry.get_entry_type_display().lower()} for {child.name}!')
+                return redirect('unified_child_view', child_id=child.id)
+            else:
+                messages.success(request, f'Added {entry.get_entry_type_display().lower()}!')
+                return redirect('unified_dashboard')
+    else:
+        if child:
+            form = entryForm(parent=parent, initial={'child': child})
+        else:
+            form = entryForm(parent=parent)
+
+    # Get children
+    if child:
+        children = [child]  # Only this child for child mode
+    else:
+        children = Child.objects.filter(parent=parent)  # All children for dashboard mode
+
+    # Get entries based on mode
+    if child:
+        # Child mode: Only entries for this child
+        all_entries = Entry.objects.filter(child=child).defer('is_completed')
+        entries = all_entries.exclude(entry_type='note').order_by('-created_at')
+        notes = all_entries.filter(entry_type='note').order_by('-created_at')
+    else:
+        # Dashboard mode: All entries for all children
+        all_entries = Entry.objects.filter(child__parent=parent).defer('is_completed')
+        entries = all_entries.exclude(entry_type='note').order_by('-created_at')
+        notes = all_entries.filter(entry_type='note').order_by('-created_at')
+
+    # Apply filtering for entries
+    entry_type_filter = request.GET.get('type')
+    if entry_type_filter in ['task', 'event']:
+        entries = entries.filter(entry_type=entry_type_filter)
+
+    # Calculate counts
+    total_entries = all_entries.count()
+    notes_count = notes.count()
+    tasks_count = all_entries.filter(entry_type='task').count()
+    events_count = all_entries.filter(entry_type='event').count()
+
+    context = {
+        'parent': parent,
+        'child': child,  # None for dashboard mode, Child object for child mode
+        'children': children,
+        'entries': entries,  # Timeline entries (no notes)
+        'notes': notes,  # Notes only
+        'active_entries': entries,  # For backward compatibility
+        'total_entries': total_entries,
+        'notes_count': notes_count,
+        'tasks_count': tasks_count,
+        'events_count': events_count,
+        'form': form,
+        'note_form': note_form,
+        'entry_type_filter': entry_type_filter,
+        'categories': Category.objects.all(),
+    }
+    
+    return render(request, 'unified_dashboard.html', context)

@@ -1,0 +1,72 @@
+<!-- Children Section Component -->
+<div class="bg-white border-2 border-primary shadow-lg mb-4 md:mb-0 md:h-full md:overflow-y-auto">
+    <!-- Family Management Header -->
+    <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl responsive-text-2xl font-normal text-gray-900 tracking-wide">Your Children</h2>
+            </div>
+            <div class="border-l-2 border-primary pl-3 sm:pl-4 flex items-center justify-center">
+                <a href="{% url 'add_child' %}"
+                    class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center"
+                    title="Add Child">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Children Cards Container -->
+    <div class="p-3 sm:p-4 md:p-6">
+        {% if children %}
+            <div class="space-y-3 sm:space-y-4">
+            {% for child in children %}
+                <div class="bg-gray-50 border-2 border-gray-200 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer"
+                     onclick="window.location='{% url 'child_entries' child.id %}'">
+                    <div class="p-3 sm:p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 sm:w-16 sm:h-16 border-2 border-primary flex items-center justify-center text-white font-normal text-lg sm:text-xl tracking-wide"
+                                     style="background-color: {{ child.colour }};">
+                                    {{ child.name|first|upper }}
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl responsive-text-2xl font-normal text-gray-900 tracking-wide mb-1">{{ child.name }}</h3>
+                                    <div class="flex flex-wrap gap-1 text-xs sm:text-sm text-gray-600">
+                                        {% if child.birth_date %}
+                                            <span>{{ child.birth_date|date:"M j, Y" }}</span>
+                                        {% endif %}
+                                        {% if child.school %}
+                                            <span>• {{ child.school }}</span>
+                                        {% endif %}
+                                        {% if child.year %}
+                                            <span>• Year {{ child.year }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-6 h-6 bg-primary border border-primary flex items-center justify-center"
+                                title="Click to manage entries">
+                                <span class="text-white text-xs">→</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-4 sm:py-8">
+            <div
+                class="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-6 bg-gray-100 border-2 border-primary flex items-center justify-center">
+                <div class="w-8 h-8 sm:w-12 sm:h-12 bg-primary border-2 border-primary"></div>
+            </div>
+            <a href="{% url 'add_child' %}"
+                class="bg-primary hover:bg-secondary text-white font-normal px-4 py-2 sm:px-8 sm:py-4 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg text-sm sm:text-base inline-flex items-center gap-2"
+                title="Add Your First Child">
+                <i class="fas fa-plus"></i>
+                <span>Add Your First Child</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>

@@ -4,10 +4,14 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    
+    # RESTORED ORIGINAL VIEWS
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('child/<int:child_id>/', views.child_entries, name='child_entries'),
+    
+    # Other views (unchanged)
     path('add-child/', views.add_child, name='add_child'),
     path('add-entry/', views.add_entry, name='add_entry'),
-    path('child/<int:child_id>/', views.child_entries, name='child_entries'),
     path('edit-child/<int:child_id>/', views.edit_child, name='edit_child'),
     path('delete-child/<int:child_id>/', views.delete_child, name='delete_child'),
     path('edit-entry/<int:entry_id>/', views.edit_entry, name='edit_entry'),

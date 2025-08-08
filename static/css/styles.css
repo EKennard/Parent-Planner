@@ -264,3 +264,21 @@ code, pre, .font-mono {
     line-height: 1.5;
     color: #64748B;
 }
+
+/* Ultra-wide Layout Support (screens 1700px+) */
+@media (min-width: 1700px) {
+    .ultra-wide-grid {
+        display: grid !important;
+        grid-template-columns: 384px 1fr 384px !important;
+        gap: 1.5rem !important;
+    }
+    
+    .ultra-wide-notes {
+        display: block !important;
+    }
+    
+    .responsive-text-2xl {
+        font-size: 1.875rem !important;
+        line-height: 2.25rem !important;
+    }
+}
