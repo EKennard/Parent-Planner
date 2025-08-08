@@ -183,14 +183,13 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Keep this for compatibility
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 
-# Disable default allauth messages
-ACCOUNT_SIGNUP_REDIRECT_URL = '/'
-ACCOUNT_LOGIN_REDIRECT_URL = '/'
+# Redirect to onboarding after signup, dashboard after login
+ACCOUNT_SIGNUP_REDIRECT_URL = '/add-child/?onboarding=true'
+ACCOUNT_LOGIN_REDIRECT_URL = '/dashboard/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 # Disable specific messages
 ACCOUNT_SESSION_REMEMBER = None
-LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # CSRF and Security Settings for Production

@@ -84,6 +84,8 @@ class childForm(forms.ModelForm):
             self.fields['colour'].initial = generate_random_color()
         # Make sure colour field is required so user must select a color
         self.fields['colour'].required = True
+        # Make sure name field is required and has proper validation
+        self.fields['name'].required = True
         
         # Set custom label and help text for birth date
         self.fields['birth_date'].label = 'Date of Birth'
@@ -104,6 +106,12 @@ class childForm(forms.ModelForm):
                 field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
             else:
                 field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50'
+    
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if not name or not name.strip():
+            raise forms.ValidationError('Child name is required and cannot be empty.')
+        return name.strip()
     
     def clean_birth_date(self):
         birth_date = self.cleaned_data.get('birth_date')

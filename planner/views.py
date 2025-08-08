@@ -12,34 +12,85 @@ def get_parent_or_redirect(request):
     try:
         return Parent.objects.get(user=request.user)
     except Parent.DoesNotExist:
-        messages.error(request, 'Access denied.')
-        return None
+        # For onboarding flow, create Parent object automatically
+        if request.GET.get('onboarding') == 'true' or request.POST.get('onboarding') == 'true':
+            parent = Parent.objects.create(user=request.user)
+            return parent
+        else:
+            messages.error(request, 'Access denied.')
+            return None
 
 
 # ----------------------------home view----------------------------
 def home(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
-    return redirect('account_login')
+    return render(request, 'landing.html')
 
-def registration(request):
-    if request.method == 'POST':
-        form = registrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('dashboard')
-    else:
-        form = registrationForm()
-    return render(request, 'registration/registration.html', {'form': form})
+# DEPRECATED: Custom registration view - using allauth instead
+# def registration(request):
+#     if request.method == 'POST':
+#         form = registrationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)
+#             # Start onboarding with first child creation
+#             return redirect('add_child') + '?onboarding=true'
+#     else:
+#         form = registrationForm()
+#     return render(request, 'registration/registration.html', {'form': form})
 
 
 #-----------------------------dashboard view---------------------------------
 @login_required
 def dashboard(request):
     parent, _ = Parent.objects.get_or_create(user=request.user)
-    children = Child.objects.filter(parent=parent)
-    all_entries = Entry.objects.filter(child__parent=parent).defer('is_completed')
+    
+    # Clear any old messages on fresh dashboard access (e.g. after login)
+    # This prevents messages from previous users/sessions from persisting
+    if request.method == 'GET' and not request.GET.get('page'):
+        storage = messages.get_messages(request)
+        list(storage)  # This clears the messages
+    
+    # Optimized queries with select_related for better performance
+    children = Child.objects.filter(parent=parent).order_by('name')
+    children_count = children.count()
+    
+    # Adaptive dashboard logic based on child count
+    dashboard_mode = 'empty'  # 0 children
+    if children_count == 1:
+        dashboard_mode = 'single_child'
+    elif children_count >= 2:
+        dashboard_mode = 'multi_child'
+    
+    # Optimized entry query - only fetch what we need with select_related
+    all_entries = Entry.objects.filter(child__parent=parent)\
+        .select_related('child')\
+        .order_by('-created_at')
+    
+    # Handle filtering by entry type (for All/Tasks/Events buttons)
+    entry_type_filter = request.GET.get('type', '')
+    if entry_type_filter == 'task':
+        filtered_entries = all_entries.filter(entry_type='task')
+    elif entry_type_filter == 'event':
+        filtered_entries = all_entries.filter(entry_type='event')
+    else:
+        # 'All' or no filter - exclude notes from main timeline
+        filtered_entries = all_entries.exclude(entry_type='note')
+    
+    # Handle entry form submission
+    if request.method == 'POST' and 'add_entry' in request.POST:
+        form = entryForm(request.POST, parent=parent)
+        if form.is_valid():
+            entry = form.save()
+            messages.success(request, f'Added {entry.get_entry_type_display().lower()}: {entry.title}')
+            return redirect('dashboard')
+    else:
+        # Pre-select child for single child mode
+        if dashboard_mode == 'single_child':
+            form = entryForm(parent=parent, initial={'child': children.first()})
+        else:
+            form = entryForm(parent=parent)
     
     # Handle note form submission
     if request.method == 'POST' and 'add_note' in request.POST:
@@ -49,32 +100,77 @@ def dashboard(request):
             messages.success(request, 'Note added successfully!')
             return redirect('dashboard')
     else:
-        note_form = noteForm(parent=parent)
+        # Pre-select child for single child mode
+        if dashboard_mode == 'single_child':
+            note_form = noteForm(parent=parent, initial={'child': children.first()})
+        else:
+            note_form = noteForm(parent=parent)
     
-    # Exclude notes from the main timeline
-    active_entries = all_entries.exclude(entry_type='note').order_by('-created_at')
+    # Handle child form submission
+    if request.method == 'POST' and 'add_child' in request.POST:
+        child_form = childForm(request.POST)
+        if child_form.is_valid():
+            child = child_form.save(commit=False)
+            child.parent = parent
+            child.save()
+            messages.success(request, f'Added {child.name} to your family!')
+            return redirect('dashboard')
+    else:
+        child_form = childForm()
     
-    # Get notes separately for the notes section
-    notes = all_entries.filter(entry_type='note').order_by('-created_at')
+    # Limit entries for better performance - only show recent entries on dashboard
+    active_entries = filtered_entries[:20]
     
-    # Calculate counts
-    total_entries = all_entries.count()
-    notes_count = all_entries.filter(entry_type='note').count()
-    tasks_count = all_entries.filter(entry_type='task').count()
-    events_count = all_entries.filter(entry_type='event').count()
+    # Get recent notes for the notes section - limit to 15
+    notes = all_entries.filter(entry_type='note')[:15]
+    
+    # Efficient counting using database aggregation
+    from django.db.models import Count, Q
+    entry_counts = all_entries.aggregate(
+        total=Count('id'),
+        notes=Count('id', filter=Q(entry_type='note')),
+        tasks=Count('id', filter=Q(entry_type='task')),
+        events=Count('id', filter=Q(entry_type='event'))
+    )
     
     context = {
         'parent': parent,
         'children': children,
+        'children_count': children_count,
+        'dashboard_mode': dashboard_mode,
+        'primary_child': children.first() if children_count == 1 else None,
         'active_entries': active_entries,
-        'total_entries': total_entries,
-        'notes_count': notes_count,
-        'tasks_count': tasks_count,
-        'events_count': events_count,
+        'total_entries': entry_counts['total'],
+        'notes_count': entry_counts['notes'],
+        'tasks_count': entry_counts['tasks'],
+        'events_count': entry_counts['events'],
+        'form': form,
         'note_form': note_form,
+        'child_form': child_form,
         'notes': notes,
     }
     return render(request, 'dashboard.html', context)
+
+
+@login_required
+def onboarding_decision(request, child_id):
+    """Show decision dialog after creating a child during onboarding"""
+    parent = get_parent_or_redirect(request)
+    if not parent:
+        return redirect('register')
+    
+    child = get_object_or_404(Child, id=child_id, parent=parent)
+    child_count = Child.objects.filter(parent=parent).count()
+    
+    # Debug: Print child name to check what we're getting
+    print(f"DEBUG: Child name is: '{child.name}'")
+    print(f"DEBUG: Child ID is: {child.id}")
+    
+    context = {
+        'child_name': child.name,
+        'child_count': child_count,
+    }
+    return render(request, 'planner/onboarding_decision.html', context)
 
 
 #-----------add child view----------------------------
@@ -82,20 +178,66 @@ def dashboard(request):
 def add_child(request):
     parent = get_parent_or_redirect(request)
     if not parent:
-        return redirect('register')
+        return redirect('account_signup')
+    
+    # Check if this is onboarding flow
+    is_onboarding = request.GET.get('onboarding') == 'true' or request.POST.get('onboarding') == 'true'
+    
+    # Clear messages on GET request for onboarding
+    if request.method == 'GET' and is_onboarding:
+        list(messages.get_messages(request))
+    
     if request.method == 'POST':
         form = childForm(request.POST)
+        print(f"DEBUG: Form data received: {request.POST}")
         if form.is_valid():
             child = form.save(commit=False)
-            child.parent = parent 
+            child.parent = parent
+            print(f"DEBUG: About to save child with name: '{child.name}'")
+            # TEMPORARY FIX: If name is empty, use a default
+            if not child.name or child.name.strip() == '':
+                child.name = request.POST.get('name', 'Test Child')
+                print(f"DEBUG: Name was empty, setting to: '{child.name}'")
             child.save()
-            messages.success(request, f'Added {child.name}!')
-            return redirect('dashboard')
+            print(f"DEBUG: Child created with name: '{child.name}'")
+            
+            if is_onboarding:
+                messages.success(request, f'Child profile for {child.name} created successfully!')
+                return redirect('onboarding_decision', child_id=child.id)
+            else:
+                messages.success(request, f'Added {child.name}!')
+                return redirect('dashboard')
         else:
+            print(f"DEBUG: Form is not valid. Errors: {form.errors}")
+            print(f"DEBUG: Form cleaned_data: {getattr(form, 'cleaned_data', 'No cleaned data')}")
             messages.error(request, 'Please correct the errors below.')
     else:
         form = childForm()
-    return render(request, 'planner/addChild.html', {'form': form})
+    
+    return render(request, 'planner/addChild.html', {
+        'form': form, 
+        'is_onboarding': is_onboarding
+    })
+
+
+@login_required 
+def onboarding_decision(request, child_id):
+    """
+    Decision dialog: Add another child or continue to dashboard
+    """
+    parent = get_parent_or_redirect(request)
+    if not parent:
+        return redirect('register')
+    
+    child = get_object_or_404(Child, id=child_id, parent=parent)
+    children = Child.objects.filter(parent=parent).order_by('name')
+    
+    context = {
+        'child': child,
+        'children': children,
+        'children_count': children.count()
+    }
+    return render(request, 'planner/onboarding_decision.html', context)
 
 
 #-----------------------add entry view----------------------------
@@ -108,6 +250,16 @@ def add_entry(request):
     if not children.exists():
         messages.error(request, 'You need to add at least one child profile before creating entries.')
         return redirect('add_child')
+    
+    # Check if child_id is provided (from child page or single-child dashboard)
+    child_id = request.GET.get('child_id')
+    initial_child = None
+    if child_id:
+        try:
+            initial_child = children.get(id=child_id)
+        except Child.DoesNotExist:
+            pass  # Invalid child_id, ignore and let user select
+    
     if request.method == 'POST':
         form = entryForm(request.POST, parent=parent)
         if form.is_valid():
@@ -121,8 +273,17 @@ def add_entry(request):
             print("Form data:", request.POST)  # Debug print
             messages.error(request, 'Please correct the errors below and try again.')
     else:
-        form = entryForm(parent=parent)
-    return render(request, 'planner/addEntry.html', {'form': form})
+        # Pre-select child if coming from child page
+        if initial_child:
+            form = entryForm(parent=parent, initial={'child': initial_child})
+        else:
+            form = entryForm(parent=parent)
+    
+    context = {
+        'form': form,
+        'initial_child': initial_child,  # Pass to template for context
+    }
+    return render(request, 'planner/addEntry.html', context)
 
 
 #-----------------------child entries view----------------------------

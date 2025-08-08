@@ -29,9 +29,6 @@
                                 <p class="text-gray-600 font-medium text-xs">{{ entries.count }} tasks/events, {{ notes.count }} notes</p>
                             </div>
                         </div>
-                        <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 border-2 border-primary transition-all duration-200 tracking-wide text-xs hover:shadow-lg flex items-center justify-center">
-                            <i class="fas fa-plus"></i>
-                        </a>
                     </div>
                 </div>
             </div>
@@ -66,7 +63,7 @@
                         </div>
                         
                         <!-- Entry Form -->
-                        <div id="entryForm" class="hidden border-b-2 border-primary bg-gray-25 p-3">
+                        <div id="entryFormMobile" class="hidden border-b-2 border-primary bg-gray-25 p-3">
                             <form method="post" class="space-y-3">
                                 {% csrf_token %}
                                 <input type="hidden" name="add_entry" value="1">
@@ -227,7 +224,7 @@
                         </div>
                         
                         <!-- Notes Form -->
-                        <div id="notesForm" class="hidden border-b-2 border-green-600 bg-green-25 p-3">
+                        <div id="notesFormMobile" class="hidden border-b-2 border-green-600 bg-green-25 p-3">
                             <form method="post" class="space-y-3">
                                 {% csrf_token %}
                                 <input type="hidden" name="add_note" value="1">
@@ -355,13 +352,6 @@
                                 <p class="text-sm text-gray-600">📝 {{ notes.count }} notes</p>
                             </div>
                         </div>
-                        
-                        <div class="mt-4 pt-4 border-t">
-                            <a href="{% url 'add_entry' %}" class="w-full bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide text-sm hover:shadow-lg flex items-center justify-center">
-                                <i class="fas fa-plus mr-2"></i>
-                                Add Entry
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -394,7 +384,7 @@
                     </div>
                     
                     <!-- Entry Form -->
-                    <div id="entryForm" class="hidden border-b-2 border-primary bg-gray-25 p-4">
+                    <div id="entryFormDesktop" class="hidden border-b-2 border-primary bg-gray-25 p-4">
                         <form method="post" class="space-y-4">
                             {% csrf_token %}
                             <input type="hidden" name="add_entry" value="1">
@@ -557,7 +547,7 @@
                     </div>
                     
                     <!-- Notes Form -->
-                    <div id="notesForm" class="hidden border-b-2 border-green-600 bg-green-25 p-4">
+                    <div id="notesFormDesktop" class="hidden border-b-2 border-green-600 bg-green-25 p-4">
                         <form method="post" class="space-y-4">
                             {% csrf_token %}
                             <input type="hidden" name="add_note" value="1">
@@ -648,18 +638,17 @@
 {% block extra_head %}
     <script>
         function toggleNotesForm() {
-            const form = document.getElementById('notesForm');
-            form.classList.toggle('hidden');
-        }
-        
-        function toggleNotesForm() {
-            const form = document.getElementById('notesForm');
-            form.classList.toggle('hidden');
+            const mobileForm = document.getElementById('notesFormMobile');
+            const desktopForm = document.getElementById('notesFormDesktop');
+            if (mobileForm) mobileForm.classList.toggle('hidden');
+            if (desktopForm) desktopForm.classList.toggle('hidden');
         }
         
         function toggleEntryForm() {
-            const form = document.getElementById('entryForm');
-            form.classList.toggle('hidden');
+            const mobileForm = document.getElementById('entryFormMobile');
+            const desktopForm = document.getElementById('entryFormDesktop');
+            if (mobileForm) mobileForm.classList.toggle('hidden');
+            if (desktopForm) desktopForm.classList.toggle('hidden');
         }
         
         // Show/hide fields based on entry type selection

@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+
+{% block title %}ParentPlanner - Organize Your Family's Life{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-gradient-to-br from-primary to-secondary text-white py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <!-- Prominent Logo -->
+            <div class="mb-8">
+                <h1 class="text-5xl md:text-6xl lg:text-8xl font-bold tracking-tight">
+                    ParentPlanner
+                </h1>
+                <div class="h-1 w-32 bg-accent mx-auto mt-4"></div>
+            </div>
+            
+            <!-- Hero Tagline -->
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight text-white/95">
+                Organize Your Family's Life
+            </h2>
+            <p class="text-xl md:text-2xl lg:text-3xl mb-8 text-white/90 max-w-4xl mx-auto">
+                The simple, powerful way to manage your children's activities, tasks, and events all in one place
+            </p>
+            
+            <!-- Hero Benefits -->
+            <div class="mb-10">
+                <p class="text-lg md:text-xl mb-4 text-white/80">Perfect for busy parents who need to:</p>
+                <div class="flex flex-wrap justify-center gap-4 text-white/90">
+                    <span class="bg-white/20 px-4 py-2 rounded-lg">Track multiple children</span>
+                    <span class="bg-white/20 px-4 py-2 rounded-lg">Manage school events</span>
+                    <span class="bg-white/20 px-4 py-2 rounded-lg">Coordinate activities</span>
+                    <span class="bg-white/20 px-4 py-2 rounded-lg">Never miss important dates</span>
+                </div>
+            </div>
+            
+            <!-- Hero CTA Buttons - Match navigation styling exactly -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="{% url 'account_signup' %}" 
+                   class="bg-accent hover:bg-yellow-500 text-white font-medium px-6 py-3 border border-accent transition-all duration-200 text-lg">
+                    Get Started Free
+                </a>
+                <a href="{% url 'account_login' %}" 
+                   class="bg-white text-primary hover:bg-gray-100 font-medium px-6 py-3 border border-white transition-all duration-200 text-lg">
+                    I Already Have an Account
+                </a>
+            </div>
+        </div>
+        
+        <!-- Hero Image/Screenshot Placeholder -->
+        <div class="mt-16 max-w-5xl mx-auto">
+            <div class="bg-white/10 border-2 border-white/20 aspect-video flex items-center justify-center text-white/70 rounded-lg">
+                <div class="text-center">
+                    <i class="fas fa-image text-5xl mb-3"></i>
+                    <p class="text-xl font-medium">Dashboard Screenshot Placeholder</p>
+                    <p class="text-sm opacity-75">1200x675px - Hero dashboard overview</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                    Everything You Need to Manage Your Family
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Simple tools that grow with your family, from toddlers to teenagers
+                </p>
+            </div>
+            
+            <!-- Feature Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Child Profiles -->
+                <div class="text-center p-6 border-2 border-gray-200 hover:border-primary transition-all duration-200 hover:shadow-lg">
+                    <div class="w-20 h-20 bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-child text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Child Profiles</h3>
+                    <p class="text-gray-600">Create individual profiles for each child with their school info, activities, and personal details</p>
+                </div>
+                
+                <!-- Tasks & Events -->
+                <div class="text-center p-6 border-2 border-gray-200 hover:border-primary transition-all duration-200 hover:shadow-lg">
+                    <div class="w-20 h-20 bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tasks text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Tasks & Events</h3>
+                    <p class="text-gray-600">Track appointments, school events, sports practices, and daily tasks in one place</p>
+                </div>
+                
+                <!-- Smart Notes -->
+                <div class="text-center p-6 border-2 border-gray-200 hover:border-primary transition-all duration-200 hover:shadow-lg">
+                    <div class="w-20 h-20 bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-sticky-note text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Smart Notes</h3>
+                    <p class="text-gray-600">Capture important information, reminders, and family moments linked to each child</p>
+                </div>
+                
+                <!-- Category Organization -->
+                <div class="text-center p-6 border-2 border-gray-200 hover:border-primary transition-all duration-200 hover:shadow-lg">
+                    <div class="w-20 h-20 bg-violet-100 text-violet-600 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tags text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Smart Categories</h3>
+                    <p class="text-gray-600">Organize by School, Sports, Health, Entertainment, and more for quick filtering</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots/Features Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                    See ParentPlanner in Action
+                </h2>
+                <p class="text-xl text-gray-600">
+                    Screenshots and examples of how families use ParentPlanner
+                </p>
+            </div>
+            
+            <!-- Screenshot Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Dashboard Screenshot -->
+                <div class="space-y-4">
+                    <div class="bg-white border-2 border-gray-200 aspect-video flex items-center justify-center text-gray-500 rounded-lg">
+                        <div class="text-center">
+                            <i class="fas fa-desktop text-4xl mb-2"></i>
+                            <p class="text-lg font-medium">Family Dashboard Screenshot</p>
+                            <p class="text-sm">800x450px - Multi-child dashboard view</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Family Overview Dashboard</h3>
+                        <p class="text-gray-600">See all your children's activities, upcoming events, and important tasks at a glance</p>
+                    </div>
+                </div>
+                
+                <!-- Mobile Screenshot -->
+                <div class="space-y-4">
+                    <div class="bg-white border-2 border-gray-200 aspect-[9/16] max-w-sm mx-auto flex items-center justify-center text-gray-500 rounded-lg">
+                        <div class="text-center">
+                            <i class="fas fa-mobile-alt text-4xl mb-2"></i>
+                            <p class="text-lg font-medium">Mobile App Screenshot</p>
+                            <p class="text-sm">300x533px - Mobile interface</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Mobile-First Design</h3>
+                        <p class="text-gray-600">Swipe between child profiles, timeline, and notes. Perfect for busy parents on the go</p>
+                    </div>
+                </div>
+                
+                <!-- Child Profile Screenshot -->
+                <div class="space-y-4">
+                    <div class="bg-white border-2 border-gray-200 aspect-video flex items-center justify-center text-gray-500 rounded-lg">
+                        <div class="text-center">
+                            <i class="fas fa-user-circle text-4xl mb-2"></i>
+                            <p class="text-lg font-medium">Child Profile Screenshot</p>
+                            <p class="text-sm">800x450px - Individual child view</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Individual Child Focus</h3>
+                        <p class="text-gray-600">Dedicated view for each child with their specific activities, notes, and upcoming events</p>
+                    </div>
+                </div>
+                
+                <!-- Quick Add Screenshot -->
+                <div class="space-y-4">
+                    <div class="bg-white border-2 border-gray-200 aspect-video flex items-center justify-center text-gray-500 rounded-lg">
+                        <div class="text-center">
+                            <i class="fas fa-plus-circle text-4xl mb-2"></i>
+                            <p class="text-lg font-medium">Quick Add Form Screenshot</p>
+                            <p class="text-sm">800x450px - Entry creation form</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Quick Entry Creation</h3>
+                        <p class="text-gray-600">Add tasks, events, and notes in seconds with our intuitive forms</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-primary text-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4">
+                Ready to Organize Your Family's Life?
+            </h2>
+            <p class="text-xl mb-8 text-white/90">
+                Join thousands of families who trust ParentPlanner to keep their lives organized
+            </p>
+            
+            <!-- Final CTA Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="{% url 'account_signup' %}" 
+                   class="bg-accent hover:bg-yellow-500 text-white font-medium px-8 py-4 border border-accent transition-all duration-200 text-lg">
+                    Start Free Today
+                </a>
+                <a href="{% url 'account_login' %}" 
+                   class="bg-white text-primary hover:bg-gray-100 font-medium px-8 py-4 border border-white transition-all duration-200 text-lg">
+                    Sign In to Your Account
+                </a>
+            </div>
+            
+            <p class="mt-6 text-white/75 text-sm">
+                No credit card required • Set up in under 2 minutes
+            </p>
+        </div>
+    </section>
+
+                <div class="text-center p-6 border-2 border-gray-200 hover:border-primary transition-all duration-200 hover:shadow-lg">
+                    <div class="w-20 h-20 bg-violet-100 text-violet-600 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-sticky-note text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Smart Notes</h3>
+                    <p class="text-gray-600">Capture important moments, behavioral notes, and family memories</p>
+                </div>
+                
+                <!-- Category Organization -->
+                <div class="text-center p-6 border-2 border-gray-200 hover:border-primary transition-all duration-200 hover:shadow-lg">
+                    <div class="w-20 h-20 bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tags text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Smart Categories</h3>
+                    <p class="text-gray-600">Organize by School, Sports, Health, Entertainment and more for quick filtering</p>
+                </div>
+            </div>
+            
+            <!-- Additional Features Row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <!-- Family Dashboard -->
+                <div class="text-center p-6 border-2 border-gray-200 hover:border-primary transition-all duration-200 hover:shadow-lg">
+                    <div class="w-20 h-20 bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-home text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Family Dashboard</h3>
+                    <p class="text-gray-600">See all your children's activities in one centralized view with quick action buttons</p>
+                </div>
+                
+                <!-- Due Date Tracking -->
+                <div class="text-center p-6 border-2 border-gray-200 hover:border-primary transition-all duration-200 hover:shadow-lg">
+                    <div class="w-20 h-20 bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-clock text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Due Date Alerts</h3>
+                    <p class="text-gray-600">Clear visual indicators for approaching deadlines and important dates</p>
+                </div>
+                
+                <!-- Responsive Design -->
+                <div class="text-center p-6 border-2 border-gray-200 hover:border-primary transition-all duration-200 hover:shadow-lg">
+                    <div class="w-20 h-20 bg-pink-100 text-pink-600 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tablet-alt text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Works Everywhere</h3>
+                    <p class="text-gray-600">Mobile-first design that looks great on phones, tablets, and desktops</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Final CTA Section -->
+    <section class="py-16 bg-primary text-white">
+        <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-6">
+                Ready to Organize Your Family's Life?
+            </h2>
+            <p class="text-xl mb-8 text-indigo-100">
+                Join thousands of families who have simplified their planning with ParentPlanner
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="{% url 'account_signup' %}" 
+                   class="bg-white text-primary hover:bg-gray-100 font-semibold px-8 py-4 text-lg border-2 border-white transition-all duration-200 hover:shadow-lg transform hover:scale-105">
+                    Start Free Today
+                </a>
+                <a href="{% url 'account_login' %}" 
+                   class="bg-transparent text-white hover:bg-white hover:text-primary font-semibold px-8 py-4 text-lg border-2 border-white transition-all duration-200">
+                    Already Have an Account?
+                </a>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
