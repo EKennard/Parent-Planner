@@ -238,6 +238,12 @@
         .rounded-tl, .rounded-tr, .rounded-br, .rounded-bl {
             border-radius: 0 !important;
         }
+            html, body {
+                height: 100vh !important;
+                min-height: 0 !important;
+                display: flex;
+                flex-direction: column;
+            }
     </style>
     {% block extra_head %}{% endblock %}
 </head>

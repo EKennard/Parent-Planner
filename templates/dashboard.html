@@ -74,6 +74,23 @@
 </style>
 
 <script>
+function toggleEntryDetails(card) {
+    const details = card.querySelector('.entry-details');
+    if (details) details.classList.toggle('hidden');
+}
+
+function toggleNoteDetails(card) {
+    const details = card.querySelector('.note-details');
+    if (details) details.classList.toggle('hidden');
+}
+
+function collapseAllEntries() {
+    document.querySelectorAll('.entry-details').forEach(d => d.classList.add('hidden'));
+}
+
+function collapseAllNotes() {
+    document.querySelectorAll('.note-details').forEach(d => d.classList.add('hidden'));
+}
     let selectedChildId = null;
     
     function toggleNotesForm() {
@@ -83,7 +100,41 @@
         if (desktopForm) desktopForm.classList.toggle('hidden');
     }
     
-        function toggleChildForm(isMobile = false) {
+        // Modal functions
+    function openAddChildModal() {
+        document.getElementById('addChildModal').classList.remove('hidden');
+    }
+
+    function closeAddChildModal() {
+        document.getElementById('addChildModal').classList.add('hidden');
+    }
+
+    function openAddEntryModal() {
+        document.getElementById('addEntryModal').classList.remove('hidden');
+    }
+
+    function closeAddEntryModal() {
+        document.getElementById('addEntryModal').classList.add('hidden');
+    }
+
+    function openAddNoteModal() {
+        document.getElementById('addNoteModal').classList.remove('hidden');
+    }
+
+    function closeAddNoteModal() {
+        document.getElementById('addNoteModal').classList.add('hidden');
+    }
+
+    // Close modals when clicking outside or pressing escape
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeAddChildModal();
+            closeAddEntryModal();
+            closeAddNoteModal();
+        }
+    });
+
+    function toggleChildForm(isMobile = false) {
         const desktopForm = document.getElementById('childFormDesktop');
         const mobileForm = document.getElementById('childFormMobile');
         if (isMobile && mobileForm) mobileForm.classList.toggle('hidden');
@@ -118,6 +169,21 @@
         const desktopForm = document.getElementById('entryFormDesktop');
         if (mobileForm) mobileForm.classList.toggle('hidden');
         if (desktopForm) desktopForm.classList.toggle('hidden');
+        
+        // Update child field visibility and selection based on current state
+        updateChildFieldsInForms();
+    }
+    
+    function updateChildFieldsInForms() {
+        // Always show child dropdown fields and auto-select for both entry and notes forms
+        const childSelects = document.querySelectorAll('select[name="child"]');
+        childSelects.forEach(select => {
+            if (selectedChildId && selectedChildId !== 'all') {
+                select.value = selectedChildId;
+            } else {
+                select.selectedIndex = 0;
+            }
+        });
     }
     
     function selectChild(childId, childName) {
@@ -128,6 +194,9 @@
         childSelects.forEach(select => {
             select.value = childId;
         });
+        
+        // Update child fields in forms based on selection
+        updateChildFieldsInForms();
         
         // Filter entries and notes to show only selected child's content
         filterContentByChild(childId);
@@ -153,6 +222,9 @@
                 }
             }
         });
+        
+        // Initialize child fields in forms on page load
+        updateChildFieldsInForms();
     });
 
     function toggleChildEdit(childId) {
@@ -222,6 +294,9 @@
             select.selectedIndex = 0;
         });
         
+        // Update child fields in forms to show dropdowns
+        updateChildFieldsInForms();
+        
         // Reset UI
         updateSelectedChildUI(null, 'All Children');
     }
@@ -268,7 +343,243 @@
 {% endblock %}
 
 {% block content %}
-<div class="overflow-hidden" style="height: calc(100vh - 80px);">
+<!-- Modal Overlays -->
+<!-- Add Child Modal -->
+<div id="addChildModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" onclick="closeAddChildModal()">
+    <div class="bg-white border-2 border-secondary w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="border-b-2 border-secondary bg-purple-50 px-4 py-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium text-gray-900">Add New Child</h2>
+                <button onclick="closeAddChildModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-4">
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <input type="hidden" name="add_child" value="1">
+                
+                <div>
+                    <label for="{{ child_form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    {{ child_form.name }}
+                </div>
+                
+                <div>
+                    <label for="{{ child_form.birth_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ child_form.birth_date.label }}</label>
+                    {{ child_form.birth_date }}
+                    {% if child_form.birth_date.help_text %}
+                        <p class="text-xs text-gray-500 mt-1">{{ child_form.birth_date.help_text }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ child_form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">School</label>
+                    {{ child_form.school }}
+                </div>
+                
+                <div>
+                    <label for="{{ child_form.year.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                    {{ child_form.year }}
+                </div>
+                
+                <div>
+                    <label for="{{ child_form.class_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                    {{ child_form.class_name }}
+                </div>
+                
+                <div>
+                    <label for="{{ child_form.colour.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Colour</label>
+                    {{ child_form.colour }}
+                    
+                    <!-- Custom color grid -->
+                    <div class="color-grid-widget mt-2" data-target="{{ child_form.colour.id_for_label }}">
+                        <div class="color-dots-grid grid grid-cols-5 gap-2">
+                            <div class="color-dot selected w-8 h-8 border-2 cursor-pointer" 
+                                 data-color="#FF6B6B"
+                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                 style="background-color: #FF6B6B;"
+                                 title="Coral Red">
+                            </div>
+                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                 data-color="#4ECDC4"
+                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                 style="background-color: #4ECDC4;"
+                                 title="Turquoise">
+                            </div>
+                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                 data-color="#0D6A80"
+                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                 style="background-color: #0D6A80;"
+                                 title="Sky Blue">
+                            </div>
+                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                 data-color="#96CEB4"
+                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                 style="background-color: #96CEB4;"
+                                 title="Mint Green">
+                            </div>
+                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                 data-color="#D1D811"
+                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                 style="background-color: #D1D811;"
+                                 title="Sunny Yellow">
+                            </div>
+                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                 data-color="#DDA0DD"
+                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                 style="background-color: #DDA0DD;"
+                                 title="Plum Purple">
+                            </div>
+                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                 data-color="#AD6A0D"
+                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                 style="background-color: #AD6A0D;"
+                                 title="Peach Orange">
+                            </div>
+                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                 data-color="#8516EE"
+                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                 style="background-color: #8516EE;"
+                                 title="Light Blue">
+                            </div>
+                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                 data-color="#0CEB0C"
+                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                 style="background-color: #0CEB0C;"
+                                 title="Pale Green">
+                            </div>
+                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                 data-color="#BE12E0"
+                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                 style="background-color: #BE12E0;"
+                                 title="Bright Pink">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-medium py-2 px-4 border-2 border-secondary transition-all duration-200 tracking-wide">
+                        Add Child
+                    </button>
+                    <button type="button" onclick="closeAddChildModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Entry Modal -->
+<div id="addEntryModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" onclick="closeAddEntryModal()">
+    <div class="bg-white border-2 border-primary w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="border-b-2 border-primary bg-gray-50 px-4 py-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium text-gray-900">Add New Entry</h2>
+                <button onclick="closeAddEntryModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-4">
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <input type="hidden" name="add_entry" value="1">
+                <input type="hidden" id="selectedChildInputModal" name="selected_child" value="">
+                
+                <div>
+                    <label for="{{ form.child.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Child</label>
+                    {{ form.child }}
+                </div>
+                
+                <div>
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    {{ form.title }}
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="{{ form.entry_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                        {{ form.entry_type }}
+                    </div>
+                    <div>
+                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        {{ form.category }}
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    {{ form.description }}
+                </div>
+                
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="bg-primary hover:bg-secondary text-white font-medium py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide">
+                        Save Entry
+                    </button>
+                    <button type="button" onclick="closeAddEntryModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Note Modal -->
+<div id="addNoteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" onclick="closeAddNoteModal()">
+    <div class="bg-white border-2 border-green-600 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="border-b-2 border-green-600 bg-green-50 px-4 py-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium text-green-700">Add New Note</h2>
+                <button onclick="closeAddNoteModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-4">
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <input type="hidden" name="add_note" value="1">
+                
+                <div>
+                    <label for="{{ note_form.child.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Child</label>
+                    {{ note_form.child }}
+                </div>
+                
+                <div>
+                    <label for="{{ note_form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    {{ note_form.title }}
+                </div>
+                
+                <div>
+                    <label for="{{ note_form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Category (Optional)</label>
+                    {{ note_form.category }}
+                </div>
+                
+                <div>
+                    <label for="{{ note_form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Note</label>
+                    {{ note_form.description }}
+                </div>
+                
+                {{ note_form.entry_type }}
+                
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 border-2 border-green-600 transition-all duration-200 tracking-wide">
+                        Save Note
+                    </button>
+                    <button type="button" onclick="closeAddNoteModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="overflow-hidden h-screen flex flex-col" style="height: calc(100vh - 80px); min-height: 0;">
     <!-- Message System -->
     {% if messages %}
     <div class="flex-shrink-0 px-3 sm:px-6 pt-4 pb-2">
@@ -286,7 +597,7 @@
     {% endif %}
 
     <!-- Main Content with Child Page Layout -->
-    <div class="px-3 sm:px-6 py-6" style="height: calc(100vh - 140px);">
+    <div class="px-3 sm:px-6 py-6 flex flex-col h-full" style="height: calc(100vh - 140px); min-height: 0;">
         
         {% if children_count == 0 %}
             <!-- Empty State: No Children -->
@@ -295,7 +606,7 @@
             <!-- Unified Dashboard: Child Page Layout with Multiple Children Support -->
             
             <!-- Mobile Layout: Horizontal Swipe -->
-            <div class="md:hidden">
+            <div class="md:hidden flex flex-col h-full min-h-0">
                 <!-- Children Header (Fixed) -->
                 <div class="bg-white border-2 border-primary shadow-lg mb-4">
                     <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
@@ -305,7 +616,7 @@
                                 <p class="text-gray-600 font-medium text-xs">{{ children_count }} children, {{ total_entries }} total entries</p>
                             </div>
                             <div class="flex items-center gap-2">
-                                <button onclick="toggleChildForm(true)" class="bg-secondary hover:bg-purple-700 text-white p-2 border-2 border-secondary transition-all duration-200 hover:shadow-lg">
+                                <button onclick="openAddChildModal()" class="bg-secondary hover:bg-purple-700 text-white p-2 border-2 border-secondary transition-all duration-200 hover:shadow-lg">
                                     <i class="fas fa-plus"></i>
                                 </button>
                                 <button onclick="showAllChildren()" class="bg-secondary hover:bg-purple-700 text-white font-normal px-3 py-2 border-2 border-secondary transition-all duration-200 tracking-wide text-xs">
@@ -316,7 +627,7 @@
                     </div>
                     
                     <!-- Children Cards Horizontal Scroll -->
-                    <div class="p-3 overflow-x-auto" style="overflow-y: visible;">
+                    <div class="p-3 overflow-x-auto" style="overflow-y: visible; max-height: 120px;">
                         <div class="flex gap-3" style="width: max-content; overflow: visible;">
                             {% for child in children %}
                             <div class="child-card border-2 border-gray-300 bg-white cursor-pointer hover:bg-gray-50 transition-all duration-200 flex-shrink-0 w-32 relative" 
@@ -416,347 +727,21 @@
                         </div>
                     </div>
                     
-                    <!-- Child Form Mobile -->
-                    <div id="childFormMobile" class="hidden border-b-2 border-secondary bg-purple-25 p-2 rounded-none" style="border-radius: 0;">
-                        <form method="post" class="space-y-2">
-                            {% csrf_token %}
-                            <input type="hidden" name="add_child" value="1">
-                            
-                            <div>
-                                <label for="{{ child_form.name.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Name</label>
-                                {{ child_form.name }}
-                            </div>
-                            
-                            <div>
-                                <label for="{{ child_form.birth_date.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">{{ child_form.birth_date.label }}</label>
-                                {{ child_form.birth_date }}
-                                {% if child_form.birth_date.help_text %}
-                                    <p class="text-xs text-gray-500 mt-1">{{ child_form.birth_date.help_text }}</p>
-                                {% endif %}
-                            </div>
-                            
-                            <div>
-                                <label for="{{ child_form.school.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">School</label>
-                                {{ child_form.school }}
-                            </div>
-                            
-                            <div>
-                                <label for="{{ child_form.year.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Year</label>
-                                {{ child_form.year }}
-                            </div>
-                            
-                            <div>
-                                <label for="{{ child_form.class_name.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Class</label>
-                                {{ child_form.class_name }}
-                            </div>
-                            
-                            <div>
-                                <label for="{{ child_form.colour.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Colour</label>
-                                <!-- Hidden select field -->
-                                {{ child_form.colour }}
-                                
-                                <!-- Custom color grid -->
-                                <div class="color-grid-widget rounded-none" data-target="{{ child_form.colour.id_for_label }}" style="border-radius: 0;">
-                                    <div class="color-dots-grid">
-                                        <div class="color-dot selected rounded-none" 
-                                             data-color="#FF6B6B"
-                                             onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #FF6B6B; border-radius: 0;"
-                                             title="Coral Red">
-                                        </div>
-                                        <div class="color-dot rounded-none" 
-                                             data-color="#4ECDC4"
-                                             onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #4ECDC4; border-radius: 0;"
-                                             title="Turquoise">
-                                        </div>
-                                        <div class="color-dot rounded-none" 
-                                             data-color="#0D6A80"
-                                             onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #0D6A80; border-radius: 0;"
-                                             title="Sky Blue">
-                                        </div>
-                                        <div class="color-dot rounded-none" 
-                                             data-color="#96CEB4"
-                                             onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #96CEB4; border-radius: 0;"
-                                             title="Mint Green">
-                                        </div>
-                                        <div class="color-dot rounded-none" 
-                                             data-color="#D1D811"
-                                             onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #D1D811; border-radius: 0;"
-                                             title="Sunny Yellow">
-                                        </div>
-                                        <div class="color-dot rounded-none" 
-                                             data-color="#DDA0DD"
-                                             onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #DDA0DD; border-radius: 0;"
-                                             title="Plum Purple">
-                                        </div>
-                                        <div class="color-dot rounded-none" 
-                                             data-color="#AD6A0D"
-                                             onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #AD6A0D; border-radius: 0;"
-                                             title="Peach Orange">
-                                        </div>
-                                        <div class="color-dot rounded-none" 
-                                             data-color="#8516EE"
-                                             onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #8516EE; border-radius: 0;"
-                                             title="Light Blue">
-                                        </div>
-                                        <div class="color-dot rounded-none" 
-                                             data-color="#0CEB0C"
-                                             onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #0CEB0C; border-radius: 0;"
-                                             title="Pale Green">
-                                        </div>
-                                        <div class="color-dot rounded-none" 
-                                             data-color="#BE12E0"
-                                             onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                             style="background-color: #BE12E0; border-radius: 0;"
-                                             title="Bright Pink">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex gap-1 pt-1">
-                                <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-2 border-2 border-secondary transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
-                                    Add Child
-                                </button>
-                                <button type="button" onclick="toggleChildForm(true)" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Horizontal Swipe Container -->
-                <div class="overflow-x-auto" style="height: calc(100vh - 200px);">
-                    <div class="flex space-x-4 h-full" style="width: 200%;">
-                        <!-- Timeline Section (50% of container width) -->
-                        <div class="w-1/2 bg-white border-2 border-primary shadow-lg h-full flex flex-col">
-                            <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide child-header-text">Tasks & Events</h3>
-                                    <div class="flex items-center gap-2">
-                                        <nav class="flex gap-2">
-                                            <a href="?type=" class="py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if not request.GET.type %}bg-primary text-white border-primary{% else %}bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary{% endif %}">
-                                                All
-                                            </a>
-                                            <a href="?type=task" class="py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if request.GET.type == 'task' %}bg-amber-600 text-white border-amber-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-amber-600 hover:text-amber-600{% endif %}">
-                                                Tasks
-                                            </a>
-                                            <a href="?type=event" class="py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if request.GET.type == 'event' %}bg-violet-600 text-white border-violet-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-violet-600 hover:text-violet-600{% endif %}">
-                                                Events
-                                            </a>
-                                        </nav>
-                                        <div class="border-l-2 border-primary pl-3 flex items-center justify-center">
-                                            <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 border-2 border-primary transition-all duration-200 tracking-wide text-xs hover:shadow-lg flex items-center justify-center">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Entry Form -->
-                            <div id="entryFormMobile" class="hidden border-b-2 border-primary bg-gray-25 p-2 rounded-none" style="border-radius: 0;">
-                                <form method="post" class="space-y-2">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="add_entry" value="1">
-                                    
-                                    <div>
-                                        <label for="{{ form.title.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Title</label>
-                                        {{ form.title }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ form.entry_type.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Type</label>
-                                        {{ form.entry_type }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ form.child.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Child</label>
-                                        {{ form.child }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ form.category.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Category</label>
-                                        {{ form.category }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ form.description.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Description</label>
-                                        {{ form.description }}
-                                    </div>
-                                    
-                                    <div class="flex gap-1 pt-1">
-                                        <button type="submit" class="bg-primary hover:bg-secondary text-white font-normal py-1 px-2 border-2 border-primary transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
-                                            Save Entry
-                                        </button>
-                                        <button type="button" onclick="toggleEntryForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                            
-                            <!-- Timeline Content -->
-                            <div class="p-3 overflow-y-auto flex-1">
-                                {% if active_entries %}
-                                    <div class="space-y-2">
-                                        {% for entry in active_entries %}
-                                            <div class="{% if entry.entry_type == 'task' %}bg-amber-50 border-l-4 border-amber-600{% elif entry.entry_type == 'event' %}bg-violet-50 border-l-4 border-violet-600{% endif %} p-3 hover:bg-opacity-80 transition-all duration-200" 
-                                                 data-child-id="{{ entry.child.id }}">
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1">
-                                                        <h4 class="font-medium text-gray-900 text-sm">{{ entry.title }}</h4>
-                                                        <p class="text-gray-600 text-xs mt-1">{{ entry.description|truncatewords:10 }}</p>
-                                                        <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                                                            <span class="bg-gray-100 px-2 py-1 border">{{ entry.child.name }}</span>
-                                                            <span>{{ entry.created_at|date:"M d" }}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <div class="text-center py-12">
-                                        <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 border-2 border-primary flex items-center justify-center">
-                                            <i class="fas fa-calendar-plus text-primary text-xl"></i>
-                                        </div>
-                                        <p class="text-gray-600 font-normal tracking-wide mb-4">No entries yet</p>
-                                        <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal py-1 px-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs">
-                                            Add First Entry
-                                        </button>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <!-- Notes Section (50% of container width) -->
-                        <div class="w-1/2 bg-white border-2 border-green-600 shadow-lg h-full flex flex-col">
-                            <div class="border-b-2 border-green-600 bg-green-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-lg sm:text-xl font-normal text-green-700 tracking-wide notes-header-text">Notes</h3>
-                                    <div class="border-l-2 border-primary pl-3 flex items-center justify-center">
-                                        <button onclick="toggleNotesForm()" class="bg-green-600 hover:bg-green-700 text-white font-normal px-3 py-2 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs hover:shadow-lg flex items-center justify-center">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Notes Form -->
-                            <div id="notesFormMobile" class="hidden border-b-2 border-green-600 bg-green-25 p-2 rounded-none" style="border-radius: 0;">
-                                <form method="post" class="space-y-2">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="add_note" value="1">
-                                    
-                                    <div>
-                                        <label for="{{ note_form.title.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Title</label>
-                                        {{ note_form.title }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ note_form.child.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Child</label>
-                                        {{ note_form.child }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ note_form.category.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Category (Optional)</label>
-                                        {{ note_form.category }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ note_form.description.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Note</label>
-                                        {{ note_form.description }}
-                                    </div>
-                                    
-                                    {{ note_form.entry_type }}
-                                    
-                                    <div class="flex gap-1 pt-1">
-                                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-2 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
-                                            Save Note
-                                        </button>
-                                        <button type="button" onclick="toggleNotesForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                            
-                            <!-- Notes Content -->
-                            <div class="p-3 overflow-y-auto flex-1">
-                                {% if notes %}
-                                    <div class="space-y-2">
-                                        {% for note in notes %}
-                                            <div class="bg-green-50 border-l-4 border-green-600 p-3 hover:bg-green-100 transition-all duration-200" 
-                                                 data-child-id="{{ note.child.id }}">
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1">
-                                                        <h4 class="font-medium text-gray-900 text-sm">{{ note.title }}</h4>
-                                                        <p class="text-gray-600 text-xs mt-1">{{ note.description|truncatewords:15 }}</p>
-                                                        <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                                                            <span class="bg-gray-100 px-2 py-1 border">{{ note.child.name }}</span>
-                                                            <span>{{ note.created_at|date:"M d" }}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <div class="text-center py-12">
-                                        <div class="w-16 h-16 mx-auto mb-4 bg-green-100 border-2 border-green-600 flex items-center justify-center">
-                                            <i class="fas fa-sticky-note text-green-600 text-xl"></i>
-                                        </div>
-                                        <p class="text-gray-600 font-normal tracking-wide mb-4">No notes yet</p>
-                                        <button onclick="toggleNotesForm()" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs">
-                                            Add First Note
-                                        </button>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Desktop Layout: Three Columns (Child Page Structure) -->
-            <div class="hidden md:grid md:grid-cols-12 gap-4 lg:gap-6 h-full">
-                <!-- Left Column: Children Management (same width as child page) -->
-                <div class="md:col-span-2 lg:col-span-2 xl:col-span-2 h-full">
-                    <div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
-                        <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
-                            <div class="flex items-center justify-between">
-                                <h2 class="text-lg font-normal text-gray-900 tracking-wide">Your Children</h2>
-                                <div class="border-l-2 border-primary pl-3 flex items-center justify-center">
-                                    <button onclick="toggleChildForm()" class="bg-secondary hover:bg-purple-700 text-white font-normal px-4 py-3 border-2 border-secondary transition-all duration-200 tracking-wide text-sm hover:shadow-lg flex items-center justify-center">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Child Form -->
-                        <div id="childFormDesktop" class="hidden border-b-2 border-secondary bg-purple-25 p-3 rounded-none" style="border-radius: 0;">
-                            <form method="post" class="space-y-3">
+                    <!-- Scrollable content area for child form and child cards -->
+                    <div class="overflow-y-auto flex-1 min-h-0">
+                        <!-- Child Form Mobile -->
+                        <div id="childFormMobile" class="hidden border-b-2 border-secondary bg-purple-25 p-2 rounded-none" style="border-radius: 0;">
+                            <form method="post" class="space-y-2">
                                 {% csrf_token %}
                                 <input type="hidden" name="add_child" value="1">
                                 
                                 <div>
-                                    <label for="{{ child_form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                    <label for="{{ child_form.name.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Name</label>
                                     {{ child_form.name }}
                                 </div>
                                 
                                 <div>
-                                    <label for="{{ child_form.birth_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ child_form.birth_date.label }}</label>
+                                    <label for="{{ child_form.birth_date.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">{{ child_form.birth_date.label }}</label>
                                     {{ child_form.birth_date }}
                                     {% if child_form.birth_date.help_text %}
                                         <p class="text-xs text-gray-500 mt-1">{{ child_form.birth_date.help_text }}</p>
@@ -764,22 +749,22 @@
                                 </div>
                                 
                                 <div>
-                                    <label for="{{ child_form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">School</label>
+                                    <label for="{{ child_form.school.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">School</label>
                                     {{ child_form.school }}
                                 </div>
                                 
                                 <div>
-                                    <label for="{{ child_form.year.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                                    <label for="{{ child_form.year.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Year</label>
                                     {{ child_form.year }}
                                 </div>
                                 
                                 <div>
-                                    <label for="{{ child_form.class_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                                    <label for="{{ child_form.class_name.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Class</label>
                                     {{ child_form.class_name }}
                                 </div>
                                 
                                 <div>
-                                    <label for="{{ child_form.colour.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Colour</label>
+                                    <label for="{{ child_form.colour.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Colour</label>
                                     <!-- Hidden select field -->
                                     {{ child_form.colour }}
                                     
@@ -850,142 +835,486 @@
                                     </div>
                                 </div>
                                 
-                                <div class="flex gap-2">
-                                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-3 border-2 border-secondary transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
+                                <div class="flex gap-1 pt-1">
+                                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-2 border-2 border-secondary transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
                                         Add Child
                                     </button>
-                                    <button type="button" onclick="toggleChildForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
+                                    <button type="button" onclick="toggleChildForm(true)" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
                                         Cancel
                                     </button>
                                 </div>
                             </form>
                         </div>
-                        
-                        <div class="p-4 overflow-y-auto flex-1">
-                            <div class="space-y-3">
-                                <!-- All Children Button -->
-                                <button onclick="showAllChildren()" 
-                                        class="w-full border-2 border-gray-300 bg-white p-3 hover:bg-gray-50 transition-all duration-200 text-left">
-                                    <div class="flex items-center">
-                                        <div class="w-8 h-8 border-2 border-primary bg-primary flex items-center justify-center text-white font-normal text-sm mr-3">
-                                            <i class="fas fa-users"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-sm font-medium text-gray-900">All Children</h3>
-                                            <p class="text-xs text-gray-600">{{ children_count }} children, {{ total_entries }} entries</p>
+                    </div>
+                </div>
+
+                <!-- Horizontal Swipe Container -->
+                <div class="overflow-x-auto flex flex-col h-full" style="height: calc(100vh - 200px); min-height: 0;">
+                    <div class="flex space-x-4 h-full min-h-0" style="width: 200%;">
+                        <!-- Timeline Section (50% of container width) -->
+                        <div class="w-1/2 bg-white border-2 border-primary shadow-lg h-full flex flex-col min-h-0">
+                            <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0 min-h-0">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide child-header-text">Tasks & Events</h3>
+                                    <div class="flex items-center gap-2">
+                                        <nav class="flex gap-2">
+                                            <a href="?type=" class="py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if not request.GET.type %}bg-primary text-white border-primary{% else %}bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary{% endif %}">
+                                                All
+                                            </a>
+                                            <a href="?type=task" class="py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if request.GET.type == 'task' %}bg-amber-600 text-white border-amber-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-amber-600 hover:text-amber-600{% endif %}">
+                                                Tasks
+                                            </a>
+                                            <a href="?type=event" class="py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if request.GET.type == 'event' %}bg-violet-600 text-white border-violet-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-violet-600 hover:text-violet-600{% endif %}">
+                                                Events
+                                            </a>
+                                        </nav>
+                                        <div class="border-l-2 border-primary pl-3 flex items-center justify-center gap-2">
+                                            <button onclick="openAddEntryModal()" class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 border-2 border-primary transition-all duration-200 tracking-wide text-xs hover:shadow-lg flex items-center justify-center" title="Add Entry">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                            <button onclick="collapseAllEntries()" class="bg-gray-200 hover:bg-primary text-gray-700 hover:text-white font-normal px-3 py-2 border-2 border-primary transition-all duration-200 tracking-wide text-xs hover:shadow-lg flex items-center justify-center" title="Collapse All Entries">
+                                                <i class="fas fa-compress-alt"></i>
+                                            </button>
                                         </div>
                                     </div>
-                                </button>
-                                
-                                <!-- Individual Children -->
-                                {% for child in children %}
-                                <div class="child-card border-2 border-gray-300 bg-white cursor-pointer hover:bg-gray-50 transition-all duration-200 relative" 
-                                     data-child-id="{{ child.id }}" style="overflow: visible; z-index: 10;">
-                                    <div class="p-3 flex items-center" onclick="toggleChildEdit({{ child.id }})">
-                                        <div class="w-8 h-8 border-2 border-primary flex items-center justify-center text-white font-normal text-sm mr-3" 
-                                             style="background-color: {{ child.colour }};">
-                                            {{ child.name|first|upper }}
+                                </div>
+                            </div>
+                            
+                            <!-- Entry Form -->
+                            <div id="entryFormMobile" class="hidden border-b-2 border-primary bg-gray-25 p-2 rounded-none" style="border-radius: 0;">
+                                <form method="post" class="space-y-2">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="add_entry" value="1">
+                                    <input type="hidden" id="selectedChildInput" name="selected_child" value="">
+                                    
+                                    <!-- Row 1: Child (conditionally shown) and Title -->
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div id="childFieldMobile" class="child-field">
+                                            <label for="{{ form.child.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Child</label>
+                                            {{ form.child }}
                                         </div>
                                         <div>
-                                            <h3 class="text-sm font-medium text-gray-900">{{ child.name }}</h3>
-                                            {% if child.school %}
-                                                <p class="text-xs text-gray-600">{{ child.school }}</p>
-                                            {% endif %}
+                                            <label for="{{ form.title.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Title</label>
+                                            {{ form.title }}
                                         </div>
                                     </div>
                                     
-                                    <!-- Child Edit Form Dropdown -->
-                                    <div id="childEdit{{ child.id }}Desktop" class="hidden border-t-2 border-secondary bg-purple-25 p-3 rounded-none" style="border-radius: 0;">
-                                        <form method="post" action="{% url 'edit_child' child.id %}" class="space-y-3">
-                                            {% csrf_token %}
-                                            
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                                                <input type="text" name="name" value="{{ child.name }}" 
-                                                       class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
-                                            </div>
-                                            
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-                                                <input type="date" name="birth_date" value="{{ child.birth_date|date:'Y-m-d' }}" 
-                                                       class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
-                                            </div>
-                                            
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">School</label>
-                                                <input type="text" name="school" value="{{ child.school|default:'' }}" 
-                                                       class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
-                                            </div>
-                                            
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
-                                                <input type="text" name="year" value="{{ child.year|default:'' }}" 
-                                                       class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
-                                            </div>
-                                            
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Class</label>
-                                                <input type="text" name="class_name" value="{{ child.class_name|default:'' }}" 
-                                                       class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
-                                            </div>
-                                            
-                                            <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-1">Color</label>
-                                                <div class="flex gap-1 flex-wrap">
-                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none {{ child.colour|yesno:'selected,' }}" 
-                                                         data-color="#FF6B6B" style="background-color: #FF6B6B; border-radius: 0;" 
-                                                         onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                         data-color="#4ECDC4" style="background-color: #4ECDC4; border-radius: 0;" 
-                                                         onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                         data-color="#0D6A80" style="background-color: #0D6A80; border-radius: 0;" 
-                                                         onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                         data-color="#96CEB4" style="background-color: #96CEB4; border-radius: 0;" 
-                                                         onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                         data-color="#D1D811" style="background-color: #D1D811; border-radius: 0;" 
-                                                         onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                         data-color="#DDA0DD" style="background-color: #DDA0DD; border-radius: 0;" 
-                                                         onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                         data-color="#AD6A0D" style="background-color: #AD6A0D; border-radius: 0;" 
-                                                         onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                         data-color="#8516EE" style="background-color: #8516EE; border-radius: 0;" 
-                                                         onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                         data-color="#0CEB0C" style="background-color: #0CEB0C; border-radius: 0;" 
-                                                         onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                         data-color="#BE12E0" style="background-color: #BE12E0; border-radius: 0;" 
-                                                         onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                    <!-- Row 2: Type and Category -->
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label for="{{ form.entry_type.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Type</label>
+                                            {{ form.entry_type }}
+                                        </div>
+                                        <div>
+                                            <label for="{{ form.category.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Category</label>
+                                            {{ form.category }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Row 3: Description (full width) -->
+                                    <div>
+                                        <label for="{{ form.description.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+                                        {{ form.description }}
+                                    </div>
+                                    
+                                    <div class="flex gap-1 pt-1">
+                                        <button type="submit" class="bg-primary hover:bg-secondary text-white font-normal py-1 px-2 border-2 border-primary transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
+                                            Save Entry
+                                        </button>
+                                        <button type="button" onclick="openAddEntryModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- Timeline Content -->
+                            <div class="p-3 overflow-y-auto flex-1">
+                                {% if active_entries %}
+                                    <div class="space-y-2 flex-1 overflow-y-auto min-h-0" style="height: 0;">
+                                        {% for entry in active_entries %}
+                                            <div class="{% if entry.entry_type == 'task' %}bg-amber-50 border-l-4 border-amber-600{% elif entry.entry_type == 'event' %}bg-violet-50 border-l-4 border-violet-600{% endif %} p-3 hover:bg-opacity-80 transition-all duration-200" 
+                                                 data-child-id="{{ entry.child.id }}">
+                                                <div class="flex justify-between items-start">
+                                                    <div class="flex-1 overflow-y-auto" style="max-height: 40vh;">
+                                                        <h4 class="font-medium text-gray-900 text-sm">{{ entry.title }}</h4>
+                                                        <p class="text-gray-600 text-xs mt-1">{{ entry.description|truncatewords:10 }}</p>
+                                                        <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                                                            <span class="bg-gray-100 px-2 py-1 border">{{ entry.child.name }}</span>
+                                                            <span>{{ entry.created_at|date:"M d" }}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <input type="hidden" name="colour" value="{{ child.colour }}" id="childColor{{ child.id }}">
                                             </div>
-                                            
-                                            <div class="flex gap-2">
-                                                <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-3 border-2 border-secondary transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
-                                                    Save Changes
-                                                </button>
-                                                <button type="button" onclick="toggleChildEdit({{ child.id }})" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                        </form>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-12">
+                                        <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 border-2 border-primary flex items-center justify-center">
+                                            <i class="fas fa-calendar-plus text-primary text-xl"></i>
+                                        </div>
+                                        <p class="text-gray-600 font-normal tracking-wide mb-4">No entries yet</p>
+                                        <button onclick="openAddEntryModal()" class="bg-primary hover:bg-secondary text-white font-normal py-1 px-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs">
+                                            Add First Entry
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Notes Section (50% of container width) -->
+                        <div class="w-1/2 bg-white border-2 border-green-600 shadow-lg h-full flex flex-col">
+                            <div class="border-b-2 border-green-600 bg-green-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg sm:text-xl font-normal text-green-700 tracking-wide notes-header-text">Notes</h3>
+                                    <div class="border-l-2 border-primary pl-3 flex items-center justify-center">
+                                        <button onclick="openAddNoteModal()" class="bg-green-600 hover:bg-green-700 text-white font-normal px-3 py-2 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs hover:shadow-lg flex items-center justify-center" title="Add Note">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <button onclick="collapseAllNotes()" class="bg-green-200 hover:bg-green-700 text-green-700 hover:text-white font-normal px-3 py-2 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs hover:shadow-lg flex items-center justify-center ml-2" title="Collapse All Notes">
+                                            <i class="fas fa-compress-alt"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                {% endfor %}
+                            </div>
+                            
+                            <!-- Notes Form -->
+                            <div id="notesFormMobile" class="hidden border-b-2 border-green-600 bg-green-25 p-2 rounded-none" style="border-radius: 0;">
+                                <form method="post" class="space-y-2">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="add_note" value="1">
+                                    
+                                    <div>
+                                        <label for="{{ note_form.child.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Child</label>
+                                        {{ note_form.child }}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ note_form.title.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Title</label>
+                                        {{ note_form.title }}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ note_form.category.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Category (Optional)</label>
+                                        {{ note_form.category }}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ note_form.description.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Note</label>
+                                        {{ note_form.description }}
+                                    </div>
+                                    
+                                    {{ note_form.entry_type }}
+                                    
+                                    <div class="flex gap-1 pt-1">
+                                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-2 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
+                                            Save Note
+                                        </button>
+                                        <button type="button" onclick="openAddNoteModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- Notes Content -->
+                            <div class="p-3 overflow-y-auto flex-1">
+                                {% if notes %}
+                                    <div class="space-y-2 overflow-y-auto" style="max-height: 40vh; min-height: 0;">
+                                        {% for note in notes %}
+                                            <div class="bg-green-50 border-l-4 border-green-600 p-3 hover:bg-green-100 transition-all duration-200" 
+                                                 data-child-id="{{ note.child.id }}">
+                                                <div class="flex justify-between items-start">
+                                                    <div class="flex-1 overflow-y-auto" style="max-height: 40vh;">
+                                                        <h4 class="font-medium text-gray-900 text-sm">{{ note.title }}</h4>
+                                                        <p class="text-gray-600 text-xs mt-1">{{ note.description|truncatewords:15 }}</p>
+                                                        <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                                                            <span class="bg-gray-100 px-2 py-1 border">{{ note.child.name }}</span>
+                                                            <span>{{ note.created_at|date:"M d" }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-12">
+                                        <div class="w-16 h-16 mx-auto mb-4 bg-green-100 border-2 border-green-600 flex items-center justify-center">
+                                            <i class="fas fa-sticky-note text-green-600 text-xl"></i>
+                                        </div>
+                                        <p class="text-gray-600 font-normal tracking-wide mb-4">No notes yet</p>
+                                        <button onclick="openAddNoteModal()" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs">
+                                            Add First Note
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop Layout: Three Columns (Child Page Structure) -->
+            <div class="hidden md:grid md:grid-cols-12 gap-4 lg:gap-6 h-full">
+                <!-- Left Column: Children Management (same width as child page) -->
+                <div class="md:col-span-2 lg:col-span-2 xl:col-span-2 h-full">
+                    <div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
+                        <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg font-normal text-gray-900 tracking-wide">Your Children</h2>
+                                <div class="border-l-2 border-primary pl-3 flex items-center justify-center">
+                                    <button onclick="openAddChildModal()" class="bg-secondary hover:bg-purple-700 text-white font-normal px-4 py-3 border-2 border-secondary transition-all duration-200 tracking-wide text-sm hover:shadow-lg flex items-center justify-center">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Scrollable content area for child form and child list -->
+                        <div class="overflow-y-auto flex-1 min-h-0">
+                            <!-- Child Form -->
+                            <div id="childFormDesktop" class="hidden border-b-2 border-secondary bg-purple-25 p-3 rounded-none" style="border-radius: 0;">
+                                <form method="post" class="space-y-3">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="add_child" value="1">
+                                    
+                                    <div>
+                                        <label for="{{ child_form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                        {{ child_form.name }}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ child_form.birth_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ child_form.birth_date.label }}</label>
+                                        {{ child_form.birth_date }}
+                                        {% if child_form.birth_date.help_text %}
+                                            <p class="text-xs text-gray-500 mt-1">{{ child_form.birth_date.help_text }}</p>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ child_form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">School</label>
+                                        {{ child_form.school }}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ child_form.year.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                                        {{ child_form.year }}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ child_form.class_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                                        {{ child_form.class_name }}
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="{{ child_form.colour.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Colour</label>
+                                        <!-- Hidden select field -->
+                                        {{ child_form.colour }}
+                                        
+                                        <!-- Custom color grid -->
+                                        <div class="color-grid-widget rounded-none" data-target="{{ child_form.colour.id_for_label }}" style="border-radius: 0;">
+                                            <div class="color-dots-grid">
+                                                <div class="color-dot selected rounded-none" 
+                                                     data-color="#FF6B6B"
+                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                                     style="background-color: #FF6B6B; border-radius: 0;"
+                                                     title="Coral Red">
+                                                </div>
+                                                <div class="color-dot rounded-none" 
+                                                     data-color="#4ECDC4"
+                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                                     style="background-color: #4ECDC4; border-radius: 0;"
+                                                     title="Turquoise">
+                                                </div>
+                                                <div class="color-dot rounded-none" 
+                                                     data-color="#0D6A80"
+                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                                     style="background-color: #0D6A80; border-radius: 0;"
+                                                     title="Sky Blue">
+                                                </div>
+                                                <div class="color-dot rounded-none" 
+                                                     data-color="#96CEB4"
+                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                                     style="background-color: #96CEB4; border-radius: 0;"
+                                                     title="Mint Green">
+                                                </div>
+                                                <div class="color-dot rounded-none" 
+                                                     data-color="#D1D811"
+                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                                     style="background-color: #D1D811; border-radius: 0;"
+                                                     title="Sunny Yellow">
+                                                </div>
+                                                <div class="color-dot rounded-none" 
+                                                     data-color="#DDA0DD"
+                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                                     style="background-color: #DDA0DD; border-radius: 0;"
+                                                     title="Plum Purple">
+                                                </div>
+                                                <div class="color-dot rounded-none" 
+                                                     data-color="#AD6A0D"
+                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                                     style="background-color: #AD6A0D; border-radius: 0;"
+                                                     title="Peach Orange">
+                                                </div>
+                                                <div class="color-dot rounded-none" 
+                                                     data-color="#8516EE"
+                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                                     style="background-color: #8516EE; border-radius: 0;"
+                                                     title="Light Blue">
+                                                </div>
+                                                <div class="color-dot rounded-none" 
+                                                     data-color="#0CEB0C"
+                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                                     style="background-color: #0CEB0C; border-radius: 0;"
+                                                     title="Pale Green">
+                                                </div>
+                                                <div class="color-dot rounded-none" 
+                                                     data-color="#BE12E0"
+                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                                     style="background-color: #BE12E0; border-radius: 0;"
+                                                     title="Bright Pink">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-2">
+                                        <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-3 border-2 border-secondary transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
+                                            Add Child
+                                        </button>
+                                        <button type="button" onclick="toggleChildForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="p-4">
+                                <div class="space-y-3 flex-1 min-h-0 overflow-y-auto" style="max-height: 40vh; min-height: 0;">
+                                    <!-- All Children Button -->
+                                    <button onclick="showAllChildren()" 
+                                            class="w-full border-2 border-gray-300 bg-white p-3 hover:bg-gray-50 transition-all duration-200 text-left">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 border-2 border-primary bg-primary flex items-center justify-center text-white font-normal text-sm mr-3">
+                                                <i class="fas fa-users"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-sm font-medium text-gray-900">All Children</h3>
+                                                <p class="text-xs text-gray-600">{{ children_count }} children, {{ total_entries }} entries</p>
+                                            </div>
+                                        </div>
+                                    </button>
+                                    
+                                    <!-- Individual Children -->
+                                    {% for child in children %}
+                                    <div class="child-card border-2 border-gray-300 bg-white cursor-pointer hover:bg-gray-50 transition-all duration-200 relative" 
+                                         data-child-id="{{ child.id }}" style="overflow: visible; z-index: 10;">
+                                        <div class="p-3 flex items-center" onclick="toggleChildEdit({{ child.id }})">
+                                            <div class="w-8 h-8 border-2 border-primary flex items-center justify-center text-white font-normal text-sm mr-3" 
+                                                 style="background-color: {{ child.colour }};">
+                                                {{ child.name|first|upper }}
+                                            </div>
+                                            <div>
+                                                <h3 class="text-sm font-medium text-gray-900">{{ child.name }}</h3>
+                                                {% if child.school %}
+                                                    <p class="text-xs text-gray-600">{{ child.school }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Child Edit Form Dropdown -->
+                                        <div id="childEdit{{ child.id }}Desktop" class="hidden border-t-2 border-secondary bg-purple-25 p-3 rounded-none" style="border-radius: 0;">
+                                            <form method="post" action="{% url 'edit_child' child.id %}" class="space-y-3">
+                                                {% csrf_token %}
+                                                
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                                    <input type="text" name="name" value="{{ child.name }}" 
+                                                           class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
+                                                </div>
+                                                
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                                                    <input type="date" name="birth_date" value="{{ child.birth_date|date:'Y-m-d' }}" 
+                                                           class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
+                                                </div>
+                                                
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">School</label>
+                                                    <input type="text" name="school" value="{{ child.school|default:'' }}" 
+                                                           class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
+                                                </div>
+                                                
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                                                    <input type="text" name="year" value="{{ child.year|default:'' }}" 
+                                                           class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
+                                                </div>
+                                                
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                                                    <input type="text" name="class_name" value="{{ child.class_name|default:'' }}" 
+                                                           class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
+                                                </div>
+                                                
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Color</label>
+                                                    <div class="flex gap-1 flex-wrap">
+                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none {{ child.colour|yesno:'selected,' }}" 
+                                                             data-color="#FF6B6B" style="background-color: #FF6B6B; border-radius: 0;" 
+                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                             data-color="#4ECDC4" style="background-color: #4ECDC4; border-radius: 0;" 
+                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                             data-color="#0D6A80" style="background-color: #0D6A80; border-radius: 0;" 
+                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                             data-color="#96CEB4" style="background-color: #96CEB4; border-radius: 0;" 
+                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                             data-color="#D1D811" style="background-color: #D1D811; border-radius: 0;" 
+                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                             data-color="#DDA0DD" style="background-color: #DDA0DD; border-radius: 0;" 
+                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                             data-color="#AD6A0D" style="background-color: #AD6A0D; border-radius: 0;" 
+                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                             data-color="#8516EE" style="background-color: #8516EE; border-radius: 0;" 
+                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                             data-color="#0CEB0C" style="background-color: #0CEB0C; border-radius: 0;" 
+                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
+                                                             data-color="#BE12E0" style="background-color: #BE12E0; border-radius: 0;" 
+                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
+                                                    </div>
+                                                    <input type="hidden" name="colour" value="{{ child.colour }}" id="childColor{{ child.id }}">
+                                                </div>
+                                                
+                                                <div class="flex gap-2">
+                                                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-3 border-2 border-secondary transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
+                                                        Save Changes
+                                                    </button>
+                                                    <button type="button" onclick="toggleChildEdit({{ child.id }})" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Middle Column: Timeline (same width as child page) -->
-                <div class="md:col-span-6 lg:col-span-6 xl:col-span-6 h-full">
-                    <div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
+                <div class="md:col-span-6 lg:col-span-6 xl:col-span-6 h-full min-h-0">
+                    <div class="bg-white border-2 border-primary shadow-lg h-full min-h-0 flex flex-col">
                         <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-lg font-normal text-gray-900 tracking-wide child-header-text">Tasks & Events</h3>
@@ -1002,7 +1331,7 @@
                                         </a>
                                     </nav>
                                     <div class="border-l-2 border-primary pl-3 flex items-center justify-center">
-                                        <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal px-4 py-3 border-2 border-primary transition-all duration-200 tracking-wide text-sm hover:shadow-lg flex items-center justify-center">
+                                        <button onclick="openAddEntryModal()" class="bg-primary hover:bg-secondary text-white font-normal px-4 py-3 border-2 border-primary transition-all duration-200 tracking-wide text-sm hover:shadow-lg flex items-center justify-center">
                                             <i class="fas fa-plus"></i>
                                         </button>
                                     </div>
@@ -1015,29 +1344,33 @@
                             <form method="post" class="space-y-3">
                                 {% csrf_token %}
                                 <input type="hidden" name="add_entry" value="1">
+                                <input type="hidden" id="selectedChildInputDesktop" name="selected_child" value="">
                                 
+                                <!-- Row 1: Child (conditionally shown) and Title -->
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div id="childFieldDesktop" class="child-field">
+                                        <label for="{{ form.child.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Child</label>
+                                        {{ form.child }}
+                                    </div>
                                     <div>
                                         <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
                                         {{ form.title }}
                                     </div>
-                                    
+                                </div>
+                                
+                                <!-- Row 2: Type and Category -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
                                         <label for="{{ form.entry_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
                                         {{ form.entry_type }}
                                     </div>
-                                    
-                                    <div>
-                                        <label for="{{ form.child.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Child</label>
-                                        {{ form.child }}
-                                    </div>
-                                    
                                     <div>
                                         <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                                         {{ form.category }}
                                     </div>
                                 </div>
                                 
+                                <!-- Row 3: Description (full width) -->
                                 <div>
                                     <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                     {{ form.description }}
@@ -1047,7 +1380,7 @@
                                     <button type="submit" class="bg-primary hover:bg-secondary text-white font-normal py-1 px-3 border-2 border-primary transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                         Save Entry
                                     </button>
-                                    <button type="button" onclick="toggleEntryForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
+                                    <button type="button" onclick="openAddEntryModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                         Cancel
                                     </button>
                                 </div>
@@ -1055,14 +1388,15 @@
                         </div>
                         
                         <!-- Timeline Content -->
-                        <div class="p-4 overflow-y-auto flex-1">
+                        <div class="p-4 overflow-y-auto flex-1 min-h-0">
+                            <!-- Collapse all button moved to header -->
                             {% if active_entries %}
-                                <div class="space-y-4">
+                                <div class="space-y-4 flex-1 min-h-0 overflow-y-auto">
                                     {% for entry in active_entries %}
                                         <div class="{% if entry.entry_type == 'task' %}bg-amber-50 border-l-4 border-amber-600{% elif entry.entry_type == 'event' %}bg-violet-50 border-l-4 border-violet-600{% endif %} p-4 hover:bg-opacity-80 transition-all duration-200" 
                                              data-child-id="{{ entry.child.id }}">
                                             <div class="flex justify-between items-start">
-                                                <div class="flex-1">
+                                                <div class="flex-1 overflow-y-auto" style="max-height: 40vh;">
                                                     <h4 class="font-medium text-gray-900">{{ entry.title }}</h4>
                                                     <p class="text-gray-600 text-sm mt-1">{{ entry.description|truncatewords:20 }}</p>
                                                     <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
@@ -1086,7 +1420,7 @@
                                         <i class="fas fa-calendar-plus text-primary text-xl"></i>
                                     </div>
                                     <p class="text-gray-600 font-normal tracking-wide mb-4">No entries yet</p>
-                                    <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg">
+                                    <button onclick="openAddEntryModal()" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg">
                                         Add First Entry
                                     </button>
                                 </div>
@@ -1102,7 +1436,7 @@
                             <div class="flex items-center justify-between">
                                 <h3 class="text-lg font-normal text-green-700 tracking-wide notes-header-text">Notes</h3>
                                 <div class="border-l-2 border-primary pl-3 flex items-center justify-center">
-                                    <button onclick="toggleNotesForm()" class="bg-green-600 hover:bg-green-700 text-white font-normal px-4 py-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-sm hover:shadow-lg flex items-center justify-center">
+                                    <button onclick="openAddNoteModal()" class="bg-green-600 hover:bg-green-700 text-white font-normal px-4 py-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-sm hover:shadow-lg flex items-center justify-center">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
@@ -1116,13 +1450,13 @@
                                 <input type="hidden" name="add_note" value="1">
                                 
                                 <div>
-                                    <label for="{{ note_form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                                    {{ note_form.title }}
+                                    <label for="{{ note_form.child.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Child</label>
+                                    {{ note_form.child }}
                                 </div>
                                 
                                 <div>
-                                    <label for="{{ note_form.child.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Child</label>
-                                    {{ note_form.child }}
+                                    <label for="{{ note_form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                    {{ note_form.title }}
                                 </div>
                                 
                                 <div>
@@ -1141,7 +1475,7 @@
                                     <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                         Save Note
                                     </button>
-                                    <button type="button" onclick="toggleNotesForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
+                                    <button type="button" onclick="openAddNoteModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
                                         Cancel
                                     </button>
                                 </div>
@@ -1149,14 +1483,34 @@
                         </div>
                         
                         <!-- Notes Content -->
-                        <div class="p-4 overflow-y-auto flex-1">
+                        <div class="p-4 overflow-y-auto flex-1 min-h-0">
+                            <div class="flex justify-end mb-2">
+                                <!-- Collapse all button moved to header -->
+                            </div>
+    function toggleEntryDetails(card) {
+        const details = card.querySelector('.entry-details');
+        if (details) details.classList.toggle('hidden');
+    }
+
+    function toggleNoteDetails(card) {
+        const details = card.querySelector('.note-details');
+        if (details) details.classList.toggle('hidden');
+    }
+
+    function collapseAllEntries() {
+        document.querySelectorAll('.entry-details').forEach(d => d.classList.add('hidden'));
+    }
+
+    function collapseAllNotes() {
+        document.querySelectorAll('.note-details').forEach(d => d.classList.add('hidden'));
+    }
                             {% if notes %}
-                                <div class="space-y-4">
+                                <div class="space-y-4 flex-1 min-h-0 overflow-y-auto">
                                     {% for note in notes %}
                                         <div class="bg-green-50 border-l-4 border-green-600 p-4 hover:bg-green-100 transition-all duration-200" 
                                              data-child-id="{{ note.child.id }}">
                                             <div class="flex justify-between items-start">
-                                                <div class="flex-1">
+                                                <div class="flex-1 overflow-y-auto" style="max-height: 40vh;">
                                                     <h4 class="font-medium text-gray-900">{{ note.title }}</h4>
                                                     <p class="text-gray-600 text-sm mt-1">{{ note.description|truncatewords:20 }}</p>
                                                     <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
@@ -1177,7 +1531,7 @@
                                         <i class="fas fa-sticky-note text-green-600 text-xl"></i>
                                     </div>
                                     <p class="text-gray-600 font-normal tracking-wide mb-4">No notes yet</p>
-                                    <button onclick="toggleNotesForm()" class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 border-2 border-green-600 transition-all duration-200 tracking-wide hover:shadow-lg">
+                                    <button onclick="openAddNoteModal()" class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 border-2 border-green-600 transition-all duration-200 tracking-wide hover:shadow-lg">
                                         Add First Note
                                     </button>
                                 </div>
