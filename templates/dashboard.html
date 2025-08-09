@@ -125,12 +125,125 @@ function collapseAllNotes() {
         document.getElementById('addNoteModal').classList.add('hidden');
     }
 
+    function openEditChildModal(childId, childData) {
+        // Populate the form with child data
+        document.getElementById('edit_child_name').value = childData.name;
+        document.getElementById('edit_child_birth_date').value = childData.birth_date;
+        document.getElementById('edit_child_school').value = childData.school || '';
+        document.getElementById('edit_child_year').value = childData.year || '';
+        document.getElementById('edit_child_class_name').value = childData.class_name || '';
+        document.getElementById('edit_child_colour').value = childData.colour;
+        
+        // Set the form action to the edit URL
+        document.getElementById('editChildForm').action = '/edit_child/' + childId + '/';
+        
+        // Select the correct color dot
+        const colorDots = document.querySelectorAll('#editChildModal .color-dot');
+        colorDots.forEach(dot => {
+            dot.classList.remove('selected');
+            if (dot.getAttribute('data-color') === childData.colour) {
+                dot.classList.add('selected');
+            }
+        });
+        
+        // Show the modal
+        document.getElementById('editChildModal').classList.remove('hidden');
+    }
+
+    function closeEditChildModal() {
+        document.getElementById('editChildModal').classList.add('hidden');
+    }
+
+    function selectEditColorDot(element) {
+        // Remove selected class from all dots
+        const allDots = document.querySelectorAll('#editChildModal .color-dot');
+        allDots.forEach(dot => dot.classList.remove('selected'));
+        
+        // Add selected class to clicked dot
+        element.classList.add('selected');
+        
+        // Update hidden input
+        document.getElementById('edit_child_colour').value = element.getAttribute('data-color');
+    }
+
+    function deleteChild() {
+        if (confirm('Are you sure you want to delete this child? This action cannot be undone.')) {
+            const form = document.getElementById('editChildForm');
+            const deleteForm = document.createElement('form');
+            deleteForm.method = 'post';
+            deleteForm.action = form.action.replace('/edit_child/', '/delete_child/');
+            
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            deleteForm.appendChild(csrfToken);
+            document.body.appendChild(deleteForm);
+            deleteForm.submit();
+        }
+    }
+
+    function deleteChildConfirm(childId, childName) {
+        if (confirm(`Are you sure you want to delete ${childName}? This action cannot be undone and will also delete all associated entries and notes.`)) {
+            const deleteForm = document.createElement('form');
+            deleteForm.method = 'post';
+            deleteForm.action = '/delete_child/' + childId + '/';
+            
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            deleteForm.appendChild(csrfToken);
+            document.body.appendChild(deleteForm);
+            deleteForm.submit();
+        }
+    }
+
+    function deleteEntryConfirm(entryId, entryTitle) {
+        if (confirm(`Are you sure you want to delete "${entryTitle}"? This action cannot be undone.`)) {
+            const deleteForm = document.createElement('form');
+            deleteForm.method = 'post';
+            deleteForm.action = '/delete_entry/' + entryId + '/';
+            
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            deleteForm.appendChild(csrfToken);
+            document.body.appendChild(deleteForm);
+            deleteForm.submit();
+        }
+    }
+
+    function deleteNoteConfirm(noteId, noteTitle) {
+        if (confirm(`Are you sure you want to delete "${noteTitle}"? This action cannot be undone.`)) {
+            const deleteForm = document.createElement('form');
+            deleteForm.method = 'post';
+            deleteForm.action = '/delete_note/' + noteId + '/';
+            
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            deleteForm.appendChild(csrfToken);
+            document.body.appendChild(deleteForm);
+            deleteForm.submit();
+        }
+    }
+
     // Close modals when clicking outside or pressing escape
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
             closeAddChildModal();
             closeAddEntryModal();
             closeAddNoteModal();
+            closeEditChildModal();
+            closeEditEntryModal();
+            closeEditNoteModal();
         }
     });
 
@@ -338,6 +451,93 @@ function collapseAllNotes() {
                 card.classList.add('border-gray-300');
             }
         });
+    }
+
+    // Edit Entry Modal functions
+    function openEditEntryModal(entryId, childId, category, title, content, date) {
+        const modal = document.getElementById('editEntryModal');
+        const form = document.getElementById('editEntryForm');
+        
+        // Populate form fields
+        document.getElementById('edit_entry_child').value = childId;
+        document.getElementById('edit_entry_category').value = category;
+        document.getElementById('edit_entry_title').value = title;
+        document.getElementById('edit_entry_content').value = content;
+        document.getElementById('edit_entry_date').value = date;
+        
+        // Set form action
+        form.action = '/edit_entry/' + entryId + '/';
+        
+        // Show modal
+        modal.classList.remove('hidden');
+    }
+
+    function closeEditEntryModal() {
+        const modal = document.getElementById('editEntryModal');
+        modal.classList.add('hidden');
+    }
+
+    function deleteEntry() {
+        const form = document.getElementById('editEntryForm');
+        const entryTitle = document.getElementById('edit_entry_title').value;
+        
+        if (confirm(`Are you sure you want to delete "${entryTitle}"? This action cannot be undone.`)) {
+            const deleteForm = document.createElement('form');
+            deleteForm.method = 'post';
+            deleteForm.action = form.action.replace('/edit_entry/', '/delete_entry/');
+            
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            deleteForm.appendChild(csrfToken);
+            document.body.appendChild(deleteForm);
+            deleteForm.submit();
+        }
+    }
+
+    // Edit Note Modal functions
+    function openEditNoteModal(noteId, childId, title, content, date) {
+        const modal = document.getElementById('editNoteModal');
+        const form = document.getElementById('editNoteForm');
+        
+        // Populate form fields
+        document.getElementById('edit_note_child').value = childId;
+        document.getElementById('edit_note_title').value = title;
+        document.getElementById('edit_note_content').value = content;
+        document.getElementById('edit_note_date').value = date;
+        
+        // Set form action
+        form.action = '/edit_note/' + noteId + '/';
+        
+        // Show modal
+        modal.classList.remove('hidden');
+    }
+
+    function closeEditNoteModal() {
+        const modal = document.getElementById('editNoteModal');
+        modal.classList.add('hidden');
+    }
+
+    function deleteNote() {
+        const form = document.getElementById('editNoteForm');
+        const noteTitle = document.getElementById('edit_note_title').value;
+        
+        if (confirm(`Are you sure you want to delete "${noteTitle}"? This action cannot be undone.`)) {
+            const deleteForm = document.createElement('form');
+            deleteForm.method = 'post';
+            deleteForm.action = form.action.replace('/edit_note/', '/delete_note/');
+            
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            deleteForm.appendChild(csrfToken);
+            document.body.appendChild(deleteForm);
+            deleteForm.submit();
+        }
     }
 </script>
 {% endblock %}
@@ -579,6 +779,250 @@ function collapseAllNotes() {
     </div>
 </div>
 
+<!-- Edit Child Modal -->
+<div id="editChildModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" onclick="closeEditChildModal()">
+    <div class="bg-white border-2 border-secondary w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="border-b-2 border-secondary bg-purple-50 px-4 py-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium text-gray-900">Edit Child</h2>
+                <button onclick="closeEditChildModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-4">
+            <form id="editChildForm" method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <div>
+                    <label for="edit_child_name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <input type="text" id="edit_child_name" name="name" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="edit_child_birth_date" class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                    <input type="date" id="edit_child_birth_date" name="birth_date" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="edit_child_school" class="block text-sm font-medium text-gray-700 mb-1">School</label>
+                    <input type="text" id="edit_child_school" name="school" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="edit_child_year" class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                    <input type="text" id="edit_child_year" name="year" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="edit_child_class_name" class="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                    <input type="text" id="edit_child_class_name" name="class_name" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                    <input type="hidden" id="edit_child_colour" name="colour">
+                    <div class="grid grid-cols-5 gap-2">
+                        <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                             data-color="#FF6B6B"
+                             onclick="selectEditColorDot(this)"
+                             style="background-color: #FF6B6B;"
+                             title="Coral Red">
+                        </div>
+                        <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                             data-color="#4ECDC4"
+                             onclick="selectEditColorDot(this)"
+                             style="background-color: #4ECDC4;"
+                             title="Turquoise">
+                        </div>
+                        <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                             data-color="#0D6A80"
+                             onclick="selectEditColorDot(this)"
+                             style="background-color: #0D6A80;"
+                             title="Sky Blue">
+                        </div>
+                        <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                             data-color="#96CEB4"
+                             onclick="selectEditColorDot(this)"
+                             style="background-color: #96CEB4;"
+                             title="Mint Green">
+                        </div>
+                        <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                             data-color="#D1D811"
+                             onclick="selectEditColorDot(this)"
+                             style="background-color: #D1D811;"
+                             title="Sunny Yellow">
+                        </div>
+                        <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                             data-color="#DDA0DD"
+                             onclick="selectEditColorDot(this)"
+                             style="background-color: #DDA0DD;"
+                             title="Plum Purple">
+                        </div>
+                        <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                             data-color="#AD6A0D"
+                             onclick="selectEditColorDot(this)"
+                             style="background-color: #AD6A0D;"
+                             title="Peach Orange">
+                        </div>
+                        <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                             data-color="#8516EE"
+                             onclick="selectEditColorDot(this)"
+                             style="background-color: #8516EE;"
+                             title="Light Blue">
+                        </div>
+                        <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                             data-color="#0CEB0C"
+                             onclick="selectEditColorDot(this)"
+                             style="background-color: #0CEB0C;"
+                             title="Pale Green">
+                        </div>
+                        <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                             data-color="#BE12E0"
+                             onclick="selectEditColorDot(this)"
+                             style="background-color: #BE12E0;"
+                             title="Bright Pink">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-medium py-2 px-4 border-2 border-secondary transition-all duration-200 tracking-wide">
+                        Save Changes
+                    </button>
+                    <button type="button" onclick="closeEditChildModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide">
+                        Cancel
+                    </button>
+                    <button type="button" onclick="deleteChild()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 border-2 border-red-600 transition-all duration-200 tracking-wide ml-auto">
+                        Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Entry Modal -->
+<div id="editEntryModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-50 flex items-center justify-center" onclick="closeEditEntryModal()">
+    <div class="bg-white p-8 rounded-lg shadow-xl max-w-lg w-full mx-4 border-2 border-gray-300" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Edit Entry</h2>
+            <button onclick="closeEditEntryModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+        </div>
+        <div class="max-h-96 overflow-y-auto">
+            <form id="editEntryForm" method="post">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="edit_entry_child" class="block text-sm font-medium text-gray-700 mb-2">Child</label>
+                    <select id="edit_entry_child" name="child" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        {% for child in children %}
+                        <option value="{{ child.id }}">{{ child.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="edit_entry_category" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select id="edit_entry_category" name="category" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="health">Health</option>
+                        <option value="school">School</option>
+                        <option value="activities">Activities</option>
+                        <option value="social">Social</option>
+                        <option value="behavior">Behavior</option>
+                        <option value="milestone">Milestone</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="edit_entry_title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                    <input type="text" id="edit_entry_title" name="title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="edit_entry_content" class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                    <textarea id="edit_entry_content" name="content" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" required></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="edit_entry_date" class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                    <input type="date" id="edit_entry_date" name="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                </div>
+                
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-medium py-2 px-4 border-2 border-secondary transition-all duration-200 tracking-wide">
+                        Save Changes
+                    </button>
+                    <button type="button" onclick="closeEditEntryModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide">
+                        Cancel
+                    </button>
+                    <button type="button" onclick="deleteEntry()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 border-2 border-red-600 transition-all duration-200 tracking-wide ml-auto">
+                        Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Note Modal -->
+<div id="editNoteModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-50 flex items-center justify-center" onclick="closeEditNoteModal()">
+    <div class="bg-white p-8 rounded-lg shadow-xl max-w-lg w-full mx-4 border-2 border-gray-300" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Edit Note</h2>
+            <button onclick="closeEditNoteModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+        </div>
+        <div class="max-h-96 overflow-y-auto">
+            <form id="editNoteForm" method="post">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="edit_note_child" class="block text-sm font-medium text-gray-700 mb-2">Child</label>
+                    <select id="edit_note_child" name="child" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        {% for child in children %}
+                        <option value="{{ child.id }}">{{ child.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="edit_note_title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                    <input type="text" id="edit_note_title" name="title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="edit_note_content" class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                    <textarea id="edit_note_content" name="content" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" required></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="edit_note_date" class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                    <input type="date" id="edit_note_date" name="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                </div>
+                
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-medium py-2 px-4 border-2 border-secondary transition-all duration-200 tracking-wide">
+                        Save Changes
+                    </button>
+                    <button type="button" onclick="closeEditNoteModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 border-2 border-gray-300 transition-all duration-200 tracking-wide">
+                        Cancel
+                    </button>
+                    <button type="button" onclick="deleteNote()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 border-2 border-red-600 transition-all duration-200 tracking-wide ml-auto">
+                        Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="overflow-hidden h-screen flex flex-col" style="height: calc(100vh - 80px); min-height: 0;">
     <!-- Message System -->
     {% if messages %}
@@ -630,220 +1074,34 @@ function collapseAllNotes() {
                     <div class="p-3 overflow-x-auto" style="overflow-y: visible; max-height: 120px;">
                         <div class="flex gap-3" style="width: max-content; overflow: visible;">
                             {% for child in children %}
-                            <div class="child-card border-2 border-gray-300 bg-white cursor-pointer hover:bg-gray-50 transition-all duration-200 flex-shrink-0 w-32 relative" 
-                                 data-child-id="{{ child.id }}" style="overflow: visible; z-index: 10;">
-                                <div class="p-3 text-center" onclick="toggleChildEdit({{ child.id }})">
-                                    <div class="w-8 h-8 mx-auto border-2 border-primary flex items-center justify-center text-white font-normal text-sm tracking-wide mb-2" 
-                                         style="background-color: {{ child.colour }};">
-                                        {{ child.name|first|upper }}
+                            <div class="child-card border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all duration-200 flex-shrink-0 w-32" 
+                                 data-child-id="{{ child.id }}">
+                                <div class="p-3 relative">
+                                    <div class="absolute top-1 right-1 flex gap-1">
+                                        <button onclick="openEditChildModal('{{ child.id }}', {
+                                            name: '{{ child.name|escapejs }}',
+                                            birth_date: '{{ child.birth_date|date:'Y-m-d' }}',
+                                            school: '{{ child.school|default_if_none:''|escapejs }}',
+                                            year: '{{ child.year|default_if_none:''|escapejs }}',
+                                            class_name: '{{ child.class_name|default_if_none:''|escapejs }}',
+                                            colour: '{{ child.colour }}'
+                                        })" class="text-gray-400 hover:text-primary transition-colors duration-200 text-xs">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                        <button onclick="deleteChildConfirm('{{ child.id }}', '{{ child.name|escapejs }}')" class="text-red-400 hover:text-red-600 transition-colors duration-200 text-xs">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
-                                    <h3 class="text-xs font-medium text-gray-900">{{ child.name }}</h3>
-                                </div>
-                                
-                                <!-- Child Edit Form Dropdown -->
-                                <div id="childEdit{{ child.id }}Mobile" class="hidden border-t-2 border-secondary bg-purple-25 p-2 rounded-none" style="border-radius: 0;">
-                                    <form method="post" action="{% url 'edit_child' child.id %}" class="space-y-2">
-                                        {% csrf_token %}
-                                        
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Name</label>
-                                            <input type="text" name="name" value="{{ child.name }}" 
-                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs rounded-none" style="border-radius: 0;">
+                                    <div class="text-center">
+                                        <div class="w-8 h-8 mx-auto border-2 border-primary flex items-center justify-center text-white font-normal text-sm tracking-wide mb-2" 
+                                             style="background-color: {{ child.colour }};" onclick="selectChild('{{ child.id }}')">
+                                            {{ child.name|first|upper }}
                                         </div>
-                                        
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Date of Birth</label>
-                                            <input type="date" name="birth_date" value="{{ child.birth_date|date:'Y-m-d' }}" 
-                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs rounded-none" style="border-radius: 0;">
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">School</label>
-                                            <input type="text" name="school" value="{{ child.school|default:'' }}" 
-                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs rounded-none" style="border-radius: 0;">
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Year</label>
-                                            <input type="text" name="year" value="{{ child.year|default:'' }}" 
-                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs rounded-none" style="border-radius: 0;">
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Class</label>
-                                            <input type="text" name="class_name" value="{{ child.class_name|default:'' }}" 
-                                                   class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-xs rounded-none" style="border-radius: 0;">
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-700 mb-1">Color</label>
-                                            <div class="flex gap-1 flex-wrap">
-                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none {{ child.colour|yesno:'selected,' }}" 
-                                                     data-color="#FF6B6B" style="background-color: #FF6B6B; border-radius: 0;" 
-                                                     onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
-                                                     data-color="#4ECDC4" style="background-color: #4ECDC4; border-radius: 0;" 
-                                                     onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
-                                                     data-color="#0D6A80" style="background-color: #0D6A80; border-radius: 0;" 
-                                                     onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
-                                                     data-color="#96CEB4" style="background-color: #96CEB4; border-radius: 0;" 
-                                                     onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
-                                                     data-color="#D1D811" style="background-color: #D1D811; border-radius: 0;" 
-                                                     onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
-                                                     data-color="#DDA0DD" style="background-color: #DDA0DD; border-radius: 0;" 
-                                                     onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
-                                                     data-color="#AD6A0D" style="background-color: #AD6A0D; border-radius: 0;" 
-                                                     onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
-                                                     data-color="#8516EE" style="background-color: #8516EE; border-radius: 0;" 
-                                                     onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
-                                                     data-color="#0CEB0C" style="background-color: #0CEB0C; border-radius: 0;" 
-                                                     onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                <div class="color-dot-small w-3 h-3 border-2 cursor-pointer rounded-none" 
-                                                     data-color="#BE12E0" style="background-color: #BE12E0; border-radius: 0;" 
-                                                     onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                            </div>
-                                            <input type="hidden" name="colour" value="{{ child.colour }}" id="childColor{{ child.id }}">
-                                        </div>
-                                        
-                                        <div class="flex gap-1 pt-1">
-                                            <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-2 border-2 border-secondary transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
-                                                Save
-                                            </button>
-                                            <button type="button" onclick="toggleChildEdit({{ child.id }})" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </form>
+                                        <h3 class="text-xs font-medium text-gray-900">{{ child.name }}</h3>
+                                    </div>
                                 </div>
                             </div>
                             {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <!-- Scrollable content area for child form and child cards -->
-                    <div class="overflow-y-auto flex-1 min-h-0">
-                        <!-- Child Form Mobile -->
-                        <div id="childFormMobile" class="hidden border-b-2 border-secondary bg-purple-25 p-2 rounded-none" style="border-radius: 0;">
-                            <form method="post" class="space-y-2">
-                                {% csrf_token %}
-                                <input type="hidden" name="add_child" value="1">
-                                
-                                <div>
-                                    <label for="{{ child_form.name.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Name</label>
-                                    {{ child_form.name }}
-                                </div>
-                                
-                                <div>
-                                    <label for="{{ child_form.birth_date.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">{{ child_form.birth_date.label }}</label>
-                                    {{ child_form.birth_date }}
-                                    {% if child_form.birth_date.help_text %}
-                                        <p class="text-xs text-gray-500 mt-1">{{ child_form.birth_date.help_text }}</p>
-                                    {% endif %}
-                                </div>
-                                
-                                <div>
-                                    <label for="{{ child_form.school.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">School</label>
-                                    {{ child_form.school }}
-                                </div>
-                                
-                                <div>
-                                    <label for="{{ child_form.year.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Year</label>
-                                    {{ child_form.year }}
-                                </div>
-                                
-                                <div>
-                                    <label for="{{ child_form.class_name.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Class</label>
-                                    {{ child_form.class_name }}
-                                </div>
-                                
-                                <div>
-                                    <label for="{{ child_form.colour.id_for_label }}" class="block text-xs font-medium text-gray-700 mb-1">Colour</label>
-                                    <!-- Hidden select field -->
-                                    {{ child_form.colour }}
-                                    
-                                    <!-- Custom color grid -->
-                                    <div class="color-grid-widget rounded-none" data-target="{{ child_form.colour.id_for_label }}" style="border-radius: 0;">
-                                        <div class="color-dots-grid">
-                                            <div class="color-dot selected rounded-none" 
-                                                 data-color="#FF6B6B"
-                                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #FF6B6B; border-radius: 0;"
-                                                 title="Coral Red">
-                                            </div>
-                                            <div class="color-dot rounded-none" 
-                                                 data-color="#4ECDC4"
-                                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #4ECDC4; border-radius: 0;"
-                                                 title="Turquoise">
-                                            </div>
-                                            <div class="color-dot rounded-none" 
-                                                 data-color="#0D6A80"
-                                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #0D6A80; border-radius: 0;"
-                                                 title="Sky Blue">
-                                            </div>
-                                            <div class="color-dot rounded-none" 
-                                                 data-color="#96CEB4"
-                                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #96CEB4; border-radius: 0;"
-                                                 title="Mint Green">
-                                            </div>
-                                            <div class="color-dot rounded-none" 
-                                                 data-color="#D1D811"
-                                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #D1D811; border-radius: 0;"
-                                                 title="Sunny Yellow">
-                                            </div>
-                                            <div class="color-dot rounded-none" 
-                                                 data-color="#DDA0DD"
-                                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #DDA0DD; border-radius: 0;"
-                                                 title="Plum Purple">
-                                            </div>
-                                            <div class="color-dot rounded-none" 
-                                                 data-color="#AD6A0D"
-                                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #AD6A0D; border-radius: 0;"
-                                                 title="Peach Orange">
-                                            </div>
-                                            <div class="color-dot rounded-none" 
-                                                 data-color="#8516EE"
-                                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #8516EE; border-radius: 0;"
-                                                 title="Light Blue">
-                                            </div>
-                                            <div class="color-dot rounded-none" 
-                                                 data-color="#0CEB0C"
-                                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #0CEB0C; border-radius: 0;"
-                                                 title="Pale Green">
-                                            </div>
-                                            <div class="color-dot rounded-none" 
-                                                 data-color="#BE12E0"
-                                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                 style="background-color: #BE12E0; border-radius: 0;"
-                                                 title="Bright Pink">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex gap-1 pt-1">
-                                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-2 border-2 border-secondary transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
-                                        Add Child
-                                    </button>
-                                    <button type="button" onclick="toggleChildForm(true)" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-2 border-2 border-gray-300 transition-all duration-200 tracking-wide text-xs rounded-none" style="border-radius: 0;">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -1070,124 +1328,8 @@ function collapseAllNotes() {
                             </div>
                         </div>
                         
-                        <!-- Scrollable content area for child form and child list -->
+                        <!-- Scrollable content area for child list -->
                         <div class="overflow-y-auto flex-1 min-h-0">
-                            <!-- Child Form -->
-                            <div id="childFormDesktop" class="hidden border-b-2 border-secondary bg-purple-25 p-3 rounded-none" style="border-radius: 0;">
-                                <form method="post" class="space-y-3">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="add_child" value="1">
-                                    
-                                    <div>
-                                        <label for="{{ child_form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                                        {{ child_form.name }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ child_form.birth_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ child_form.birth_date.label }}</label>
-                                        {{ child_form.birth_date }}
-                                        {% if child_form.birth_date.help_text %}
-                                            <p class="text-xs text-gray-500 mt-1">{{ child_form.birth_date.help_text }}</p>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ child_form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">School</label>
-                                        {{ child_form.school }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ child_form.year.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Year</label>
-                                        {{ child_form.year }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ child_form.class_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Class</label>
-                                        {{ child_form.class_name }}
-                                    </div>
-                                    
-                                    <div>
-                                        <label for="{{ child_form.colour.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Colour</label>
-                                        <!-- Hidden select field -->
-                                        {{ child_form.colour }}
-                                        
-                                        <!-- Custom color grid -->
-                                        <div class="color-grid-widget rounded-none" data-target="{{ child_form.colour.id_for_label }}" style="border-radius: 0;">
-                                            <div class="color-dots-grid">
-                                                <div class="color-dot selected rounded-none" 
-                                                     data-color="#FF6B6B"
-                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                     style="background-color: #FF6B6B; border-radius: 0;"
-                                                     title="Coral Red">
-                                                </div>
-                                                <div class="color-dot rounded-none" 
-                                                     data-color="#4ECDC4"
-                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                     style="background-color: #4ECDC4; border-radius: 0;"
-                                                     title="Turquoise">
-                                                </div>
-                                                <div class="color-dot rounded-none" 
-                                                     data-color="#0D6A80"
-                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                     style="background-color: #0D6A80; border-radius: 0;"
-                                                     title="Sky Blue">
-                                                </div>
-                                                <div class="color-dot rounded-none" 
-                                                     data-color="#96CEB4"
-                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                     style="background-color: #96CEB4; border-radius: 0;"
-                                                     title="Mint Green">
-                                                </div>
-                                                <div class="color-dot rounded-none" 
-                                                     data-color="#D1D811"
-                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                     style="background-color: #D1D811; border-radius: 0;"
-                                                     title="Sunny Yellow">
-                                                </div>
-                                                <div class="color-dot rounded-none" 
-                                                     data-color="#DDA0DD"
-                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                     style="background-color: #DDA0DD; border-radius: 0;"
-                                                     title="Plum Purple">
-                                                </div>
-                                                <div class="color-dot rounded-none" 
-                                                     data-color="#AD6A0D"
-                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                     style="background-color: #AD6A0D; border-radius: 0;"
-                                                     title="Peach Orange">
-                                                </div>
-                                                <div class="color-dot rounded-none" 
-                                                     data-color="#8516EE"
-                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                     style="background-color: #8516EE; border-radius: 0;"
-                                                     title="Light Blue">
-                                                </div>
-                                                <div class="color-dot rounded-none" 
-                                                     data-color="#0CEB0C"
-                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                     style="background-color: #0CEB0C; border-radius: 0;"
-                                                     title="Pale Green">
-                                                </div>
-                                                <div class="color-dot rounded-none" 
-                                                     data-color="#BE12E0"
-                                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                                     style="background-color: #BE12E0; border-radius: 0;"
-                                                     title="Bright Pink">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex gap-2">
-                                        <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-3 border-2 border-secondary transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
-                                            Add Child
-                                        </button>
-                                        <button type="button" onclick="toggleChildForm()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
                             
                             <div class="p-4">
                                 <div class="space-y-3 flex-1 min-h-0 overflow-y-auto" style="max-height: 40vh; min-height: 0;">
@@ -1207,102 +1349,42 @@ function collapseAllNotes() {
                                     
                                     <!-- Individual Children -->
                                     {% for child in children %}
-                                    <div class="child-card border-2 border-gray-300 bg-white cursor-pointer hover:bg-gray-50 transition-all duration-200 relative" 
-                                         data-child-id="{{ child.id }}" style="overflow: visible; z-index: 10;">
-                                        <div class="p-3 flex items-center" onclick="toggleChildEdit({{ child.id }})">
-                                            <div class="w-8 h-8 border-2 border-primary flex items-center justify-center text-white font-normal text-sm mr-3" 
-                                                 style="background-color: {{ child.colour }};">
-                                                {{ child.name|first|upper }}
+                                    <div class="child-card border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all duration-200" 
+                                         data-child-id="{{ child.id }}">
+                                        <div class="p-3 flex items-center justify-between">
+                                            <div class="flex items-center cursor-pointer" onclick="selectChild('{{ child.id }}')">
+                                                <div class="w-8 h-8 border-2 border-primary flex items-center justify-center text-white font-normal text-sm mr-3" 
+                                                     style="background-color: {{ child.colour }};">
+                                                    {{ child.name|first|upper }}
+                                                </div>
+                                                <div>
+                                                    <h3 class="text-sm font-medium text-gray-900">{{ child.name }}</h3>
+                                                    {% if child.school %}
+                                                        <p class="text-xs text-gray-600">{{ child.school }}</p>
+                                                    {% endif %}
+                                                    {% if child.year or child.class_name %}
+                                                        <p class="text-xs text-gray-500">
+                                                            {% if child.year %}Year {{ child.year }}{% endif %}
+                                                            {% if child.class_name %} - {{ child.class_name }}{% endif %}
+                                                        </p>
+                                                    {% endif %}
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h3 class="text-sm font-medium text-gray-900">{{ child.name }}</h3>
-                                                {% if child.school %}
-                                                    <p class="text-xs text-gray-600">{{ child.school }}</p>
-                                                {% endif %}
+                                            <div class="flex items-center gap-2">
+                                                <button onclick="openEditChildModal('{{ child.id }}', {
+                                                    name: '{{ child.name|escapejs }}',
+                                                    birth_date: '{{ child.birth_date|date:'Y-m-d' }}',
+                                                    school: '{{ child.school|default_if_none:''|escapejs }}',
+                                                    year: '{{ child.year|default_if_none:''|escapejs }}',
+                                                    class_name: '{{ child.class_name|default_if_none:''|escapejs }}',
+                                                    colour: '{{ child.colour }}'
+                                                })" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                                                    <i class="fas fa-pencil-alt"></i>
+                                                </button>
+                                                <button onclick="deleteChildConfirm('{{ child.id }}', '{{ child.name|escapejs }}')" class="text-red-400 hover:text-red-600 transition-colors duration-200">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </div>
-                                        </div>
-                                        
-                                        <!-- Child Edit Form Dropdown -->
-                                        <div id="childEdit{{ child.id }}Desktop" class="hidden border-t-2 border-secondary bg-purple-25 p-3 rounded-none" style="border-radius: 0;">
-                                            <form method="post" action="{% url 'edit_child' child.id %}" class="space-y-3">
-                                                {% csrf_token %}
-                                                
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                                                    <input type="text" name="name" value="{{ child.name }}" 
-                                                           class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
-                                                </div>
-                                                
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-                                                    <input type="date" name="birth_date" value="{{ child.birth_date|date:'Y-m-d' }}" 
-                                                           class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
-                                                </div>
-                                                
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">School</label>
-                                                    <input type="text" name="school" value="{{ child.school|default:'' }}" 
-                                                           class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
-                                                </div>
-                                                
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Year</label>
-                                                    <input type="text" name="year" value="{{ child.year|default:'' }}" 
-                                                           class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
-                                                </div>
-                                                
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Class</label>
-                                                    <input type="text" name="class_name" value="{{ child.class_name|default:'' }}" 
-                                                           class="w-full px-2 py-1 border-2 border-gray-300 focus:border-secondary focus:outline-none text-sm rounded-none" style="border-radius: 0;">
-                                                </div>
-                                                
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Color</label>
-                                                    <div class="flex gap-1 flex-wrap">
-                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none {{ child.colour|yesno:'selected,' }}" 
-                                                             data-color="#FF6B6B" style="background-color: #FF6B6B; border-radius: 0;" 
-                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                             data-color="#4ECDC4" style="background-color: #4ECDC4; border-radius: 0;" 
-                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                             data-color="#0D6A80" style="background-color: #0D6A80; border-radius: 0;" 
-                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                             data-color="#96CEB4" style="background-color: #96CEB4; border-radius: 0;" 
-                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                             data-color="#D1D811" style="background-color: #D1D811; border-radius: 0;" 
-                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                             data-color="#DDA0DD" style="background-color: #DDA0DD; border-radius: 0;" 
-                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                             data-color="#AD6A0D" style="background-color: #AD6A0D; border-radius: 0;" 
-                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                             data-color="#8516EE" style="background-color: #8516EE; border-radius: 0;" 
-                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                             data-color="#0CEB0C" style="background-color: #0CEB0C; border-radius: 0;" 
-                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                        <div class="color-dot-small w-5 h-5 border-2 cursor-pointer rounded-none" 
-                                                             data-color="#BE12E0" style="background-color: #BE12E0; border-radius: 0;" 
-                                                             onclick="selectChildColor(this, '{{ child.id }}')"></div>
-                                                    </div>
-                                                    <input type="hidden" name="colour" value="{{ child.colour }}" id="childColor{{ child.id }}">
-                                                </div>
-                                                
-                                                <div class="flex gap-2">
-                                                    <button type="submit" class="bg-secondary hover:bg-purple-700 text-white font-normal py-1 px-3 border-2 border-secondary transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
-                                                        Save Changes
-                                                    </button>
-                                                    <button type="button" onclick="toggleChildEdit({{ child.id }})" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-normal py-1 px-3 border-2 border-gray-300 transition-all duration-200 tracking-wide text-sm rounded-none" style="border-radius: 0;">
-                                                        Cancel
-                                                    </button>
-                                                </div>
-                                            </form>
                                         </div>
                                     </div>
                                     {% endfor %}
@@ -1396,20 +1478,30 @@ function collapseAllNotes() {
                                         <div class="{% if entry.entry_type == 'task' %}bg-amber-50 border-l-4 border-amber-600{% elif entry.entry_type == 'event' %}bg-violet-50 border-l-4 border-violet-600{% endif %} p-4 hover:bg-opacity-80 transition-all duration-200" 
                                              data-child-id="{{ entry.child.id }}">
                                             <div class="flex justify-between items-start">
-                                                <div class="flex-1 overflow-y-auto" style="max-height: 40vh;">
-                                                    <h4 class="font-medium text-gray-900">{{ entry.title }}</h4>
-                                                    <p class="text-gray-600 text-sm mt-1">{{ entry.description|truncatewords:20 }}</p>
-                                                    <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                                                        <span class="bg-gray-100 px-2 py-1 border">{{ entry.child.name }}</span>
-                                                        <span>{{ entry.created_at|date:"M d, Y" }}</span>
-                                                        {% if entry.due_date %}
-                                                            <span>Due: {{ entry.due_date|date:"M d" }}</span>
-                                                        {% endif %}
+                                                <div class="flex items-start gap-3 flex-1 overflow-y-auto" style="max-height: 40vh;">
+                                                    <div class="w-6 h-6 border border-primary flex items-center justify-center text-white font-normal text-xs flex-shrink-0 mt-1" 
+                                                         style="background-color: {{ entry.child.colour }};">
+                                                        {{ entry.child.name|first|upper }}
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h4 class="font-medium text-gray-900">{{ entry.title }}</h4>
+                                                        <p class="text-gray-600 text-sm mt-1">{{ entry.description|truncatewords:20 }}</p>
+                                                        <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                                                            <span>{{ entry.created_at|date:"M d, Y" }}</span>
+                                                            {% if entry.due_date %}
+                                                                <span>Due: {{ entry.due_date|date:"M d" }}</span>
+                                                            {% endif %}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <a href="{% url 'edit_entry' entry.id %}" class="text-gray-400 hover:text-primary transition-colors duration-200 ml-4">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                                </a>
+                                                <div class="flex items-center gap-2">
+                                                    <button onclick="openEditEntryModal('{{ entry.id }}', '{{ entry.child.id }}', '{{ entry.category }}', '{{ entry.title|escapejs }}', '{{ entry.content|escapejs }}', '{{ entry.date|date:'Y-m-d' }}')" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                                                        <i class="fas fa-pencil-alt"></i>
+                                                    </button>
+                                                    <button onclick="deleteEntryConfirm('{{ entry.id }}', '{{ entry.title|escapejs }}')" class="text-red-400 hover:text-red-600 transition-colors duration-200">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     {% endfor %}
@@ -1487,40 +1579,33 @@ function collapseAllNotes() {
                             <div class="flex justify-end mb-2">
                                 <!-- Collapse all button moved to header -->
                             </div>
-    function toggleEntryDetails(card) {
-        const details = card.querySelector('.entry-details');
-        if (details) details.classList.toggle('hidden');
-    }
-
-    function toggleNoteDetails(card) {
-        const details = card.querySelector('.note-details');
-        if (details) details.classList.toggle('hidden');
-    }
-
-    function collapseAllEntries() {
-        document.querySelectorAll('.entry-details').forEach(d => d.classList.add('hidden'));
-    }
-
-    function collapseAllNotes() {
-        document.querySelectorAll('.note-details').forEach(d => d.classList.add('hidden'));
-    }
                             {% if notes %}
                                 <div class="space-y-4 flex-1 min-h-0 overflow-y-auto">
                                     {% for note in notes %}
                                         <div class="bg-green-50 border-l-4 border-green-600 p-4 hover:bg-green-100 transition-all duration-200" 
                                              data-child-id="{{ note.child.id }}">
                                             <div class="flex justify-between items-start">
-                                                <div class="flex-1 overflow-y-auto" style="max-height: 40vh;">
-                                                    <h4 class="font-medium text-gray-900">{{ note.title }}</h4>
-                                                    <p class="text-gray-600 text-sm mt-1">{{ note.description|truncatewords:20 }}</p>
-                                                    <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                                                        <span class="bg-gray-100 px-2 py-1 border">{{ note.child.name }}</span>
-                                                        <span>{{ note.created_at|date:"M d, Y" }}</span>
+                                                <div class="flex items-start gap-3 flex-1 overflow-y-auto" style="max-height: 40vh;">
+                                                    <div class="w-6 h-6 border border-primary flex items-center justify-center text-white font-normal text-xs flex-shrink-0 mt-1" 
+                                                         style="background-color: {{ note.child.colour }};">
+                                                        {{ note.child.name|first|upper }}
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h4 class="font-medium text-gray-900">{{ note.title }}</h4>
+                                                        <p class="text-gray-600 text-sm mt-1">{{ note.description|truncatewords:20 }}</p>
+                                                        <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                                                            <span>{{ note.created_at|date:"M d, Y" }}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <a href="{% url 'edit_entry' note.id %}" class="text-gray-400 hover:text-green-600 transition-colors duration-200 ml-4">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                                </a>
+                                                <div class="flex items-center gap-2">
+                                                    <button onclick="openEditNoteModal('{{ note.id }}', '{{ note.child.id }}', '{{ note.title|escapejs }}', '{{ note.description|escapejs }}', '{{ note.date|date:'Y-m-d' }}')" class="text-gray-400 hover:text-green-600 transition-colors duration-200">
+                                                        <i class="fas fa-pencil-alt"></i>
+                                                    </button>
+                                                    <button onclick="deleteNoteConfirm('{{ note.id }}', '{{ note.title|escapejs }}')" class="text-red-400 hover:text-red-600 transition-colors duration-200">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     {% endfor %}
