@@ -1,73 +1,46 @@
-/* Dashboard-specific CSS - Colors and minimal custom styles only */
+/* Dashboard-specific CSS - Minimal custom styles only */
 
-/* Color scheme variables - maintaining current sharp, professional look */
+/* Essential CSS variables for dynamic child colors */
 :root {
-    --primary: #4F46E5;
-    --secondary: #7C3AED;
-    --accent: #F59E0B;
-    --green-theme: #059669;
-    --amber-theme: #D97706;
-    --violet-theme: #7C3AED;
-    --gray-50: #F8FAFC;
-    --gray-100: #F1F5F9;
-    --gray-200: #E2E8F0;
-    --gray-300: #CBD5E1;
-    --border-primary: #4F46E5;
+    --child-color: #4F46E5; /* Fallback color */
 }
 
-/* Custom utilities that Tailwind can't handle */
+/* Child color utilities - Cannot be replaced with Tailwind */
 .child-color-border {
-    border-left-color: var(--child-color, var(--primary));
+    border-left-color: var(--child-color, #4F46E5);
 }
 
 .child-color-bg {
-    background-color: var(--child-color, var(--primary));
+    background-color: var(--child-color, #4F46E5);
 }
 
-/* Smooth transitions for interactive elements */
-.dashboard-card {
-    transition: box-shadow 0.2s ease, transform 0.1s ease;
-}
-
-.dashboard-card:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-/* Loading state for AJAX content */
-.loading-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .5; }
-}
-
-/* Flexbox optimizations for better responsiveness */
-.dashboard-container {
-    min-height: 100vh;
-    max-height: 100vh;
-}
-
-/* Ensure proper scrolling in flex containers */
-.flex-scroll {
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-/* Ultra-wide screen optimizations - Flexbox friendly */
-@media (min-width: 1920px) {
-    .ultra-wide-container {
-        max-width: 1800px;
-        margin: 0 auto;
+/* Mobile filter animations - Tailwind doesn't have slideDown/slideUp */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
     }
-    
-    /* Slightly larger widths for ultra-wide */
-    .children-section-wide {
-        width: 24rem; /* 384px */
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-    
-    .notes-section-wide {
-        width: 24rem; /* 384px */
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
     }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.animate-slide-down {
+    animation: slideDown 0.2s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.2s ease-in;
 }

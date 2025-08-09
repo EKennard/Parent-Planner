@@ -1,12 +1,12 @@
 <!-- Children Section Component -->
-<div class="bg-white border-2 border-primary shadow-lg mb-4 md:mb-0 md:h-full md:overflow-y-auto">
+<div class="bg-white shadow-lg h-full flex flex-col" style="border: 2px solid #4F46E5;">
     <!-- Family Management Header -->
-    <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4">
+    <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #4F46E5;">
         <div class="flex justify-between items-center">
             <div>
-                <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl responsive-text-2xl font-normal text-gray-900 tracking-wide">Your Children</h2>
+                <h2 class="text-lg sm:text-xl md:text-2xl font-normal text-gray-900 tracking-wide">Your Children</h2>
             </div>
-            <div class="border-l-2 border-primary pl-3 sm:pl-4 flex items-center justify-center">
+            <div class="pl-3 sm:pl-4 flex items-center justify-center" style="border-left: 2px solid #4F46E5;">
                 <a href="{% url 'add_child' %}"
                     class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center"
                     title="Add Child">
@@ -17,7 +17,7 @@
     </div>
 
     <!-- Children Cards Container -->
-    <div class="p-3 sm:p-4 md:p-6">
+    <div class="p-3 sm:p-4 md:p-6 flex-1 overflow-y-auto">
         {% if children %}
             <div class="space-y-3 sm:space-y-4">
             {% for child in children %}
@@ -31,7 +31,7 @@
                                     {{ child.name|first|upper }}
                                 </div>
                                 <div class="flex-1">
-                                    <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl responsive-text-2xl font-normal text-gray-900 tracking-wide mb-1">{{ child.name }}</h3>
+                                    <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide mb-1">{{ child.name }}</h3>
                                     <div class="flex flex-wrap gap-1 text-xs sm:text-sm text-gray-600">
                                         {% if child.birth_date %}
                                             <span>{{ child.birth_date|date:"M j, Y" }}</span>

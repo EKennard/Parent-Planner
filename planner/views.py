@@ -121,8 +121,17 @@ def dashboard(request):
     # Limit entries for better performance - only show recent entries on dashboard
     active_entries = filtered_entries[:20]
     
+    # DEBUG: Print what we're getting
+    print(f"DEBUG: filtered_entries count = {filtered_entries.count()}")
+    print(f"DEBUG: active_entries count = {len(active_entries)}")
+    for entry in active_entries[:5]:  # Print first 5
+        print(f"  - {entry.title} ({entry.entry_type})")
+    
     # Get recent notes for the notes section - limit to 15
     notes = all_entries.filter(entry_type='note')[:15]
+    
+    # Separate timeline entries (tasks and events only)
+    timeline_entries = all_entries.filter(entry_type__in=['task', 'event']).order_by('-created_at')[:20]
     
     # Efficient counting using database aggregation
     from django.db.models import Count, Q
@@ -140,6 +149,7 @@ def dashboard(request):
         'dashboard_mode': dashboard_mode,
         'primary_child': children.first() if children_count == 1 else None,
         'active_entries': active_entries,
+        'entries': active_entries,  # For timeline section - should show tasks and events
         'total_entries': entry_counts['total'],
         'notes_count': entry_counts['notes'],
         'tasks_count': entry_counts['tasks'],
@@ -147,30 +157,9 @@ def dashboard(request):
         'form': form,
         'note_form': note_form,
         'child_form': child_form,
-        'notes': notes,
+        'notes': notes,  # For notes section - notes only
     }
     return render(request, 'dashboard.html', context)
-
-
-@login_required
-def onboarding_decision(request, child_id):
-    """Show decision dialog after creating a child during onboarding"""
-    parent = get_parent_or_redirect(request)
-    if not parent:
-        return redirect('register')
-    
-    child = get_object_or_404(Child, id=child_id, parent=parent)
-    child_count = Child.objects.filter(parent=parent).count()
-    
-    # Debug: Print child name to check what we're getting
-    print(f"DEBUG: Child name is: '{child.name}'")
-    print(f"DEBUG: Child ID is: {child.id}")
-    
-    context = {
-        'child_name': child.name,
-        'child_count': child_count,
-    }
-    return render(request, 'planner/onboarding_decision.html', context)
 
 
 #-----------add child view----------------------------

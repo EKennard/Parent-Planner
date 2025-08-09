@@ -1,5 +1,5 @@
 <!-- Entry Card Component -->
-<div class="{% if entry.entry_type == 'task' %}bg-amber-50 border-l-4 border-amber-600{% elif entry.entry_type == 'event' %}bg-violet-50 border-l-4 border-violet-600{% elif entry.entry_type == 'note' %}bg-green-50 border-l-4 border-green-600{% endif %} p-4 {% if entry.entry_type == 'task' %}hover:bg-amber-100{% elif entry.entry_type == 'event' %}hover:bg-violet-100{% elif entry.entry_type == 'note' %}hover:bg-green-100{% endif %} transition-all duration-200 entry-card" data-entry-type="{{ entry.entry_type }}">
+<div class="{% if entry.entry_type == 'task' %}bg-amber-50 border-l-4 border-amber-600{% elif entry.entry_type == 'event' %}bg-violet-50 border-l-4 border-violet-600{% elif entry.entry_type == 'note' %}bg-green-50 border-l-4 border-green-600{% endif %} p-4 {% if entry.entry_type == 'task' %}hover:bg-amber-100{% elif entry.entry_type == 'event' %}hover:bg-violet-100{% elif entry.entry_type == 'note' %}hover:bg-green-100{% endif %} transition-all duration-200 entry-card" data-entry-type="{{ entry.entry_type }}" data-child-id="{{ entry.child.id }}">
     <div class="flex justify-between items-start">
         <div class="flex-1">
             <h4 class="font-medium text-gray-900 mb-2">{{ entry.title }}</h4>

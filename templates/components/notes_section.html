@@ -1,20 +1,19 @@
 <!-- Notes Section Component -->
-<div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
-    <div class="border-b-2 border-primary bg-green-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0">
+<div class="bg-white shadow-lg h-full flex flex-col" style="border: 2px solid #4F46E5;">
+    <div class="bg-green-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #4F46E5;">
         <div class="flex items-center justify-between">
-            <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl responsive-text-2xl font-normal text-green-700 tracking-wide">
+            <h3 class="text-lg sm:text-xl font-normal text-green-700 tracking-wide">
                 {{ title|default:"Notes" }}
             </h3>
-            <div class="border-l-2 border-primary pl-3 sm:pl-4 flex items-center justify-center">
+            <div class="pl-3 sm:pl-4 flex items-center justify-center" style="border-left: 2px solid #4F46E5;">
                 <a href="{% url 'add_entry' %}?entry_type=note" class="bg-green-600 hover:bg-green-700 text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center">
                     <i class="fas fa-plus"></i>
                 </a>
             </div>
         </div>
     </div>
-    
     <!-- Notes Content -->
-    <div class="p-3 overflow-y-auto flex-1">
+    <div class="p-3 sm:p-4 overflow-y-auto flex-1">
         {% if notes %}
             <div class="space-y-2">
                 {% for note in notes %}
@@ -22,16 +21,24 @@
                 {% endfor %}
             </div>
         {% else %}
-            <div class="text-center py-6">
+            <div class="text-center py-8">
                 <div class="w-12 h-12 mx-auto mb-3 bg-green-100 border-2 border-green-600 flex items-center justify-center rounded-lg">
                     <i class="fas fa-plus text-lg text-green-600"></i>
                 </div>
-                <h4 class="text-sm font-medium text-gray-900 mb-1">No notes yet</h4>
-                <p class="text-gray-600 text-xs mb-3">Add your first note to get started!</p>
-                <a href="{% url 'add_entry' %}?entry_type=note" class="bg-green-600 hover:bg-green-700 text-white font-normal py-1 px-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs">
-                    <i class="fas fa-plus mr-1"></i>
-                    Add Note
-                </a>
+                <h4 class="text-lg font-medium text-gray-900 mb-2">No notes yet</h4>
+                {% if children %}
+                    <p class="text-gray-600 text-sm mb-4">Add your first note to get started!</p>
+                    <a href="{% url 'add_entry' %}?entry_type=note" class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 border-2 border-green-600 transition-all duration-200 tracking-wide hover:shadow-lg text-sm">
+                        <i class="fas fa-plus mr-1"></i>
+                        Add First Note
+                    </a>
+                {% else %}
+                    <p class="text-gray-600 text-sm mb-4">Add a child profile first, then you can start creating notes</p>
+                    <a href="{% url 'add_child' %}" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg text-sm">
+                        <i class="fas fa-plus mr-1"></i>
+                        Add Child Profile
+                    </a>
+                {% endif %}
             </div>
         {% endif %}
     </div>

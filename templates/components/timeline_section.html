@@ -1,11 +1,16 @@
 <!-- Timeline Section Component -->
-<div class="bg-white border-2 border-primary shadow-lg h-full flex flex-col">
-    <div class="border-b-2 border-primary bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0">
+<div class="bg-white shadow-lg h-full flex flex-col relative" style="border: 2px solid #4F46E5; contain: layout style;">
+    <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #4F46E5;">
         <div class="flex items-center justify-between">
-            <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl responsive-text-2xl font-normal text-gray-900 tracking-wide">{{ title|default:"Tasks & Events" }}</h3>
+            <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">{{ title|default:"Tasks & Events" }}</h3>
             <div class="flex items-center gap-2">
-                <!-- 🔒 PROTECTED TOGGLE BUTTONS - DO NOT MODIFY 🔒 -->
-                <nav class="flex gap-2">
+                <!-- Mobile Filter Button (visible on small screens) -->
+                <button onclick="toggleMobileFilter()" class="md:hidden bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 border-2 border-gray-300 text-xs transition-all duration-200 flex-shrink-0">
+                    <i class="fas fa-filter mr-1"></i>Filter
+                </button>
+                
+                <!-- Desktop Toggle Buttons (hidden on mobile) -->
+                <nav class="hidden md:flex gap-2 flex-shrink-0">
                     <a href="?type=" class="py-2 px-4 border-2 font-normal text-xs sm:text-sm tracking-wide transition-all duration-200 {% if not request.GET.type %}bg-primary text-white border-primary{% else %}bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary{% endif %}">
                         All
                     </a>
@@ -16,8 +21,8 @@
                         Events
                     </a>
                 </nav>
-                <!-- 🔒 END PROTECTED TOGGLE BUTTONS 🔒 -->
-                <div class="border-l-2 border-primary pl-3 sm:pl-4 flex items-center justify-center">
+                
+                <div class="pl-3 sm:pl-4 flex items-center justify-center flex-shrink-0" style="border-left: 2px solid #4F46E5;">
                     {% if child %}
                         <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center">
                             <i class="fas fa-plus"></i>
@@ -30,10 +35,25 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Mobile Filter Dropdown (hidden by default) -->
+        <div id="mobileFilterDropdown" class="hidden md:hidden mt-3 pt-3 border-t border-gray-200 animate-slide-down">
+            <div class="flex flex-col gap-2">
+                <a href="?type=" class="w-full text-center py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if not request.GET.type %}bg-primary text-white border-primary{% else %}bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary{% endif %}">
+                    All Entries
+                </a>
+                <a href="?type=task" class="w-full text-center py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if request.GET.type == 'task' %}bg-amber-600 text-white border-amber-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-amber-600 hover:text-amber-600{% endif %}">
+                    <i class="fas fa-tasks mr-1"></i>Tasks Only
+                </a>
+                <a href="?type=event" class="w-full text-center py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if request.GET.type == 'event' %}bg-violet-600 text-white border-violet-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-violet-600 hover:text-violet-600{% endif %}">
+                    <i class="fas fa-calendar mr-1"></i>Events Only
+                </a>
+            </div>
+        </div>
     </div>
     
     <!-- Timeline Content -->
-    <div class="p-4 flex-1 overflow-y-auto">
+    <div class="p-3 sm:p-4 flex-1 overflow-y-auto">
         {% if entries %}
             <div class="space-y-3">
                 {% for entry in entries|slice:":10" %}
@@ -42,8 +62,8 @@
             </div>
         {% else %}
             <div class="text-center py-8">
-                <div class="w-16 h-16 mx-auto mb-4 bg-primary/10 border-2 border-primary flex items-center justify-center rounded-lg">
-                    <i class="fas fa-plus text-2xl text-primary"></i>
+                <div class="w-12 h-12 mx-auto mb-3 bg-primary/10 border-2 border-primary flex items-center justify-center rounded-lg">
+                    <i class="fas fa-plus text-lg text-primary"></i>
                 </div>
                 <h4 class="text-lg font-medium text-gray-900 mb-2">No entries yet</h4>
                 {% if child %}
