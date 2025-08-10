@@ -151,6 +151,10 @@ class entryForm(forms.ModelForm):
                 self.fields['child'].help_text = 'You must add at least one child profile before creating entries.'
                 self.fields['child'].widget.attrs['disabled'] = True
         
+        # Remove 'note' from entry_type choices since notes have their own section
+        entry_type_choices = [choice for choice in self.fields['entry_type'].choices if choice[0] != 'note']
+        self.fields['entry_type'].choices = entry_type_choices
+        
         # Set custom labels for the new event fields
         self.fields['event_date'].label = 'Event Date'
         self.fields['event_start_time'].label = 'Start Time'
