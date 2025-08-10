@@ -15,57 +15,7 @@
 
     <!-- Events List -->
     <div class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-violet-50 to-purple-50">
-        {% if selected_child %}
-            <!-- Events for selected child -->
-            {% for entry in entries %}
-                {% if entry.child.id == selected_child.id and entry.entry_type == 'event' %}
-                    <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 border-violet-500"
-                         onclick="openEventModal({{ entry.id }})">
-                        <div class="flex items-start justify-between mb-2">
-                            <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ entry.title }}</h4>
-                            <div class="flex items-center gap-2 ml-2 flex-shrink-0">
-                                <!-- Status Badge -->
-                                <span class="bg-violet-100 text-violet-700 px-2 py-1 text-xs font-medium border border-violet-200">
-                                    <i class="fas fa-calendar mr-1"></i>Event
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <!-- Event Details -->
-                        <div class="text-xs sm:text-sm text-gray-600 mb-2">
-                            {% if entry.description %}
-                                <p class="line-clamp-2 mb-1">{{ entry.description|truncatewords:15 }}</p>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Date and Meta Info -->
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <div class="flex items-center gap-2">
-                                {% if entry.date %}
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-calendar text-violet-600"></i>
-                                        {{ entry.date|date:"M j, Y" }}
-                                    </span>
-                                {% endif %}
-                                {% if entry.time %}
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-clock text-violet-600"></i>
-                                        {{ entry.time|time:"g:i A" }}
-                                    </span>
-                                {% endif %}
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="flex items-center gap-1">
-                                    <i class="fas fa-user text-violet-600"></i>
-                                    {{ entry.child.name }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <!-- All events when no child is selected -->
+        {% if entries %}
             {% for entry in entries %}
                 {% if entry.entry_type == 'event' %}
                     <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 border-violet-500"
@@ -90,16 +40,16 @@
                         <!-- Date and Meta Info -->
                         <div class="flex items-center justify-between text-xs text-gray-500">
                             <div class="flex items-center gap-2">
-                                {% if entry.date %}
+                                {% if entry.event_date %}
                                     <span class="flex items-center gap-1">
                                         <i class="fas fa-calendar text-violet-600"></i>
-                                        {{ entry.date|date:"M j, Y" }}
+                                        {{ entry.event_date|date:"M j, Y" }}
                                     </span>
                                 {% endif %}
-                                {% if entry.time %}
+                                {% if entry.event_start_time %}
                                     <span class="flex items-center gap-1">
                                         <i class="fas fa-clock text-violet-600"></i>
-                                        {{ entry.time|time:"g:i A" }}
+                                        {{ entry.event_start_time|time:"g:i A" }}
                                     </span>
                                 {% endif %}
                             </div>
@@ -113,15 +63,15 @@
                     </div>
                 {% endif %}
             {% endfor %}
-            
-            <!-- Show message if no events exist -->
-            {% if not events %}
-                <div class="text-center py-8 text-gray-500">
-                    <i class="fas fa-calendar text-4xl text-violet-300 mb-4"></i>
-                    <p class="text-lg font-medium mb-2">No events yet</p>
-                    <p class="text-sm">Add your first event to get started!</p>
-                </div>
-            {% endif %}
+        {% endif %}
+        
+        <!-- Show empty state if no events -->
+        {% if not entries %}
+            <div class="text-center py-8 text-gray-500">
+                <i class="fas fa-calendar text-4xl text-violet-300 mb-4"></i>
+                <p class="text-lg font-medium mb-2">No events yet</p>
+                <p class="text-sm">Add your first event to get started!</p>
+            </div>
         {% endif %}
     </div>
 </div>
