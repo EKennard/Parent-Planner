@@ -3,9 +3,13 @@
  * Handles entry interactions, AJAX loading, and responsive behavior
  */
 
+console.log('Dashboard JavaScript file loaded');
+
 // Immediately define global functions to prevent errors
 (function() {
     'use strict';
+    
+    console.log('Dashboard IIFE started');
     
     // Global functions for template compatibility
     window.toggleEntryDetails = function(entryId) {
@@ -149,8 +153,156 @@
 
         // Initialize dashboard functionality
         initialize: function() {
+            console.log('Dashboard JavaScript loaded and initializing...');
             // Set up any additional dashboard features
             console.log('Dashboard initialized');
+            
+            // Initialize mobile swipe navigation
+            this.initMobileSwipe();
+        },
+
+        // Mobile swipe navigation
+        initMobileSwipe: function() {
+            // Wait a bit for DOM to be fully ready
+            setTimeout(() => {
+                const swipeContainer = document.getElementById('swipeContainer');
+                const swipeContent = document.getElementById('swipeContent');
+                const indicators = document.querySelectorAll('.nav-indicator');
+                
+                console.log('Swipe init - Container:', swipeContainer);
+                console.log('Swipe init - Content:', swipeContent);
+                console.log('Swipe init - Indicators:', indicators.length);
+                
+                if (!swipeContainer || !swipeContent) {
+                    console.log('Swipe elements not found, skipping initialization');
+                    return;
+                }
+
+                let currentSection = 1; // Start with timeline (middle)
+                let startX = 0;
+                let currentX = 0;
+                let isDragging = false;
+
+                console.log('Initializing swipe navigation');
+
+                // Update indicators
+                function updateIndicators() {
+                    indicators.forEach((indicator, index) => {
+                        indicator.classList.toggle('bg-primary', index === currentSection);
+                        indicator.classList.toggle('bg-gray-300', index !== currentSection);
+                    });
+                }
+
+                // Navigate to section
+                function navigateToSection(section) {
+                    if (section < 0 || section > 2) return;
+                    console.log('Navigating to section:', section);
+                    currentSection = section;
+                    const translateX = -(section * 100);
+                    swipeContent.style.transform = `translateX(${translateX}%)`;
+                    updateIndicators();
+                }
+
+                // Touch events for mobile
+                swipeContainer.addEventListener('touchstart', (e) => {
+                    console.log('Touch start');
+                    startX = e.touches[0].clientX;
+                    isDragging = true;
+                    swipeContent.style.transition = 'none';
+                }, { passive: true });
+
+                swipeContainer.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+                    console.log('Touch move');
+                    e.preventDefault();
+                    currentX = e.touches[0].clientX;
+                    const deltaX = currentX - startX;
+                    const currentTranslate = -(currentSection * 100);
+                    const newTranslate = currentTranslate + (deltaX / swipeContainer.offsetWidth * 100);
+                    swipeContent.style.transform = `translateX(${newTranslate}%)`;
+                }, { passive: false });
+
+                swipeContainer.addEventListener('touchend', () => {
+                    if (!isDragging) return;
+                    console.log('Touch end');
+                    isDragging = false;
+                    swipeContent.style.transition = 'transform 0.3s ease-out';
+                    
+                    const deltaX = currentX - startX;
+                    const threshold = 50; // minimum swipe distance
+                    
+                    if (Math.abs(deltaX) > threshold) {
+                        if (deltaX > 0 && currentSection > 0) {
+                            // Swipe right - go to previous section
+                            navigateToSection(currentSection - 1);
+                        } else if (deltaX < 0 && currentSection < 2) {
+                            // Swipe left - go to next section
+                            navigateToSection(currentSection + 1);
+                        } else {
+                            // Snap back to current section
+                            navigateToSection(currentSection);
+                        }
+                    } else {
+                        // Snap back to current section
+                        navigateToSection(currentSection);
+                    }
+                }, { passive: true });
+
+                // Mouse events for desktop testing
+                let isMouseDown = false;
+                
+                swipeContainer.addEventListener('mousedown', (e) => {
+                    console.log('Mouse down');
+                    startX = e.clientX;
+                    isMouseDown = true;
+                    swipeContent.style.transition = 'none';
+                    e.preventDefault();
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!isMouseDown) return;
+                    e.preventDefault();
+                    currentX = e.clientX;
+                    const deltaX = currentX - startX;
+                    const currentTranslate = -(currentSection * 100);
+                    const newTranslate = currentTranslate + (deltaX / swipeContainer.offsetWidth * 100);
+                    swipeContent.style.transform = `translateX(${newTranslate}%)`;
+                });
+
+                document.addEventListener('mouseup', () => {
+                    if (!isMouseDown) return;
+                    console.log('Mouse up');
+                    isMouseDown = false;
+                    swipeContent.style.transition = 'transform 0.3s ease-out';
+                    
+                    const deltaX = currentX - startX;
+                    const threshold = 50;
+                    
+                    if (Math.abs(deltaX) > threshold) {
+                        if (deltaX > 0 && currentSection > 0) {
+                            navigateToSection(currentSection - 1);
+                        } else if (deltaX < 0 && currentSection < 2) {
+                            navigateToSection(currentSection + 1);
+                        } else {
+                            navigateToSection(currentSection);
+                        }
+                    } else {
+                        navigateToSection(currentSection);
+                    }
+                });
+
+                // Indicator click navigation
+                indicators.forEach((indicator, index) => {
+                    indicator.addEventListener('click', () => {
+                        console.log('Indicator clicked:', index);
+                        navigateToSection(index);
+                    });
+                });
+
+                // Initialize
+                updateIndicators();
+                console.log('Swipe navigation initialized successfully');
+            }, 100);
         }
     };
 
