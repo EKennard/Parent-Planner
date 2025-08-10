@@ -15,58 +15,121 @@
 
     <!-- Events List -->
     <div class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-violet-50 to-purple-50">
-        {% if entries %}
-            {% for entry in entries %}
-                {% if entry.entry_type == 'event' %}
-                    <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 border-violet-500"
-                         onclick="openEventModal({{ entry.id }})">
-                        <div class="flex items-start justify-between mb-2">
-                            <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ entry.title }}</h4>
-                            <div class="flex items-center gap-2 ml-2 flex-shrink-0">
-                                <!-- Status Badge -->
-                                <span class="bg-violet-100 text-violet-700 px-2 py-1 text-xs font-medium border border-violet-200">
-                                    <i class="fas fa-calendar mr-1"></i>Event
-                                </span>
-                            </div>
+        {% if events %}
+            {% for entry in events %}
+                <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 flex items-start gap-3"
+                     style="border-left-color: {{ entry.child.colour }};"
+                     data-card-id="{{ entry.id }}"
+                     data-card-type="event">
+                        <!-- Child Initial Icon -->
+                        <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-white text-sm font-bold" style="background-color: {{ entry.child.colour }};">
+                            {{ entry.child.name|first|upper }}
                         </div>
                         
-                        <!-- Event Details -->
-                        <div class="text-xs sm:text-sm text-gray-600 mb-2">
-                            {% if entry.description %}
-                                <p class="line-clamp-2 mb-1">{{ entry.description|truncatewords:15 }}</p>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- Date and Meta Info -->
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <div class="flex items-center gap-2">
-                                {% if entry.event_date %}
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-calendar text-violet-600"></i>
-                                        {{ entry.event_date|date:"M j, Y" }}
-                                    </span>
-                                {% endif %}
-                                {% if entry.event_start_time %}
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-clock text-violet-600"></i>
-                                        {{ entry.event_start_time|time:"g:i A" }}
-                                    </span>
-                                {% endif %}
+                        <!-- Entry Content -->
+                        <div class="flex-1 min-w-0 card-content">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ entry.title }}</h4>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="flex items-center gap-1">
-                                    <i class="fas fa-user text-violet-600"></i>
-                                    {{ entry.child.name }}
-                                </span>
+                            
+                            <!-- Event Details -->
+                            <div class="text-xs sm:text-sm text-gray-600 mb-2">
+                                <!-- Date and Time Info - Always visible in collapsed view -->
+                                <div class="space-y-1 text-xs text-gray-500 mb-2">
+                                    {% if entry.event_date %}
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-calendar text-violet-600"></i>
+                                            <span class="font-medium">Start:</span>
+                                            {{ entry.event_date|date:"M j, Y" }}
+                                            {% if entry.event_start_time %} @ {{ entry.event_start_time|time:"g:i A" }}{% endif %}
+                                        </div>
+                                    {% endif %}
+                                    {% if entry.event_start_time and not entry.event_date %}
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-clock text-violet-600"></i>
+                                            <span class="font-medium">Start:</span>
+                                            {{ entry.event_start_time|time:"g:i A" }}
+                                        </div>
+                                    {% endif %}
+                                    {% if entry.event_end_time %}
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-clock text-violet-600"></i>
+                                            <span class="font-medium">End:</span>
+                                            {% if entry.event_date %}{{ entry.event_date|date:"M j, Y" }} @ {% endif %}{{ entry.event_end_time|time:"g:i A" }}
+                                        </div>
+                                    {% endif %}
+                                    {% if entry.start_time and not entry.event_start_time %}
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-clock text-violet-600"></i>
+                                            <span class="font-medium">Start:</span>
+                                            {{ entry.start_time|date:"M j, Y @ g:i A" }}
+                                        </div>
+                                    {% endif %}
+                                    {% if entry.end_time and not entry.event_end_time %}
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-clock text-violet-600"></i>
+                                            <span class="font-medium">End:</span>
+                                            {{ entry.end_time|date:"M j, Y @ g:i A" }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- All other fields in expanded view only -->
+                                <div class="hidden expanded-details">
+                                    {% if entry.description %}
+                                        <div class="mb-2">
+                                            <span class="font-medium text-gray-700">Description:</span>
+                                            <p class="ml-1">{{ entry.description }}</p>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if entry.location %}
+                                        <div class="mb-2">
+                                            <span class="font-medium text-gray-700">Location:</span>
+                                            <span class="ml-1">{{ entry.location }}</span>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if entry.category and entry.category != 'none' %}
+                                        <div class="mb-2">
+                                            <span class="font-medium text-gray-700">Category:</span>
+                                            <span class="ml-1 bg-violet-100 text-violet-700 px-2 py-0.5 text-xs rounded">{{ entry.get_category_display }}</span>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if entry.priority and entry.priority != 'medium' %}
+                                        <div class="mb-2">
+                                            <span class="font-medium text-gray-700">Priority:</span>
+                                            {% if entry.priority == 'high' %}
+                                                <span class="ml-1 bg-red-100 text-red-700 px-2 py-0.5 text-xs rounded">High Priority</span>
+                                            {% elif entry.priority == 'low' %}
+                                                <span class="ml-1 bg-blue-100 text-blue-700 px-2 py-0.5 text-xs rounded">Low Priority</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if entry.due_date %}
+                                        <div class="mb-2">
+                                            <span class="font-medium text-gray-700">Due Date:</span>
+                                            <span class="ml-1">{{ entry.due_date|date:"M j, Y g:i A" }}</span>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if entry.is_completed %}
+                                        <div class="mb-2">
+                                            <span class="font-medium text-gray-700">Status:</span>
+                                            <span class="ml-1 bg-green-100 text-green-700 px-2 py-0.5 text-xs rounded">Completed</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
-                {% endif %}
             {% endfor %}
         {% endif %}
         
         <!-- Show empty state if no events -->
-        {% if not entries %}
+        {% if not events %}
             <div class="text-center py-8 text-gray-500">
                 <i class="fas fa-calendar text-4xl text-violet-300 mb-4"></i>
                 <p class="text-lg font-medium mb-2">No events yet</p>

@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.db.models import Case, When, Value, DateField, Count, Q
 from .forms import registrationForm, childForm, entryForm, noteForm
 from .models import Parent, Child, Entry, Category
 from django.contrib.auth import login, logout
@@ -71,9 +74,26 @@ def dashboard(request):
     # Handle filtering by entry type (for All/Tasks/Events buttons)
     entry_type_filter = request.GET.get('type', '')
     if entry_type_filter == 'task':
-        filtered_entries = all_entries.filter(entry_type='task')
+        filtered_entries = all_entries.filter(entry_type='task').order_by(
+            'is_completed',  # Incomplete tasks first
+            Case(
+                When(task_due_date__isnull=True, then=Value('9999-12-31')),
+                default='task_due_date',
+                output_field=DateField(),
+            ),
+            'task_due_time',
+            'created_at'
+        )
     elif entry_type_filter == 'event':
-        filtered_entries = all_entries.filter(entry_type='event')
+        filtered_entries = all_entries.filter(entry_type='event').order_by(
+            Case(
+                When(event_date__isnull=True, then=Value('9999-12-31')),
+                default='event_date',
+                output_field=DateField(),
+            ),
+            'event_start_time',
+            'created_at'  # Changed from -created_at to put newer events with same date first
+        )
     else:
         # 'All' or no filter - exclude notes from main timeline
         filtered_entries = all_entries.exclude(entry_type='note')
@@ -127,18 +147,39 @@ def dashboard(request):
     for entry in active_entries[:5]:  # Print first 5
         print(f"  - {entry.title} ({entry.entry_type})")
     
-    # Get recent notes for the notes section - limit to 15
-    notes = all_entries.filter(entry_type='note')[:15]
+    # Get recent notes for the notes section - limit to 15, ordered by most recently updated
+    notes = all_entries.filter(entry_type='note').order_by('-updated_at')[:15]
     
     # Get tasks and events separately for the new 4-section layout
-    tasks = all_entries.filter(entry_type='task').order_by('-created_at')[:20]
-    events = all_entries.filter(entry_type='event').order_by('-created_at')[:20]
+    # Order tasks by incomplete first, then by due date (soonest first)
+    tasks = all_entries.filter(entry_type='task').order_by(
+        'is_completed',  # Incomplete tasks first
+        Case(
+            When(task_due_date__isnull=True, then=Value('9999-12-31')),
+            default='task_due_date',
+            output_field=DateField(),
+        ),
+        'task_due_time',
+        'created_at'
+    )[:20]
+    
+    # Order events by upcoming dates first (closest dates to today at top)
+    # Events with dates come first, sorted by date ascending (soonest first)
+    # Events without dates come after, sorted by creation date descending (newest first)
+    events = all_entries.filter(entry_type='event').order_by(
+        Case(
+            When(event_date__isnull=True, then=Value('9999-12-31')),
+            default='event_date',
+            output_field=DateField(),
+        ),
+        'event_start_time',
+        'created_at'  # Changed from -created_at to put newer events with same date first
+    )[:20]
     
     # Keep timeline entries for backward compatibility (now events only)
     timeline_entries = events
     
     # Efficient counting using database aggregation
-    from django.db.models import Count, Q
     entry_counts = all_entries.aggregate(
         total=Count('id'),
         notes=Count('id', filter=Q(entry_type='note')),
@@ -313,11 +354,31 @@ def child_entries(request, child_id):
     entries = Entry.objects.filter(child=child).exclude(entry_type='note').defer('is_completed').order_by('-created_at')
     
     # Separate tasks and events for the new layout
-    tasks = Entry.objects.filter(child=child, entry_type='task').order_by('-created_at')
-    events = Entry.objects.filter(child=child, entry_type='event').order_by('-created_at')
+    # Order tasks by incomplete first, then by due date (soonest first)
+    tasks = Entry.objects.filter(child=child, entry_type='task').order_by(
+        'is_completed',  # Incomplete tasks first
+        Case(
+            When(task_due_date__isnull=True, then=Value('9999-12-31')),
+            default='task_due_date',
+            output_field=DateField(),
+        ),
+        'task_due_time',
+        'created_at'
+    )
     
-    # Get notes separately, ordered by most recent first
-    notes = Entry.objects.filter(child=child, entry_type='note').order_by('-created_at')
+    # Order events by upcoming dates first (closest dates to today at top)
+    events = Entry.objects.filter(child=child, entry_type='event').order_by(
+        Case(
+            When(event_date__isnull=True, then=Value('9999-12-31')),
+            default='event_date',
+            output_field=DateField(),
+        ),
+        'event_start_time',
+        'created_at'  # Changed from -created_at to put newer events with same date first
+    )
+    
+    # Get notes separately, ordered by most recently updated first
+    notes = Entry.objects.filter(child=child, entry_type='note').order_by('-updated_at')
     
     return render(request, 'planner/childEntries.html', {
         'child': child,
@@ -501,12 +562,12 @@ def unified_dashboard(request, child_id=None):
         # Child mode: Only entries for this child
         all_entries = Entry.objects.filter(child=child).defer('is_completed')
         entries = all_entries.exclude(entry_type='note').order_by('-created_at')
-        notes = all_entries.filter(entry_type='note').order_by('-created_at')
+        notes = all_entries.filter(entry_type='note').order_by('-updated_at')
     else:
         # Dashboard mode: All entries for all children
         all_entries = Entry.objects.filter(child__parent=parent).defer('is_completed')
         entries = all_entries.exclude(entry_type='note').order_by('-created_at')
-        notes = all_entries.filter(entry_type='note').order_by('-created_at')
+        notes = all_entries.filter(entry_type='note').order_by('-updated_at')
 
     # Apply filtering for entries
     entry_type_filter = request.GET.get('type')
@@ -537,3 +598,54 @@ def unified_dashboard(request, child_id=None):
     }
     
     return render(request, 'unified_dashboard.html', context)
+
+
+@login_required
+@require_http_methods(["POST"])
+def toggle_task_completion(request, task_id):
+    """Toggle task completion status via AJAX"""
+    print(f"Toggle task completion called for task_id: {task_id}")
+    try:
+        parent = get_parent_or_redirect(request)
+        if not parent:
+            print("Parent not found")
+            return JsonResponse({'success': False, 'error': 'Parent not found'})
+        
+        print(f"Parent found: {parent}")
+        
+        # Get the task - ensure it belongs to this parent
+        task = get_object_or_404(Entry, 
+                                id=task_id, 
+                                child__parent=parent,
+                                entry_type='task')
+        
+        print(f"Task found: {task.title} (current status: {task.is_completed})")
+        
+        # Parse the request data
+        import json
+        data = json.loads(request.body)
+        new_status = data.get('is_completed', False)
+        
+        print(f"Updating task to completed: {new_status}")
+        
+        # Update the task
+        task.is_completed = new_status
+        task.save()
+        
+        print(f"Task updated successfully. New status: {task.is_completed}")
+        
+        return JsonResponse({
+            'success': True, 
+            'is_completed': task.is_completed,
+            'task_id': task.id
+        })
+        
+    except Entry.DoesNotExist:
+        print(f"Task with id {task_id} not found")
+        return JsonResponse({'success': False, 'error': 'Task not found'})
+    except json.JSONDecodeError:
+        print("Invalid JSON data received")
+        return JsonResponse({'success': False, 'error': 'Invalid JSON data'})
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        return JsonResponse({'success': False, 'error': str(e)})

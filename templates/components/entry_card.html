@@ -1,24 +1,26 @@
 <!-- Entry Card Component -->
-<div class="{% if entry.entry_type == 'task' %}bg-amber-50 border-l-4 border-amber-600{% elif entry.entry_type == 'event' %}bg-violet-50 border-l-4 border-violet-600{% elif entry.entry_type == 'note' %}bg-green-50 border-l-4 border-green-600{% endif %} p-4 {% if entry.entry_type == 'task' %}hover:bg-amber-100{% elif entry.entry_type == 'event' %}hover:bg-violet-100{% elif entry.entry_type == 'note' %}hover:bg-green-100{% endif %} transition-all duration-200 entry-card" data-entry-type="{{ entry.entry_type }}" data-child-id="{{ entry.child.id }}">
-    <div class="flex justify-between items-start">
-        <div class="flex-1">
+<div class="bg-white border-l-4 p-4 hover:bg-gray-50 transition-all duration-200 entry-card shadow-sm" 
+     data-entry-type="{{ entry.entry_type }}" 
+     data-child-id="{{ entry.child.id }}"
+     style="border-left-color: {{ entry.child.colour }};">
+    <div class="flex items-start gap-3">
+        <!-- Child Initial Circle -->
+        <div class="w-10 h-10 border-2 flex items-center justify-center text-white font-medium text-sm flex-shrink-0"
+             style="background-color: {{ entry.child.colour }}; border-color: {{ entry.child.colour }};">
+            {{ entry.child.name|first|upper }}
+        </div>
+        
+        <!-- Entry Content -->
+        <div class="flex-1 min-w-0">
             <h4 class="font-medium text-gray-900 mb-2">{{ entry.title }}</h4>
             {% if entry.description %}
                 <p class="text-gray-700 text-sm mb-2">{{ entry.description }}</p>
             {% endif %}
             <div class="flex flex-wrap gap-1 mb-2">
-                {% if entry.entry_type == 'task' %}
-                    <span class="bg-amber-600 text-white px-2 py-1 text-xs rounded-sm font-medium">Task</span>
-                    {% if entry.priority %}
-                        <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">{{ entry.get_priority_display }}</span>
-                    {% endif %}
-                {% elif entry.entry_type == 'event' %}
-                    <span class="bg-violet-600 text-white px-2 py-1 text-xs rounded-sm font-medium">Event</span>
-                    {% if entry.location %}
-                        <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">{{ entry.location }}</span>
-                    {% endif %}
-                {% elif entry.entry_type == 'note' %}
-                    <span class="bg-green-600 text-white px-2 py-1 text-xs rounded-sm font-medium">Note</span>
+                {% if entry.entry_type == 'task' and entry.priority %}
+                    <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">{{ entry.get_priority_display }}</span>
+                {% elif entry.entry_type == 'event' and entry.location %}
+                    <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">{{ entry.location }}</span>
                 {% endif %}
                 {% if entry.category and entry.category != 'none' %}
                     <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">{{ entry.get_category_display }}</span>
@@ -31,8 +33,10 @@
                 {% endif %}
             </div>
         </div>
-        <div class="flex flex-col gap-1 ml-2">
-            <a href="{% url 'edit_entry' entry.id %}" class="w-6 h-6 {% if entry.entry_type == 'task' %}bg-amber-600 hover:bg-amber-700 border-amber-800{% elif entry.entry_type == 'event' %}bg-violet-600 hover:bg-violet-700 border-violet-800{% else %}bg-green-600 hover:bg-green-700 border-green-800{% endif %} text-white border flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Entry">
+        
+        <!-- Action Buttons -->
+        <div class="flex flex-col gap-1 flex-shrink-0">
+            <a href="{% url 'edit_entry' entry.id %}" class="w-6 h-6 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Entry">
                 <i class="fas fa-pencil-alt text-xs"></i>
             </a>
             <form method="post" action="{% url 'delete_entry' entry.id %}" style="display: inline;" onsubmit="return confirm('Delete this entry?')">

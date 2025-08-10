@@ -21,6 +21,7 @@ urlpatterns = [
     path('edit-entry/<int:entry_id>/', views.edit_entry, name='edit_entry'),
     path('delete-entry/<int:entry_id>/', views.delete_entry, name='delete_entry'),
     path('toggle-completion/<int:entry_id>/', views.toggle_entry_completion, name='toggle_entry_completion'),
+    path('tasks/<int:task_id>/toggle-completion/', views.toggle_task_completion, name='toggle_task_completion'),
     path('quick-delete/<int:entry_id>/', views.quick_delete_entry, name='quick_delete_entry'),
     # path('register/', views.registration, name='register'),
     # path('logout/', views.logout_view, name='logout'),

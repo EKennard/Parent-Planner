@@ -34,24 +34,6 @@ function collapseAllEntries() {
 function collapseAllNotes() {
     document.querySelectorAll('.note-details').forEach(d => d.classList.add('hidden'));
 }
-
-// Modal functions for adding entries
-function openAddEventModal(childId) {
-    // Redirect to dashboard with the modal open
-    // Since child entries page doesn't have the modal, redirect to main dashboard
-    window.location.href = '/dashboard/?open=addEvent&child=' + (childId || '');
-}
-
-function openAddTaskModal(childId) {
-    // Redirect to dashboard with the modal open
-    // Since child entries page doesn't have the modal, redirect to main dashboard
-    window.location.href = '/dashboard/?open=addTask&child=' + (childId || '');
-}
-
-function openAddNoteModal() {
-    // Redirect to dashboard with the modal open
-    window.location.href = '/dashboard/?open=addNote';
-}
 </script>
 {% endblock %}
 

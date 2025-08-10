@@ -1,7 +1,15 @@
 <!-- Note Card Component -->
-<div class="bg-green-50 border-l-4 border-green-600 p-3 hover:bg-green-100 transition-all duration-200">
-    <div class="flex justify-between items-start">
-        <div class="flex-1">
+<div class="bg-white border-l-4 p-3 hover:bg-gray-50 transition-all duration-200 shadow-sm" 
+     style="border-left-color: {{ note.child.colour }};">
+    <div class="flex items-start gap-3">
+        <!-- Child Initial Circle -->
+        <div class="w-8 h-8 border-2 flex items-center justify-center text-white font-medium text-xs flex-shrink-0"
+             style="background-color: {{ note.child.colour }}; border-color: {{ note.child.colour }};">
+            {{ note.child.name|first|upper }}
+        </div>
+        
+        <!-- Note Content -->
+        <div class="flex-1 min-w-0">
             <h4 class="font-medium text-gray-900 mb-1">{{ note.title }}</h4>
             {% if note.description %}
                 <p class="text-gray-700 text-xs mb-2">{{ note.description }}</p>
@@ -18,8 +26,10 @@
                 {% endif %}
             </div>
         </div>
-        <div class="flex flex-col gap-1 ml-2">
-            <a href="{% url 'edit_entry' note.id %}" class="w-5 h-5 bg-green-600 hover:bg-green-700 text-white border border-green-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Note">
+        
+        <!-- Action Buttons -->
+        <div class="flex flex-col gap-1 flex-shrink-0">
+            <a href="{% url 'edit_entry' note.id %}" class="w-5 h-5 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Note">
                 <i class="fas fa-pencil-alt text-xs"></i>
             </a>
             <form method="post" action="{% url 'delete_entry' note.id %}" style="display: inline;" onsubmit="return confirm('Delete this note?')">

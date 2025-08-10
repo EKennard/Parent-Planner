@@ -310,3 +310,62 @@ button,
 .django-widget textarea {
     border-radius: 0 !important;
 }
+
+/* Task Completion Styles */
+.task-completion-toggle {
+    transition: all 0.2s ease;
+}
+
+.task-completion-toggle:hover {
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.task-completed {
+    transition: all 0.3s ease !important;
+    background-color: #f9fafb !important;
+    opacity: 0.7 !important;
+    border-left-color: #d1d5db !important;
+}
+
+.task-completed .card-content h4 {
+    text-decoration: line-through !important;
+    color: #9ca3af !important;
+}
+
+.task-completed .card-content {
+    color: #9ca3af !important;
+}
+
+.task-completed:hover {
+    opacity: 0.6 !important;
+}
+
+/* Smooth transitions for task reordering */
+.task-card {
+    transition: all 0.3s ease;
+}
+
+/* Ensure completed tasks have proper visual hierarchy */
+.task-completed * {
+    color: #9ca3af !important;
+}
+
+.task-completed .child-initial {
+    opacity: 0.6 !important;
+}
+
+/* Force styling for completed tasks */
+[data-completed="true"] {
+    background-color: #f9fafb !important;
+    opacity: 0.7 !important;
+}
+
+[data-completed="true"] h4 {
+    text-decoration: line-through !important;
+    color: #9ca3af !important;
+}
+
+[data-completed="true"] .card-content {
+    color: #9ca3af !important;
+}

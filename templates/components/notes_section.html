@@ -17,40 +17,127 @@
     <div class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-green-50 to-emerald-50">
         {% if notes %}
             {% for note in notes %}
-                <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 border-green-500"
-                     onclick="openNoteModal({{ note.id }})">
-                    <div class="flex items-start justify-between mb-2">
-                        <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ note.title }}</h4>
-                        <div class="flex items-center gap-2 ml-2 flex-shrink-0">
-                            <!-- Status Badge -->
-                            <span class="bg-green-100 text-green-700 px-2 py-1 text-xs font-medium border border-green-200">
-                                <i class="fas fa-sticky-note mr-1"></i>Note
-                            </span>
-                        </div>
+                <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 flex items-start gap-3"
+                     style="border-left-color: {{ note.child.colour }};"
+                     data-card-id="{{ note.id }}"
+                     data-card-type="note">
+                    <!-- Child Initial Icon -->
+                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-white text-sm font-bold" style="background-color: {{ note.child.colour }};">
+                        {{ note.child.name|first|upper }}
                     </div>
                     
                     <!-- Note Content -->
-                    <div class="text-xs sm:text-sm text-gray-600 mb-2">
-                        {% if note.content %}
-                            <p class="line-clamp-2 mb-1">{{ note.content|truncatewords:15 }}</p>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Date and Meta Info -->
-                    <div class="flex items-center justify-between text-xs text-gray-500">
-                        <div class="flex items-center gap-2">
-                            <span class="flex items-center gap-1">
-                                <i class="fas fa-calendar text-green-600"></i>
-                                {{ note.created_at|date:"M j, Y" }}
-                            </span>
+                    <div class="flex-1 min-w-0 card-content">
+                        <div class="flex items-start justify-between mb-2">
+                            <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ note.title }}</h4>
                         </div>
-                        <div class="flex items-center gap-2">
-                            {% if note.child %}
-                                <span class="flex items-center gap-1">
-                                    <i class="fas fa-user text-green-600"></i>
-                                    {{ note.child.name }}
-                                </span>
-                            {% endif %}
+                        
+                        <!-- Note Content -->
+                        <div class="text-xs sm:text-sm text-gray-600 mb-2">
+                            <!-- All fields in expanded view only -->
+                            <div class="hidden expanded-details">
+                                {% if note.description %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Content:</span>
+                                        <p class="mb-1">{{ note.description }}</p>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="mb-2">
+                                    <span class="font-medium text-gray-700">Created:</span>
+                                    <span class="ml-1">{{ note.created_at|date:"M j, Y" }}</span>
+                                    {% if note.created_at.time %}
+                                        at {{ note.created_at|time:"g:i A" }}
+                                    {% endif %}
+                                </div>
+                                {% if note.category and note.category != 'none' %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Category:</span>
+                                        <span class="ml-1 bg-green-100 text-green-700 px-2 py-0.5 text-xs rounded">{{ note.get_category_display }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.location %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Location:</span>
+                                        <span class="ml-1">{{ note.location }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.priority and note.priority != 'medium' %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Priority:</span>
+                                        {% if note.priority == 'high' %}
+                                            <span class="ml-1 bg-red-100 text-red-700 px-2 py-0.5 text-xs rounded">High</span>
+                                        {% elif note.priority == 'low' %}
+                                            <span class="ml-1 bg-blue-100 text-blue-700 px-2 py-0.5 text-xs rounded">Low</span>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.updated_at and note.updated_at != note.created_at %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Last Updated:</span>
+                                        <span class="ml-1">{{ note.updated_at|date:"M j, Y g:i A" }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.start_time %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Start Time:</span>
+                                        <span class="ml-1">{{ note.start_time|date:"M j, Y g:i A" }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.end_time %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">End Time:</span>
+                                        <span class="ml-1">{{ note.end_time|date:"M j, Y g:i A" }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.event_date %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Event Date:</span>
+                                        <span class="ml-1">{{ note.event_date|date:"M j, Y" }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.event_start_time %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Event Start Time:</span>
+                                        <span class="ml-1">{{ note.event_start_time|time:"g:i A" }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.event_end_time %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Event End Time:</span>
+                                        <span class="ml-1">{{ note.event_end_time|time:"g:i A" }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.task_due_date %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Task Due Date:</span>
+                                        <span class="ml-1">{{ note.task_due_date|date:"M j, Y" }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.task_due_time %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Task Due Time:</span>
+                                        <span class="ml-1">{{ note.task_due_time|time:"g:i A" }}</span>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if note.is_completed %}
+                                    <div class="mb-2">
+                                        <span class="font-medium text-gray-700">Status:</span>
+                                        <span class="ml-1 bg-green-100 text-green-700 px-2 py-0.5 text-xs rounded">Completed</span>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
