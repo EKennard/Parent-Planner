@@ -571,6 +571,7 @@ function collapseAllNotes() {
                     <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" data-section="0"></button>
                     <button class="nav-indicator w-3 h-3 rounded-full bg-primary transition-colors duration-200" data-section="1"></button>
                     <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" data-section="2"></button>
+                    <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" data-section="3"></button>
                 </div>
                 
                 <!-- Swipeable Container -->
@@ -581,9 +582,14 @@ function collapseAllNotes() {
                             {% include 'components/children_section.html' %}
                         </div>
 
-                        <!-- Timeline Section -->
+                        <!-- Timeline Section (Events) -->
                         <div class="w-full h-[500px] flex-shrink-0 px-2">
                             {% include 'components/timeline_section.html' %}
+                        </div>
+
+                        <!-- Tasks Section -->
+                        <div class="w-full h-[500px] flex-shrink-0 px-2">
+                            {% include 'components/tasks_section.html' %}
                         </div>
 
                         <!-- Notes Section -->
@@ -595,15 +601,20 @@ function collapseAllNotes() {
             </div>
 
             <!-- Desktop Grid (original layout) -->
-            <div class="w-full max-w-7xl mx-auto hidden lg:grid grid-cols-3 gap-3 lg:gap-6 min-h-[500px]">
+            <div class="w-full max-w-7xl mx-auto hidden lg:grid grid-cols-4 gap-3 lg:gap-6 min-h-[500px]">
                 <!-- Children Section -->
                 <div class="w-full h-[500px] lg:h-[600px]">
                     {% include 'components/children_section.html' %}
                 </div>
 
-                <!-- Timeline Section -->
+                <!-- Timeline Section (Events) -->
                 <div class="w-full h-[500px] lg:h-[600px]">
                     {% include 'components/timeline_section.html' %}
+                </div>
+
+                <!-- Tasks Section -->
+                <div class="w-full h-[500px] lg:h-[600px]">
+                    {% include 'components/tasks_section.html' %}
                 </div>
 
                 <!-- Notes Section -->

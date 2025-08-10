@@ -1,86 +1,127 @@
-<!-- Timeline Section Component -->
-<div class="bg-white shadow-lg h-full flex flex-col relative" style="border: 2px solid #4F46E5;">
-    <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #4F46E5;">
+<!-- Events Section Component -->
+<div class="bg-white shadow-lg h-full flex flex-col relative" style="border: 2px solid #7c3aed;">
+    <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #7c3aed;">
         <div class="flex items-center justify-between">
-            <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">{{ title|default:"Tasks & Events" }}</h3>
+            <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Events</h3>
             <div class="flex items-center gap-2">
-                <!-- Filter Dropdown (all screens) -->
-                <div class="relative">
-                    <button id="filterButton" onclick="toggleFilterDropdown()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 border-2 border-gray-300 rounded-lg text-xs sm:text-sm transition-all duration-200 flex items-center gap-2 min-w-[80px] font-medium">
-                        <i class="fas fa-filter"></i>
-                        <span id="filterText">
-                            {% if request.GET.type == 'task' %}Tasks
-                            {% elif request.GET.type == 'event' %}Events
-                            {% else %}All{% endif %}
-                        </span>
-                        <i class="fas fa-chevron-down text-xs"></i>
-                    </button>
-                </div>
-                
-                <div class="pl-3 sm:pl-4 flex items-center justify-center flex-shrink-0" style="border-left: 2px solid #4F46E5;">
-                    {% if child %}
-                        <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    {% else %}
-                        <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-secondary text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-primary transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        
-        <!-- Mobile Filter Dropdown (hidden by default) -->
-        <div id="mobileFilterDropdown" class="hidden md:hidden mt-3 pt-3 border-t border-gray-200 animate-slide-down">
-            <div class="flex flex-col gap-2">
-                <a href="?type=" class="w-full text-center py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if not request.GET.type %}bg-primary text-white border-primary{% else %}bg-white text-gray-700 border-gray-300 hover:border-primary hover:text-primary{% endif %}">
-                    All Entries
-                </a>
-                <a href="?type=task" class="w-full text-center py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if request.GET.type == 'task' %}bg-amber-600 text-white border-amber-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-amber-600 hover:text-amber-600{% endif %}">
-                    <i class="fas fa-tasks mr-1"></i>Tasks Only
-                </a>
-                <a href="?type=event" class="w-full text-center py-2 px-4 border-2 font-normal text-xs tracking-wide transition-all duration-200 {% if request.GET.type == 'event' %}bg-violet-600 text-white border-violet-600{% else %}bg-white text-gray-700 border-gray-300 hover:border-violet-600 hover:text-violet-600{% endif %}">
-                    <i class="fas fa-calendar mr-1"></i>Events Only
-                </a>
+                <!-- Add Event Button (icon only) -->
+                <button onclick="{% if selected_child %}openAddEventModal({{ selected_child.id }}){% else %}openAddEventModal(){% endif %}" 
+                        class="bg-violet-600 hover:bg-violet-700 text-white px-3 py-2 border-2 border-violet-700 text-xs sm:text-sm transition-all duration-200 flex items-center justify-center">
+                    <i class="fas fa-plus text-xs"></i>
+                </button>
             </div>
         </div>
     </div>
-    
-    <!-- Timeline Content -->
-    <div class="p-3 sm:p-4 flex-1 overflow-y-auto">
-        {% if entries %}
-            <div class="space-y-3">
-                {% for entry in entries|slice:":10" %}
-                    {% include 'components/entry_card.html' %}
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="text-center py-8">
-                <div class="w-12 h-12 mx-auto mb-3 bg-primary/10 border-2 border-primary flex items-center justify-center rounded-lg">
-                    <i class="fas fa-plus text-lg text-primary"></i>
-                </div>
-                <h4 class="text-lg font-medium text-gray-900 mb-2">No entries yet</h4>
-                {% if child %}
-                    <p class="text-gray-600 text-sm mb-4">Add your first task or event for {{ child.name }}</p>
-                    <button onclick="toggleEntryForm()" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg text-sm">
-                        <i class="fas fa-plus mr-1"></i>
-                        Add First Entry
-                    </button>
-                {% elif children %}
-                    <p class="text-gray-600 text-sm mb-4">Start by adding tasks or events for your children</p>
-                    <a href="{% url 'add_entry' %}" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg text-sm">
-                        <i class="fas fa-plus mr-1"></i>
-                        Add First Entry
-                    </a>
-                {% else %}
-                    <p class="text-gray-600 text-sm mb-4">Add a child profile first, then you can start creating entries</p>
-                    <a href="{% url 'add_child' %}" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg text-sm">
-                        <i class="fas fa-plus mr-1"></i>
-                        Add Child Profile
-                    </a>
+
+    <!-- Events List -->
+    <div class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-violet-50 to-purple-50">
+        {% if selected_child %}
+            <!-- Events for selected child -->
+            {% for entry in entries %}
+                {% if entry.child.id == selected_child.id and entry.entry_type == 'event' %}
+                    <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 border-violet-500"
+                         onclick="openEventModal({{ entry.id }})">
+                        <div class="flex items-start justify-between mb-2">
+                            <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ entry.title }}</h4>
+                            <div class="flex items-center gap-2 ml-2 flex-shrink-0">
+                                <!-- Status Badge -->
+                                <span class="bg-violet-100 text-violet-700 px-2 py-1 text-xs font-medium border border-violet-200">
+                                    <i class="fas fa-calendar mr-1"></i>Event
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Event Details -->
+                        <div class="text-xs sm:text-sm text-gray-600 mb-2">
+                            {% if entry.description %}
+                                <p class="line-clamp-2 mb-1">{{ entry.description|truncatewords:15 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Date and Meta Info -->
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <div class="flex items-center gap-2">
+                                {% if entry.date %}
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-calendar text-violet-600"></i>
+                                        {{ entry.date|date:"M j, Y" }}
+                                    </span>
+                                {% endif %}
+                                {% if entry.time %}
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-clock text-violet-600"></i>
+                                        {{ entry.time|time:"g:i A" }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-user text-violet-600"></i>
+                                    {{ entry.child.name }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
-            </div>
+            {% endfor %}
+        {% else %}
+            <!-- All events when no child is selected -->
+            {% for entry in entries %}
+                {% if entry.entry_type == 'event' %}
+                    <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 border-violet-500"
+                         onclick="openEventModal({{ entry.id }})">
+                        <div class="flex items-start justify-between mb-2">
+                            <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ entry.title }}</h4>
+                            <div class="flex items-center gap-2 ml-2 flex-shrink-0">
+                                <!-- Status Badge -->
+                                <span class="bg-violet-100 text-violet-700 px-2 py-1 text-xs font-medium border border-violet-200">
+                                    <i class="fas fa-calendar mr-1"></i>Event
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Event Details -->
+                        <div class="text-xs sm:text-sm text-gray-600 mb-2">
+                            {% if entry.description %}
+                                <p class="line-clamp-2 mb-1">{{ entry.description|truncatewords:15 }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Date and Meta Info -->
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <div class="flex items-center gap-2">
+                                {% if entry.date %}
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-calendar text-violet-600"></i>
+                                        {{ entry.date|date:"M j, Y" }}
+                                    </span>
+                                {% endif %}
+                                {% if entry.time %}
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-clock text-violet-600"></i>
+                                        {{ entry.time|time:"g:i A" }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-user text-violet-600"></i>
+                                    {{ entry.child.name }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            
+            <!-- Show message if no events exist -->
+            {% if not events %}
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-calendar text-4xl text-violet-300 mb-4"></i>
+                    <p class="text-lg font-medium mb-2">No events yet</p>
+                    <p class="text-sm">Add your first event to get started!</p>
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 </div>

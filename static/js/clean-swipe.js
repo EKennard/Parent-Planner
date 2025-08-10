@@ -1,5 +1,256 @@
 console.log('Clean swipe script loading...');
 
+// Debug function to check dropdown elements
+window.debugDropdown = function() {
+    console.log('=== DROPDOWN ELEMENTS DEBUG ===');
+    const button = document.getElementById('filterButton');
+    const dropdown = document.getElementById('filterDropdown');
+    const mobileDropdown = document.getElementById('mobileFilterDropdown');
+    
+    console.log('Filter button:', button);
+    console.log('Desktop dropdown:', dropdown);
+    console.log('Mobile dropdown:', mobileDropdown);
+    
+    if (dropdown) {
+        console.log('Desktop dropdown classes:', dropdown.className);
+        console.log('Desktop dropdown style display:', dropdown.style.display);
+        console.log('Desktop dropdown computed display:', window.getComputedStyle(dropdown).display);
+    }
+    
+    if (mobileDropdown) {
+        console.log('Mobile dropdown classes:', mobileDropdown.className);
+        console.log('Mobile dropdown style display:', mobileDropdown.style.display);
+        console.log('Mobile dropdown computed display:', window.getComputedStyle(mobileDropdown).display);
+    }
+    
+    console.log('=== END DEBUG ===');
+};
+
+// Force show dropdown for testing
+window.forceShowDropdown = function() {
+    const dropdown = document.getElementById('filterDropdown');
+    const mobileDropdown = document.getElementById('mobileFilterDropdown');
+    
+    if (dropdown) {
+        dropdown.classList.remove('hidden');
+        dropdown.style.position = 'fixed';
+        dropdown.style.top = '200px';
+        dropdown.style.left = '200px';
+        dropdown.style.zIndex = '9999';
+        dropdown.style.backgroundColor = 'white';
+        dropdown.style.border = '2px solid red';
+        dropdown.style.padding = '10px';
+        console.log('Desktop dropdown force shown');
+    }
+    
+    if (mobileDropdown) {
+        mobileDropdown.classList.remove('hidden');
+        console.log('Mobile dropdown force shown');
+    }
+};
+
+// Filter dropdown functionality is no longer needed since we have separate sections
+// Tasks and Events are now in separate dedicated sections
+
+function createDropdownAtPosition(left, top) {
+    console.log('Creating dropdown at position:', { left, top });
+    
+    // Ensure the dropdown stays within screen bounds
+    const dropdownWidth = 160;
+    let finalLeft = left;
+    let finalTop = top;
+    
+    // Adjust if it would go off the right edge
+    if (finalLeft + dropdownWidth > window.innerWidth) {
+        finalLeft = window.innerWidth - dropdownWidth - 10;
+    }
+    
+    // Ensure it doesn't go off the left edge
+    if (finalLeft < 10) {
+        finalLeft = 10;
+    }
+    
+    // Ensure it doesn't go off the top
+    if (finalTop < 10) {
+        finalTop = 10;
+    }
+    
+    console.log('Final adjusted position:', { left: finalLeft, top: finalTop });
+    
+    const dropdown = document.createElement('div');
+    dropdown.id = 'customFilterDropdown';
+    
+    dropdown.style.cssText = `
+        position: fixed !important;
+        top: ${finalTop}px !important;
+        left: ${finalLeft}px !important;
+        background: white !important;
+        border: 2px solid #4F46E5 !important;
+        border-radius: 0 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        z-index: 999999 !important;
+        width: ${dropdownWidth}px !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        overflow: hidden !important;
+    `;
+    
+    // Get current filter type from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentType = urlParams.get('type') || '';
+    
+    dropdown.innerHTML = `
+        <a href="?type=" style="display: block; padding: 12px 16px; font-size: 14px; color: #374151; text-decoration: none; border-bottom: 1px solid #e5e7eb; ${currentType === '' ? 'background-color: #4F46E5; color: white;' : ''}" 
+           onmouseover="if(this.style.backgroundColor !== 'rgb(79, 70, 229)') this.style.backgroundColor='#f3f4f6'" 
+           onmouseout="if(this.style.color !== 'white') this.style.backgroundColor='white'">
+            <i class="fas fa-list" style="margin-right: 8px; width: 16px;"></i>All Entries
+        </a>
+        <a href="?type=task" style="display: block; padding: 12px 16px; font-size: 14px; color: #d97706; text-decoration: none; border-bottom: 1px solid #e5e7eb; ${currentType === 'task' ? 'background-color: #d97706; color: white;' : ''}" 
+           onmouseover="if(this.style.backgroundColor !== 'rgb(217, 119, 6)') this.style.backgroundColor='#fef3c7'" 
+           onmouseout="if(this.style.color !== 'white') this.style.backgroundColor='white'">
+            <i class="fas fa-tasks" style="margin-right: 8px; width: 16px;"></i>Tasks Only
+        </a>
+        <a href="?type=event" style="display: block; padding: 12px 16px; font-size: 14px; color: #7c3aed; text-decoration: none; ${currentType === 'event' ? 'background-color: #7c3aed; color: white;' : ''}" 
+           onmouseover="if(this.style.backgroundColor !== 'rgb(124, 58, 237)') this.style.backgroundColor='#ede9fe'" 
+           onmouseout="if(this.style.color !== 'white') this.style.backgroundColor='white'">
+            <i class="fas fa-calendar" style="margin-right: 8px; width: 16px;"></i>Events Only
+        </a>
+    `;
+    
+    document.body.appendChild(dropdown);
+    console.log('Fixed position dropdown created');
+    
+    // Add click outside listener
+    setTimeout(() => {
+        document.addEventListener('click', function closeCustomDropdown(event) {
+            if (!dropdown.contains(event.target)) {
+                dropdown.remove();
+                document.removeEventListener('click', closeCustomDropdown);
+                console.log('Fixed position dropdown closed');
+            }
+        });
+    }, 0);
+}
+
+function createTestDropdown() {
+    console.log('Creating test dropdown at fixed position');
+    const dropdown = document.createElement('div');
+    dropdown.id = 'customFilterDropdown';
+    
+    dropdown.style.cssText = `
+        position: fixed !important;
+        top: 200px !important;
+        left: 400px !important;
+        background: white !important;
+        border: 3px solid red !important;
+        border-radius: 0 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        z-index: 999999 !important;
+        width: 160px !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        overflow: hidden !important;
+        padding: 10px !important;
+    `;
+    
+    dropdown.innerHTML = `
+        <div style="font-weight: bold; color: red; margin-bottom: 10px;">TEST DROPDOWN</div>
+        <a href="?type=" style="display: block; padding: 8px; color: blue; text-decoration: none;">All Entries</a>
+        <a href="?type=task" style="display: block; padding: 8px; color: blue; text-decoration: none;">Tasks Only</a>
+        <a href="?type=event" style="display: block; padding: 8px; color: blue; text-decoration: none;">Events Only</a>
+    `;
+    
+    document.body.appendChild(dropdown);
+    console.log('Test dropdown created');
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (dropdown.parentNode) {
+            dropdown.remove();
+            console.log('Test dropdown auto-removed');
+        }
+    }, 5000);
+}
+
+function createDropdownAtButton(button, buttonRect) {
+    console.log('Creating dropdown at button position');
+    
+    const dropdown = document.createElement('div');
+    dropdown.id = 'customFilterDropdown';
+    
+    // Position it below and aligned to the right edge of the button
+    const left = buttonRect.right - 160; // Align right edge of dropdown with right edge of button
+    const top = buttonRect.bottom + 2; // Small gap below button
+    
+    console.log('Dropdown will be positioned at:', { left, top });
+    
+    dropdown.style.cssText = `
+        position: fixed !important;
+        top: ${top}px !important;
+        left: ${left}px !important;
+        background: white !important;
+        border: 2px solid #4F46E5 !important;
+        border-radius: 0 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        z-index: 999999 !important;
+        width: 160px !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        overflow: hidden !important;
+    `;
+    
+    // Get current filter type from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentType = urlParams.get('type') || '';
+    
+    dropdown.innerHTML = `
+        <a href="?type=" style="display: block; padding: 12px 16px; font-size: 14px; color: #374151; text-decoration: none; border-bottom: 1px solid #e5e7eb; ${currentType === '' ? 'background-color: #4F46E5; color: white;' : ''}" 
+           onmouseover="if(this.style.backgroundColor !== 'rgb(79, 70, 229)') this.style.backgroundColor='#f3f4f6'" 
+           onmouseout="if(this.style.color !== 'white') this.style.backgroundColor='white'">
+            <i class="fas fa-list" style="margin-right: 8px; width: 16px;"></i>All Entries
+        </a>
+        <a href="?type=task" style="display: block; padding: 12px 16px; font-size: 14px; color: #d97706; text-decoration: none; border-bottom: 1px solid #e5e7eb; ${currentType === 'task' ? 'background-color: #d97706; color: white;' : ''}" 
+           onmouseover="if(this.style.backgroundColor !== 'rgb(217, 119, 6)') this.style.backgroundColor='#fef3c7'" 
+           onmouseout="if(this.style.color !== 'white') this.style.backgroundColor='white'">
+            <i class="fas fa-tasks" style="margin-right: 8px; width: 16px;"></i>Tasks Only
+        </a>
+        <a href="?type=event" style="display: block; padding: 12px 16px; font-size: 14px; color: #7c3aed; text-decoration: none; ${currentType === 'event' ? 'background-color: #7c3aed; color: white;' : ''}" 
+           onmouseover="if(this.style.backgroundColor !== 'rgb(124, 58, 237)') this.style.backgroundColor='#ede9fe'" 
+           onmouseout="if(this.style.color !== 'white') this.style.backgroundColor='white'">
+            <i class="fas fa-calendar" style="margin-right: 8px; width: 16px;"></i>Events Only
+        </a>
+    `;
+    
+    // Add to body
+    document.body.appendChild(dropdown);
+    console.log('Custom dropdown created and added to DOM');
+    
+    // Verify it was added
+    const addedDropdown = document.getElementById('customFilterDropdown');
+    if (addedDropdown) {
+        const rect = addedDropdown.getBoundingClientRect();
+        console.log('Dropdown successfully added. Position:', rect);
+    } else {
+        console.log('ERROR: Dropdown was not added to DOM');
+    }
+    
+    // Add click outside listener
+    setTimeout(() => {
+        document.addEventListener('click', function closeCustomDropdown(event) {
+            if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+                dropdown.remove();
+                document.removeEventListener('click', closeCustomDropdown);
+                console.log('Custom dropdown closed');
+            }
+        });
+    }, 0);
+    
+    console.log('=== CUSTOM DROPDOWN READY ===');
+}
+
 // Simple test function
 function testDropdown() {
     console.log('TEST FUNCTION CALLED!');
@@ -60,44 +311,6 @@ function testDropdown() {
     }
 }
 
-// Filter dropdown functionality - works on all screen sizes
-function toggleFilterDropdown() {
-    console.log('Filter dropdown toggled');
-    let dropdown = document.getElementById('filterDropdown');
-    const button = document.getElementById('filterButton');
-    
-    if (!dropdown || !button) {
-        console.log('Elements not found - dropdown:', !!dropdown, 'button:', !!button);
-        return;
-    }
-    
-    const isHidden = dropdown.classList.contains('hidden');
-    
-    if (isHidden) {
-        // Show dropdown
-        dropdown.classList.remove('hidden');
-        
-        // Position dropdown relative to button using fixed positioning
-        const buttonRect = button.getBoundingClientRect();
-        dropdown.style.position = 'fixed';
-        dropdown.style.top = (buttonRect.bottom + 4) + 'px';
-        dropdown.style.left = (buttonRect.right - 140) + 'px'; // 140px is dropdown width
-        dropdown.style.zIndex = '9999';
-        
-        console.log('Dropdown shown at:', dropdown.style.top, dropdown.style.left);
-        
-        // Add click outside listener
-        setTimeout(() => {
-            document.addEventListener('click', closeDropdownOutside);
-        }, 0);
-    } else {
-        // Hide dropdown
-        dropdown.classList.add('hidden');
-        document.removeEventListener('click', closeDropdownOutside);
-        console.log('Dropdown hidden');
-    }
-}
-
 function closeDropdownOutside(event) {
     const dropdown = document.getElementById('filterDropdown');
     const button = document.getElementById('filterButton');
@@ -105,16 +318,23 @@ function closeDropdownOutside(event) {
     if (dropdown && !dropdown.contains(event.target) && !button.contains(event.target)) {
         dropdown.classList.add('hidden');
         document.removeEventListener('click', closeDropdownOutside);
+        console.log('Dropdown closed by outside click');
     }
 }
 
 // Close dropdown when clicking outside
 document.addEventListener('click', function(event) {
     const dropdown = document.getElementById('filterDropdown');
+    const mobileDropdown = document.getElementById('mobileFilterDropdown');
     const button = event.target.closest('button[onclick="toggleFilterDropdown()"]');
     
-    if (dropdown && !button && !dropdown.contains(event.target)) {
-        dropdown.classList.add('hidden');
+    if (!button) {
+        if (dropdown && !dropdown.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+        if (mobileDropdown && !mobileDropdown.contains(event.target)) {
+            mobileDropdown.classList.add('hidden');
+        }
     }
 });
 
@@ -143,11 +363,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Swipe navigation initialization (separated for clarity)
 function initializeSwipeNavigation(swipeContainer, swipeContent, indicators) {
-    let currentSection = 1; // Start with timeline (middle)
+    let currentSection = 1; // Start with events section
     
     // Navigate to section
     function navigateToSection(section) {
-        if (section < 0 || section > 2) return;
+        if (section < 0 || section > 3) return;
         console.log('Navigating to section:', section);
         
         currentSection = section;
@@ -196,16 +416,16 @@ function initializeSwipeNavigation(swipeContainer, swipeContent, indicators) {
             if (deltaX > 0 && currentSection > 0) {
                 // Swipe right - previous section
                 navigateToSection(currentSection - 1);
-            } else if (deltaX < 0 && currentSection < 2) {
-                // Swipe left - next section
+            } else if (deltaX < 0 && currentSection < 3) {
+                // Swipe left - next section  
                 navigateToSection(currentSection + 1);
             }
         }
     });
     
-    // Initialize to timeline (middle)
+    // Initialize to events section
     navigateToSection(1);
-    console.log('Swipe navigation initialized successfully');
+    console.log('Swipe navigation initialized successfully for 4 sections');
 }
 
 // New working filter dropdown functionality
@@ -309,7 +529,6 @@ function createDropdownAtPosition(left, top) {
     }, 0);
     
     console.log('Filter dropdown created and positioned');
-}
 }
 
 function closeFilterDropdownNew(event) {

@@ -130,8 +130,12 @@ def dashboard(request):
     # Get recent notes for the notes section - limit to 15
     notes = all_entries.filter(entry_type='note')[:15]
     
-    # Separate timeline entries (tasks and events only)
-    timeline_entries = all_entries.filter(entry_type__in=['task', 'event']).order_by('-created_at')[:20]
+    # Get tasks and events separately for the new 4-section layout
+    tasks = all_entries.filter(entry_type='task').order_by('-created_at')[:20]
+    events = all_entries.filter(entry_type='event').order_by('-created_at')[:20]
+    
+    # Keep timeline entries for backward compatibility (now events only)
+    timeline_entries = events
     
     # Efficient counting using database aggregation
     from django.db.models import Count, Q
@@ -149,7 +153,9 @@ def dashboard(request):
         'dashboard_mode': dashboard_mode,
         'primary_child': children.first() if children_count == 1 else None,
         'active_entries': active_entries,
-        'entries': active_entries,  # For timeline section - should show tasks and events
+        'entries': timeline_entries,  # For events section - events only
+        'tasks': tasks,  # For tasks section - tasks only
+        'events': events,  # For events section - events only  
         'total_entries': entry_counts['total'],
         'notes_count': entry_counts['notes'],
         'tasks_count': entry_counts['tasks'],
@@ -305,9 +311,10 @@ def child_entries(request, child_id):
     
     # Get all entries excluding notes
     entries = Entry.objects.filter(child=child).exclude(entry_type='note').defer('is_completed').order_by('-created_at')
-    entry_type_filter = request.GET.get('type')
-    if entry_type_filter in ['task', 'event']:
-        entries = entries.filter(entry_type=entry_type_filter)
+    
+    # Separate tasks and events for the new layout
+    tasks = Entry.objects.filter(child=child, entry_type='task').order_by('-created_at')
+    events = Entry.objects.filter(child=child, entry_type='event').order_by('-created_at')
     
     # Get notes separately, ordered by most recent first
     notes = Entry.objects.filter(child=child, entry_type='note').order_by('-created_at')
@@ -317,8 +324,9 @@ def child_entries(request, child_id):
         'form': form,
         'note_form': note_form,
         'entries': entries,
+        'tasks': tasks,
+        'events': events,
         'notes': notes,
-        'entry_type_filter': entry_type_filter,
         'categories': Category.objects.all(),
     })
 

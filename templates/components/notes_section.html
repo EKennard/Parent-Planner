@@ -1,44 +1,65 @@
 <!-- Notes Section Component -->
-<div class="bg-white shadow-lg h-full flex flex-col" style="border: 2px solid #4F46E5;">
-    <div class="bg-green-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #4F46E5;">
+<div class="bg-white shadow-lg h-full flex flex-col relative" style="border: 2px solid #10b981;">
+    <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #10b981;">
         <div class="flex items-center justify-between">
-            <h3 class="text-lg sm:text-xl font-normal text-green-700 tracking-wide">
-                {{ title|default:"Notes" }}
-            </h3>
-            <div class="pl-3 sm:pl-4 flex items-center justify-center" style="border-left: 2px solid #4F46E5;">
-                <a href="{% url 'add_entry' %}?entry_type=note" class="bg-green-600 hover:bg-green-700 text-white font-normal px-3 py-2 sm:px-4 sm:py-3 border-2 border-green-600 transition-all duration-200 tracking-wide text-xs sm:text-sm hover:shadow-lg flex items-center justify-center">
-                    <i class="fas fa-plus"></i>
-                </a>
+            <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Notes</h3>
+            <div class="flex items-center gap-2">
+                <!-- Add Note Button (icon only) -->
+                <button onclick="openAddNoteModal()" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 border-2 border-green-700 text-xs sm:text-sm transition-all duration-200 flex items-center justify-center">
+                    <i class="fas fa-plus text-xs"></i>
+                </button>
             </div>
         </div>
     </div>
-    <!-- Notes Content -->
-    <div class="p-3 sm:p-4 overflow-y-auto flex-1">
+
+    <!-- Notes List -->
+    <div class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-green-50 to-emerald-50">
         {% if notes %}
-            <div class="space-y-2">
-                {% for note in notes %}
-                    {% include 'components/note_card.html' %}
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="text-center py-8">
-                <div class="w-12 h-12 mx-auto mb-3 bg-green-100 border-2 border-green-600 flex items-center justify-center rounded-lg">
-                    <i class="fas fa-plus text-lg text-green-600"></i>
+            {% for note in notes %}
+                <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 border-green-500"
+                     onclick="openNoteModal({{ note.id }})">
+                    <div class="flex items-start justify-between mb-2">
+                        <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ note.title }}</h4>
+                        <div class="flex items-center gap-2 ml-2 flex-shrink-0">
+                            <!-- Status Badge -->
+                            <span class="bg-green-100 text-green-700 px-2 py-1 text-xs font-medium border border-green-200">
+                                <i class="fas fa-sticky-note mr-1"></i>Note
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Note Content -->
+                    <div class="text-xs sm:text-sm text-gray-600 mb-2">
+                        {% if note.content %}
+                            <p class="line-clamp-2 mb-1">{{ note.content|truncatewords:15 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Date and Meta Info -->
+                    <div class="flex items-center justify-between text-xs text-gray-500">
+                        <div class="flex items-center gap-2">
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-calendar text-green-600"></i>
+                                {{ note.created_at|date:"M j, Y" }}
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            {% if note.child %}
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-user text-green-600"></i>
+                                    {{ note.child.name }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <h4 class="text-lg font-medium text-gray-900 mb-2">No notes yet</h4>
-                {% if children %}
-                    <p class="text-gray-600 text-sm mb-4">Add your first note to get started!</p>
-                    <a href="{% url 'add_entry' %}?entry_type=note" class="bg-green-600 hover:bg-green-700 text-white font-normal py-2 px-4 border-2 border-green-600 transition-all duration-200 tracking-wide hover:shadow-lg text-sm">
-                        <i class="fas fa-plus mr-1"></i>
-                        Add First Note
-                    </a>
-                {% else %}
-                    <p class="text-gray-600 text-sm mb-4">Add a child profile first, then you can start creating notes</p>
-                    <a href="{% url 'add_child' %}" class="bg-primary hover:bg-secondary text-white font-normal py-2 px-4 border-2 border-primary transition-all duration-200 tracking-wide hover:shadow-lg text-sm">
-                        <i class="fas fa-plus mr-1"></i>
-                        Add Child Profile
-                    </a>
-                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-8 text-gray-500">
+                <i class="fas fa-sticky-note text-4xl text-green-300 mb-4"></i>
+                <p class="text-lg font-medium mb-2">No notes yet</p>
+                <p class="text-sm">Add your first note to get started!</p>
             </div>
         {% endif %}
     </div>
