@@ -12,10 +12,13 @@
             theme: {
                 extend: {
                     colors: {
+                        // primary brand colors
                         primary: '#4F46E5',        // indigo blue
                         secondary: '#7C3AED',      // purple
                         accent: '#F59E0B',         // amber/yellow accent
                         accentBlue: '#06B6D4',     // cyan accent
+                        
+                        // layout
                         neutral: '#F8FAFC',        // light gray
                         surface: '#FFFFFF',        // white
                         border: '#E2E8F0',         // light gray
@@ -33,218 +36,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Load Django static files -->
     {% load static %}
+    <!-- Main styles -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <!-- Form Validation JS -->
     <script src="{% static 'js/form_validation.js' %}" defer></script>
     <!-- Mobile Menu JS -->
     <script src="{% static 'js/mobile_menu.js' %}" defer></script>
-    <style>
-        /* Clean violet theme for native HTML5 date and time inputs - HIGH SPECIFICITY */
-        input[type="date"], 
-        input[type="time"],
-        input.child-date-input,
-        input.event-date-input,
-        input.event-time-input,
-        input.task-date-input,
-        input.task-time-input,
-        .child-date-input,
-        .event-date-input,
-        .event-time-input,
-        .task-date-input,
-        .task-time-input {
-            background-color: #f8fafc !important;
-            border: 2px solid #4F46E5 !important;
-            border-radius: 0 !important;
-            padding: 0.75rem !important;
-            font-weight: 400 !important;
-            font-family: 'Poppins', 'Nunito', system-ui, sans-serif !important;
-            transition: all 0.2s ease !important;
-            color: #374151 !important;
-            width: 100% !important;
-            display: block !important;
-            margin-top: 0.25rem !important;
-        }
-        
-        /* Focus states - HIGH SPECIFICITY */
-        input[type="date"]:focus, 
-        input[type="time"]:focus,
-        input.child-date-input:focus,
-        input.event-date-input:focus,
-        input.event-time-input:focus,
-        input.task-date-input:focus,
-        input.task-time-input:focus,
-        .child-date-input:focus,
-        .event-date-input:focus,
-        .event-time-input:focus,
-        .task-date-input:focus,
-        .task-time-input:focus {
-            outline: none !important;
-            border-color: #6366F1 !important;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
-            background-color: #ffffff !important;
-        }
-        
-        /* Override any Tailwind border classes specifically for date/time inputs */
-        input[type="date"].border-gray-300,
-        input[type="time"].border-gray-300,
-        .child-date-input.border-gray-300,
-        .event-date-input.border-gray-300,
-        .event-time-input.border-gray-300,
-        .task-date-input.border-gray-300,
-        .task-time-input.border-gray-300 {
-            border-color: #4F46E5 !important;
-        }
-        
-        /* Other form inputs */
-        input[type="text"], 
-        input[type="email"], 
-        input[type="password"], 
-        input[type="number"],
-        textarea, 
-        select {
-            background-color: #f8fafc !important;
-            border: 2px solid #4F46E5 !important;
-            border-radius: 0 !important;
-            padding: 0.75rem !important;
-            font-weight: 400 !important;
-            font-family: 'Poppins', 'Nunito', system-ui, sans-serif !important;
-            transition: all 0.2s ease !important;
-            color: #374151 !important;
-        }
-        
-        input[type="text"]:focus, 
-        input[type="email"]:focus, 
-        input[type="password"]:focus, 
-        input[type="number"]:focus,
-        textarea:focus, 
-        select:focus {
-            outline: none !important;
-            border-color: #6366F1 !important;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
-            background-color: #ffffff !important;
-        }
-        
-        /* Time input center alignment */
-        input[type="time"],
-        .event-time-input,
-        .task-time-input {
-            text-align: center !important;
-        }
-        
-        /* Mobile-First Compact Design Utilities */
-        @media (max-width: 640px) {
-            .compact-header {
-                padding: 0.5rem 0.75rem !important;
-            }
-            
-            .compact-spacing {
-                gap: 0.25rem !important;
-                margin-bottom: 0.75rem !important;
-            }
-            
-            .compact-text {
-                font-size: 0.75rem !important;
-            }
-            
-            .compact-button {
-                padding: 0.375rem 0.75rem !important;
-                font-size: 0.75rem !important;
-            }
-            
-            .compact-icon-button {
-                width: 1.5rem !important;
-                height: 1.5rem !important;
-                padding: 0.25rem !important;
-            }
-            
-            .compact-card {
-                padding: 0.75rem !important;
-                margin-bottom: 0.5rem !important;
-            }
-            
-            /* Ensure all action icons are consistently sized */
-            .action-icon {
-                width: 1.5rem;
-                height: 1.5rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.2s ease;
-            }
-            
-            .action-icon i {
-                font-size: 0.75rem;
-            }
-        }
-        
-        /* Enhanced responsive breakpoints */
-        @media (min-width: 640px) {
-            .action-icon {
-                width: 1.5rem;
-                height: 1.5rem;
-            }
-        }
-        
-        /* Custom hidden class for specific components (not interfering with Tailwind responsive) */
-        .custom-hidden {
-            display: none !important;
-        }
-        
-        /* Dashboard Expandable Cards */
-        .entry-card {
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .entry-card:hover {
-            border-color: #4F46E5 !important;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15) !important;
-        }
-        
-        /* Smooth transitions for expand/collapse */
-        [id^="entry-details-"] {
-            transition: all 0.3s ease-in-out;
-            overflow: hidden;
-        }
-        
-        [id^="toggle-icon-"] {
-            transition: transform 0.2s ease-in-out;
-        }
-
-        /* CRISP CORNER DESIGN SYSTEM - OVERRIDE ALL ROUNDED ELEMENTS */
-        * {
-            border-radius: 0 !important;
-        }
-        
-        /* Comprehensive form element overrides */
-        input, select, textarea, button, 
-        .btn, .form-control, .form-select,
-        [class*="rounded"], [class*="border-radius"],
-        .card, .modal, .dropdown-menu,
-        .alert, .badge, .tooltip, .popover,
-        .nav-pills .nav-link, .nav-tabs .nav-link,
-        .breadcrumb, .pagination .page-link,
-        .progress, .progress-bar,
-        .list-group-item, .table,
-        div[class*="bg-"], span[class*="bg-"],
-        .color-dot, .color-dot-small,
-        [role="button"], [type="button"],
-        [type="submit"], [type="reset"] {
-            border-radius: 0 !important;
-        }
-        
-        /* Override any Tailwind rounded classes */
-        .rounded, .rounded-sm, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-full,
-        .rounded-t, .rounded-r, .rounded-b, .rounded-l,
-        .rounded-tl, .rounded-tr, .rounded-br, .rounded-bl {
-            border-radius: 0 !important;
-        }
-            html, body {
-                height: 100vh !important;
-                min-height: 0 !important;
-                display: flex;
-                flex-direction: column;
-            }
-    </style>
     {% block extra_head %}{% endblock %}
 </head>
 

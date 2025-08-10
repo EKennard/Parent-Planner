@@ -1,0 +1,312 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Tailwind CSS Configuration - This config is now embedded in base.html */
+/*
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                // primary brand colors
+                primary: '#4F46E5',        // indigo blue
+                secondary: '#7C3AED',      // purple
+                accent: '#F59E0B',         // amber/yellow accent
+                accentBlue: '#06B6D4',     // cyan accent
+                
+                // layout
+                neutral: '#F8FAFC',        // light gray
+                surface: '#FFFFFF',        // white
+                border: '#E2E8F0',         // light gray
+                textGray: '#64748B',       // slate gray
+            },
+            
+            // shadows
+            boxShadow: {
+                'md': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                'lg': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                'xl': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                '2xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            },
+            
+            //fonts
+            fontFamily: {
+                'sans': ['Inter', 'system-ui', 'sans-serif'],
+                'mono': ['JetBrains Mono', 'Fira Code', 'monospace'],
+            },
+            
+            // gradient backgrounds
+            backgroundImage: {
+                'gradient-main': 'linear-gradient(90deg, hsla(339, 100%, 55%, 1) 0%, hsla(197, 100%, 64%, 1) 100%)',
+                'gradient-hover': 'linear-gradient(90deg, hsla(339, 100%, 50%, 1) 0%, hsla(197, 100%, 59%, 1) 100%)',
+            },
+        }
+    }
+};
+*/
+
+/* Base Font Settings */
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+code, pre, .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+/* Custom Parent Planner Styles */
+
+/* Button Styles */
+.btn-primary {
+    background-color: #4F46E5;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #4338CA;
+}
+
+.btn-secondary {
+    background-color: #7C3AED;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    background-color: #6D28D9;
+}
+
+.btn-accent {
+    background-color: #F59E0B;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+.btn-accent:hover {
+    background-color: #D97706;
+}
+
+/* Card Styles */
+.card {
+    background-color: #FFFFFF;
+    border-radius: 0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    border: 1px solid #E2E8F0;
+}
+
+.child-card {
+    background-color: #FFFFFF;
+    border-radius: 0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    border: 1px solid #E2E8F0;
+    transition: box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.child-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.stats-card {
+    background-color: #FFFFFF;
+    border-radius: 0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    border: 1px solid #E2E8F0;
+    text-align: center;
+}
+
+/* Form Styles */
+.form-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #E2E8F0;
+    border-radius: 0;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    background-color: #FFFFFF;
+    color: #1F2937;
+}
+
+.form-input:focus {
+    box-shadow: 0 0 0 2px #4F46E5;
+    border-color: transparent;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Message Styles */
+.message-success {
+    background-color: #F0FDF4;
+    border: 1px solid #22C55E;
+    color: #166534;
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    margin-bottom: 1rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.message-error {
+    background-color: #FEF2F2;
+    border: 1px solid #EF4444;
+    color: #DC2626;
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    margin-bottom: 1rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.message-warning {
+    background-color: #FFFBEB;
+    border: 1px solid #F59E0B;
+    color: #92400E;
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    margin-bottom: 1rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Navigation Styles */
+.nav-link {
+    color: #64748B;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0;
+    text-decoration: none;
+    transition: color 0.2s;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: #4F46E5;
+}
+
+/* Utility Classes */
+.text-gradient {
+    background: linear-gradient(90deg, hsla(339, 100%, 55%, 1) 0%, hsla(197, 100%, 64%, 1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.gradient-bg {
+    background: linear-gradient(90deg, hsla(339, 100%, 55%, 1) 0%, hsla(197, 100%, 64%, 1) 100%);
+}
+
+.gradient-bg:hover {
+    background: linear-gradient(90deg, hsla(339, 100%, 50%, 1) 0%, hsla(197, 100%, 59%, 1) 100%);
+}
+
+/* Typography */
+.heading-1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #1F2937;
+}
+
+.heading-2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #1F2937;
+}
+
+.heading-3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #1F2937;
+}
+
+.text-body {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #374151;
+}
+
+.text-small {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #64748B;
+}
+
+/* Ultra-wide Layout Support (screens 1700px+) */
+@media (min-width: 1700px) {
+    .ultra-wide-grid {
+        display: grid !important;
+        grid-template-columns: 384px 1fr 384px !important;
+        gap: 1.5rem !important;
+    }
+    
+    .ultra-wide-notes {
+        display: block !important;
+    }
+    
+    .responsive-text-2xl {
+        font-size: 1.875rem !important;
+        line-height: 2.25rem !important;
+    }
+}
+
+/* Crisp Corner Design - Override all rounded corners */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+select,
+textarea,
+button,
+.btn,
+.card,
+.form-control,
+.form-select {
+    border-radius: 0 !important;
+}
+
+/* Additional Django form widget overrides */
+.django-widget input,
+.django-widget select,
+.django-widget textarea {
+    border-radius: 0 !important;
+}
