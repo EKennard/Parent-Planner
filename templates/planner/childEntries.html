@@ -5,7 +5,7 @@
 {% block extra_head %}
 <!-- Optimised dashboard assets -->
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}?v=3">
 <link rel="stylesheet" href="{% static 'css/dashboard-scroll.css' %}">
 <script src="{% static 'js/clean-swipe.js' %}?v=1" defer></script>
 <script src="{% static 'js/expandable-cards.js' %}?v=2" defer></script>
@@ -149,8 +149,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-medium text-gray-900">{{ child.name }}'s Profile</h1>
-                    <p class="text-sm text-gray-600">{{ tasks.count }} tasks • {{ events.count }} events • {{
-                        notes.count }} notes</p>
+                    <p class="text-sm text-gray-600">{{ tasks.count }} tasks • {{ events.count }} events • {{ notes.count }} notes</p>
                 </div>
             </div>
             <a href="{% url 'dashboard' %}" class="text-primary hover:text-primary-dark font-medium">
@@ -189,10 +188,10 @@
                                     <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Profile
                                         Details</h3>
                                     <div class="flex gap-1 flex-shrink-0">
-                                        <a href="{% url 'edit_child' child.id %}" class="w-6 h-6 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Child">
+                                        <a href="{% url 'edit_child' child.id %}" class="btn-edit" title="Edit Child">
                                             <i class="fas fa-pencil-alt text-xs"></i>
                                         </a>
-                                        <button onclick="deleteChildConfirm({{ child.id }}, '{{ child.name|addslashes }}')" class="w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Delete Child">
+                                        <button onclick="deleteChildConfirm({{ child.id }}, '{{ child.name|addslashes }}')" class="btn-delete" title="Delete Child">
                                             <i class="fas fa-trash text-xs"></i>
                                         </button>
                                     </div>
@@ -291,10 +290,10 @@
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Profile Details</h3>
                             <div class="flex gap-1 flex-shrink-0">
-                                <a href="{% url 'edit_child' child.id %}" class="w-6 h-6 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Child">
+                                <a href="{% url 'edit_child' child.id %}" class="btn-edit" title="Edit Child">
                                     <i class="fas fa-pencil-alt text-xs"></i>
                                 </a>
-                                <button onclick="deleteChildConfirm({{ child.id }}, '{{ child.name|addslashes }}')" class="w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Delete Child">
+                                <button onclick="deleteChildConfirm({{ child.id }}, '{{ child.name|addslashes }}')" class="btn-delete" title="Delete Child">
                                     <i class="fas fa-trash text-xs"></i>
                                 </button>
                             </div>

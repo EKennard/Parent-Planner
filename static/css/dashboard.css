@@ -14,6 +14,48 @@
     background-color: var(--child-color, #4F46E5);
 }
 
+/* Reusable button styles - Consolidates repeated button classes */
+.btn-edit {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    background-color: rgb(75 85 99) !important;
+    color: white !important;
+    border: 1px solid rgb(31 41 55) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+    border-radius: 0.125rem !important;
+    text-decoration: none !important;
+}
+
+.btn-edit:hover {
+    background-color: rgb(55 65 81) !important;
+}
+
+.btn-delete {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    background-color: rgb(220 38 38) !important;
+    color: white !important;
+    border: 1px solid rgb(185 28 28) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+    border-radius: 0.125rem !important;
+    cursor: pointer !important;
+}
+
+.btn-delete:hover {
+    background-color: rgb(185 28 28) !important;
+}
+
+/* Add spacing between buttons when in horizontal layout */
+.flex:not(.flex-col) .btn-edit {
+    margin-right: 0.25rem !important;
+}
+
 /* Mobile filter animations - Tailwind doesn't have slideDown/slideUp */
 @keyframes slideDown {
     from {

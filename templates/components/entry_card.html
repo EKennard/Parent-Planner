@@ -1,5 +1,16 @@
 <!-- Entry Card Component -->
-<div class="bg-white border-l-4 p-4 hover:bg-gray-50 transition-all duration-200 entry-card shadow-sm" 
+<div         <!-- Action Buttons -->
+        <div class="flex gap-1 flex-shrink-0">
+            <a href="{% url 'edit_entry' entry.id %}{% if request.resolver_match.url_name == 'dashboard' %}?next=dashboard{% endif %}" class="btn-edit" title="Edit Entry">
+                <i class="fas fa-pencil-alt text-xs"></i>
+            </a>
+            <form method="post" action="{% url 'delete_entry' entry.id %}" style="display: inline;" onsubmit="return confirm('Delete this {{ entry.get_entry_type_display|lower }}?')">
+                {% csrf_token %}
+                <button type="submit" class="btn-delete" title="Delete Entry">
+                    <i class="fas fa-trash text-xs"></i>
+                </button>
+            </form>
+        </div>ite border-l-4 p-4 hover:bg-gray-50 transition-all duration-200 entry-card shadow-sm" 
      data-entry-type="{{ entry.entry_type }}" 
      data-child-id="{{ entry.child.id }}"
      style="border-left-color: {{ entry.child.colour }};">
@@ -36,12 +47,12 @@
         
         <!-- Action Buttons -->
         <div class="flex gap-1 flex-shrink-0">
-            <a href="{% url 'edit_entry' entry.id %}" class="w-6 h-6 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Entry">
+            <a href="{% url 'edit_entry' entry.id %}{% if request.resolver_match.url_name == 'dashboard' %}?next=dashboard{% endif %}" class="btn-edit" title="Edit Entry">
                 <i class="fas fa-pencil-alt text-xs"></i>
             </a>
             <form method="post" action="{% url 'delete_entry' entry.id %}" style="display: inline;" onsubmit="return confirm('Delete this entry?')">
                 {% csrf_token %}
-                <button type="submit" class="w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Delete Entry">
+                <button type="submit" class="btn-delete" title="Delete Entry">
                     <i class="fas fa-trash text-xs"></i>
                 </button>
             </form>

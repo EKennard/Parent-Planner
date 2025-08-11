@@ -8,6 +8,23 @@ console.log('Expandable cards script loading...');
 // Track expanded cards
 let expandedCards = new Set();
 
+function handleEdit(cardId, cardType) {
+    console.log(`Editing ${cardType} with ID: ${cardId}`);
+    
+    // Determine the source page to redirect back to after edit
+    const currentPath = window.location.pathname;
+    let nextParam = '';
+    
+    if (currentPath === '/dashboard/') {
+        nextParam = '?next=dashboard';
+    } else if (currentPath.includes('/child/')) {
+        nextParam = '?next=child';
+    }
+    
+    // Redirect to edit page - all entry types use the same edit-entry URL pattern
+    window.location.href = `/edit-entry/${cardId}/${nextParam}`;
+}
+
 /**
  * Toggle card expansion
  */
@@ -167,7 +184,7 @@ function createActionButtons(cardId, cardType) {
         
         // Edit button (icon only)
         const editBtn = document.createElement('button');
-        editBtn.className = 'w-6 h-6 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm';
+        editBtn.className = 'btn-edit';
         editBtn.innerHTML = '<i class="fas fa-pencil-alt text-xs"></i>';
         editBtn.title = 'Edit';
         editBtn.onclick = (e) => {
@@ -177,7 +194,7 @@ function createActionButtons(cardId, cardType) {
         
         // Delete button (icon only)
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm';
+        deleteBtn.className = 'btn-delete';
         deleteBtn.innerHTML = '<i class="fas fa-trash text-xs"></i>';
         deleteBtn.title = 'Delete';
         deleteBtn.onclick = (e) => {
@@ -197,7 +214,7 @@ function createActionButtons(cardId, cardType) {
         
         // Edit button (icon only)
         const editBtn = document.createElement('button');
-        editBtn.className = 'w-6 h-6 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm';
+        editBtn.className = 'btn-edit';
         editBtn.innerHTML = '<i class="fas fa-pencil-alt text-xs"></i>';
         editBtn.title = 'Edit';
         editBtn.onclick = (e) => {
@@ -207,7 +224,7 @@ function createActionButtons(cardId, cardType) {
         
         // Delete button (icon only)
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm';
+        deleteBtn.className = 'btn-delete';
         deleteBtn.innerHTML = '<i class="fas fa-trash text-xs"></i>';
         deleteBtn.title = 'Delete';
         deleteBtn.onclick = (e) => {
@@ -231,20 +248,8 @@ function createActionButtons(cardId, cardType) {
 function handleEdit(cardId, cardType) {
     console.log(`Editing ${cardType} with ID: ${cardId}`);
     
-    // Redirect to edit page or open edit modal based on your preference
-    switch(cardType) {
-        case 'event':
-            window.location.href = `/planner/events/edit/${cardId}/`;
-            break;
-        case 'task':
-            window.location.href = `/planner/tasks/edit/${cardId}/`;
-            break;
-        case 'note':
-            window.location.href = `/planner/notes/edit/${cardId}/`;
-            break;
-        default:
-            console.error('Unknown card type:', cardType);
-    }
+    // Redirect to edit page - all entry types use the same edit-entry URL pattern
+    window.location.href = `/edit-entry/${cardId}/`;
 }
 
 /**
@@ -256,8 +261,8 @@ function handleDelete(cardId, cardType) {
     if (confirm(confirmMessage)) {
         console.log(`Deleting ${cardType} with ID: ${cardId}`);
         
-        // Send delete request
-        fetch(`/planner/${cardType}s/delete/${cardId}/`, {
+        // Send delete request - all entry types use the same quick-delete URL pattern
+        fetch(`/quick-delete/${cardId}/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': getCsrfToken(),

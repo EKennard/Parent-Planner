@@ -400,24 +400,39 @@ def edit_entry(request, entry_id):
     if not parent:
         return redirect('register')
     entry = get_object_or_404(Entry.objects.defer('is_completed'), id=entry_id, child__parent=parent)
+    
+    # Get the 'next' parameter from GET (initial load) or POST (form submission)
+    next_url = request.GET.get('next') or request.POST.get('next')
+    
     if request.method == 'POST':
         form = entryForm(request.POST, instance=entry, parent=parent)
         if form.is_valid():
             form.save()
             messages.success(request, f'Updated {entry.get_entry_type_display().lower()}: {entry.title}')
-            return redirect('child_entries', child_id=entry.child.id)
+            
+            # Redirect based on 'next' parameter or default to child_entries
+            if next_url == 'dashboard':
+                return redirect('dashboard')
+            else:
+                return redirect('child_entries', child_id=entry.child.id)
     else:
         form = entryForm(instance=entry, parent=parent)
+        
     return render(request, 'planner/editEntry.html', {
         'form': form,
         'entry': entry,
         'child': entry.child,
+        'next_url': next_url,  # Pass to template for form action
     })
 
 
 #-----------------------delete entry view----------------------------
 @login_required
-def delete_entry(request, entry_id):
+def delete_entry(request, entry_id, redirect_to='child_entries'):
+    """
+    Delete an entry and redirect based on context.
+    redirect_to: 'child_entries' for child profile page, 'dashboard' for dashboard
+    """
     parent = get_parent_or_redirect(request)
     if not parent:
         return redirect('register')
@@ -428,7 +443,11 @@ def delete_entry(request, entry_id):
         entry_type = entry.get_entry_type_display()
         entry.delete()
         messages.success(request, f'Deleted {entry_type.lower()}: {entry_title}')
-    return redirect('child_entries', child_id=child_id)
+    
+    if redirect_to == 'dashboard':
+        return redirect('dashboard')
+    else:
+        return redirect('child_entries', child_id=child_id)
 
 #----------------------edit child view----------------------------
 
@@ -484,16 +503,8 @@ def toggle_entry_completion(request, entry_id):
 #----------------delete entry view----------------------------
 @login_required
 def quick_delete_entry(request, entry_id):
-    parent = get_parent_or_redirect(request)
-    if not parent:
-        return redirect('register')
-    entry = get_object_or_404(Entry.objects.defer('is_completed'), id=entry_id, child__parent=parent)
-    if request.method == 'POST':
-        entry_title = entry.title
-        entry_type = entry.get_entry_type_display()
-        entry.delete()
-        messages.success(request, f'Deleted {entry_type.lower()}: {entry_title}')
-    return redirect('dashboard')
+    """Quick delete entry from dashboard - redirects back to dashboard"""
+    return delete_entry(request, entry_id, redirect_to='dashboard')
 
 
 def logout_view(request):
