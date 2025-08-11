@@ -134,7 +134,6 @@ class childForm(forms.ModelForm):
         widgets = {
             'birth_date': forms.DateInput(attrs={
                 'type': 'date',
-                'placeholder': 'Select date of birth (optional)',
                 'class': 'child-date-input'
             }),
             'colour': forms.Select(attrs={'style': 'display: none;'}),
@@ -231,27 +230,22 @@ class entryForm(forms.ModelForm):
             'location': forms.TextInput(attrs={'placeholder': 'Enter location...'}),
             'event_date': forms.DateInput(attrs={
                 'type': 'date', 
-                'placeholder': 'Select event date',
                 'class': 'event-date-input'
             }),
             'event_start_time': forms.TimeInput(attrs={
                 'type': 'time', 
-                'placeholder': 'Start time (optional)',
                 'class': 'event-time-input'
             }),
             'event_end_time': forms.TimeInput(attrs={
                 'type': 'time', 
-                'placeholder': 'End time (optional)',
                 'class': 'event-time-input'
             }),
             'task_due_date': forms.DateInput(attrs={
                 'type': 'date', 
-                'placeholder': 'Select due date (optional)',
                 'class': 'task-date-input'
             }),
             'task_due_time': forms.TimeInput(attrs={
                 'type': 'time', 
-                'placeholder': 'Due time (optional)',
                 'class': 'task-time-input'
             }),
         }
