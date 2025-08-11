@@ -138,6 +138,9 @@ class childForm(forms.ModelForm):
             }),
             'colour': forms.Select(attrs={'style': 'display: none;'}),
         }
+        help_texts = {
+            'birth_date': 'Select your child\'s date of birth (optional)',
+        }
 
 
 class entryForm(forms.ModelForm):
@@ -248,6 +251,13 @@ class entryForm(forms.ModelForm):
                 'type': 'time', 
                 'class': 'task-time-input'
             }),
+        }
+        help_texts = {
+            'event_date': 'Select the date for this event',
+            'event_start_time': 'Choose when the event starts (optional)',
+            'event_end_time': 'Choose when the event ends (optional)',
+            'task_due_date': 'Set a due date for this task (optional)',
+            'task_due_time': 'Set a specific due time (optional)',
         }
 
 
