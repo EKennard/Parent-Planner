@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'django_summernote',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -172,16 +171,14 @@ TAILWIND_APP_NAME = 'theme'
 AUTHENTICATION_BACKENDS = [
     'planner.backends.EmailBackend',  # Our custom email authentication
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 SITE_ID = 1
 
 # Allauth settings (using new format)
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Keep this for compatibility
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_LOGIN_METHODS = {'email'}  # Use new format instead of ACCOUNT_AUTHENTICATION_METHOD
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']  # Use new format instead of separate settings
 
 # Redirect to onboarding after signup, dashboard after login
 ACCOUNT_SIGNUP_REDIRECT_URL = '/add-child/?onboarding=true'

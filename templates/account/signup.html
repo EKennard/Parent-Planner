@@ -147,23 +147,6 @@
                         {% trans "Sign Up" %}
                     </button>
                 </form>
-
-            <!-- Social signup -->
-            {% if SOCIALACCOUNT_ENABLED %}
-                <div class="mt-6">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t-2 border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500 font-normal tracking-wide">Or sign up with</span>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-                    </div>
-                </div>
-            {% endif %}
             </div>
         </div>
     </div>
