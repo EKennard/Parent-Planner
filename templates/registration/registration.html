@@ -12,17 +12,6 @@
         </div>
 
         <div class="p-8">
-            <!-- Messages -->
-            {% if messages %}
-                <div class="mb-6">
-                    {% for message in messages %}
-                        <div class="p-4 border-2 {% if message.tags == 'success' %}bg-green-50 text-green-700 border-green-600{% elif message.tags == 'error' %}bg-red-50 text-red-700 border-red-600{% else %}bg-blue-50 text-blue-700 border-blue-600{% endif %}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-
             <!-- Registration form -->
             <form method="post" class="space-y-6">
                 {% csrf_token %}

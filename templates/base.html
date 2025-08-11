@@ -92,6 +92,9 @@
     </nav>
     {% endif %}
 
+    <!-- Unified Messages System -->
+    {% include 'components/messages.html' %}
+
     <main class="w-full flex-1">
         {% block content %}
         {% endblock %}
@@ -113,5 +116,95 @@
             </div>
         </div>
     </footer>
+
+    <!-- Unified Message System JavaScript -->
+    <script>
+    // Close message function
+    function closeMessage(button) {
+        const messageAlert = button.closest('[data-message-alert]');
+        if (messageAlert) {
+            messageAlert.style.transform = 'translateX(100%)';
+            messageAlert.style.opacity = '0';
+            setTimeout(() => {
+                if (messageAlert.parentNode) {
+                    messageAlert.remove();
+                }
+            }, 300);
+        }
+    }
+
+    // Show notification programmatically
+    function showNotification(message, type = 'info', duration = 5000) {
+        const container = document.getElementById('messages-container') || createMessagesContainer();
+        
+        const notification = document.createElement('div');
+        notification.className = `message-alert flex items-center justify-between min-w-80 max-w-96 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-x-0 opacity-100 ${
+            type === 'success' ? 'bg-green-500 text-white' : 
+            type === 'error' ? 'bg-red-500 text-white' : 
+            type === 'warning' ? 'bg-yellow-500 text-white' :
+            'bg-blue-500 text-white'
+        }`;
+        notification.setAttribute('data-message-alert', '');
+        notification.setAttribute('data-message-type', type);
+        
+        notification.innerHTML = `
+            <span class="flex-1 pr-3">${message}</span>
+            <button type="button" 
+                    class="text-current hover:opacity-75 focus:outline-none transition-opacity" 
+                    onclick="closeMessage(this)" 
+                    aria-label="Close message">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(notification);
+        
+        // Auto-close if duration is set
+        if (duration > 0) {
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    const closeButton = notification.querySelector('button');
+                    if (closeButton) {
+                        closeMessage(closeButton);
+                    }
+                }
+            }, duration);
+        }
+        
+        return notification;
+    }
+
+    // Create messages container if it doesn't exist
+    function createMessagesContainer() {
+        let container = document.getElementById('messages-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'messages-container';
+            container.className = 'fixed top-4 right-4 z-50 space-y-2';
+            document.body.appendChild(container);
+        }
+        return container;
+    }
+
+    // Auto-close existing messages on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const messages = document.querySelectorAll('[data-message-alert]');
+        messages.forEach(message => {
+            // Auto-close after 5 seconds for success messages, 8 seconds for others
+            const type = message.getAttribute('data-message-type');
+            const duration = type === 'success' ? 5000 : 8000;
+            
+            setTimeout(() => {
+                if (message.parentNode) {
+                    const closeButton = message.querySelector('button');
+                    if (closeButton) {
+                        closeMessage(closeButton);
+                    }
+                }
+            }, duration);
+        });
+    });
+    </script>
+
 </body>
 </html>

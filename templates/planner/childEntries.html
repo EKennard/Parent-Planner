@@ -128,17 +128,6 @@
 
 {% block content %}
 <div class="bg-gray-50 pb-4">
-    {% if messages %}
-    <div class="mb-3 sm:mb-6">
-        {% for message in messages %}
-        <div
-            class="mb-2 p-2 sm:p-4 border-l-4 text-sm sm:text-base {% if message.tags == 'success' %}bg-green-50 text-green-700 border-green-500{% elif message.tags == 'error' %}bg-red-50 text-red-700 border-red-500{% else %}bg-blue-50 text-blue-700 border-blue-500{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
     <!-- Child Profile Header -->
     <div class="w-full bg-white shadow-sm border-b border-gray-200 px-4 py-4">
         <div class="w-full flex items-center justify-between">

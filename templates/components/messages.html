@@ -1,0 +1,18 @@
+<!-- Unified Messages Component -->
+{% if messages %}
+    <div id="messages-container" class="fixed top-4 right-4 z-50 space-y-2">
+        {% for message in messages %}
+            <div class="message-alert flex items-center justify-between min-w-80 max-w-96 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-x-0 opacity-100 {% if message.tags == 'success' %}bg-green-500 text-white{% elif message.tags == 'error' %}bg-red-500 text-white{% elif message.tags == 'warning' %}bg-yellow-500 text-white{% else %}bg-blue-500 text-white{% endif %}" 
+                 data-message-alert 
+                 data-message-type="{{ message.tags }}">
+                <span class="flex-1 pr-3">{{ message }}</span>
+                <button type="button" 
+                        class="text-current hover:opacity-75 focus:outline-none transition-opacity" 
+                        onclick="closeMessage(this)" 
+                        aria-label="Close message">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

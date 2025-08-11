@@ -303,25 +303,16 @@ function getCsrfToken() {
 }
 
 /**
- * Show notification to user
+ * Show notification to user - Uses unified message system
  */
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 px-4 py-2 rounded shadow-lg z-50 transition-all duration-300 ${
-        type === 'success' ? 'bg-green-500 text-white' : 
-        type === 'error' ? 'bg-red-500 text-white' : 
-        'bg-blue-500 text-white'
-    }`;
-    notification.textContent = message;
+function showNotification(message, type = 'info', duration = 5000) {
+    // Use the global showNotification function from base.html
+    if (typeof window.showNotification === 'function') {
+        return window.showNotification(message, type, duration);
+    }
     
-    document.body.appendChild(notification);
-    
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
+    // Fallback if global function not available
+    console.log(`${type.toUpperCase()}: ${message}`);
 }
 
 /**
