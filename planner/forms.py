@@ -226,6 +226,9 @@ class entryForm(forms.ModelForm):
             'due_date': forms.DateTimeInput(attrs={'type': 'text', 'placeholder': 'Select date and time'}),
             'start_time': forms.DateTimeInput(attrs={'type': 'text', 'placeholder': 'Select start time'}),
             'end_time': forms.DateTimeInput(attrs={'type': 'text', 'placeholder': 'Select end time'}),
+            'title': forms.TextInput(attrs={'placeholder': 'Enter title...'}),
+            'description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Enter description...'}),
+            'location': forms.TextInput(attrs={'placeholder': 'Enter location...'}),
             'event_date': forms.DateInput(attrs={
                 'type': 'date', 
                 'placeholder': 'Select event date',
@@ -251,7 +254,6 @@ class entryForm(forms.ModelForm):
                 'placeholder': 'Due time (optional)',
                 'class': 'task-time-input'
             }),
-            'description': forms.Textarea(attrs={'rows': 4}),
         }
 
 
