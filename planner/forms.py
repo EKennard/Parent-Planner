@@ -7,7 +7,7 @@ from datetime import date
 
 # generates random colour code from predefined choices
 def generate_random_color():
-    """Generate a random color from Child.COLOR_CHOICES."""
+    """Generate a random colour from Child.COLOR_CHOICES."""
     import random
     color_choices = [choice[0] for choice in Child.COLOR_CHOICES]
     return random.choice(color_choices)
@@ -82,7 +82,7 @@ class childForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if not self.instance.pk:
             self.fields['colour'].initial = generate_random_color()
-        # Make sure colour field is required so user must select a color
+        # Make sure colour field is required so user must select a colour
         self.fields['colour'].required = True
         # Make sure name field is required and has proper validation
         self.fields['name'].required = True

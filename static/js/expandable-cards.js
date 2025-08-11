@@ -12,12 +12,17 @@ let expandedCards = new Set();
  * Toggle card expansion
  */
 function toggleCardExpansion(cardElement) {
+    console.log('toggleCardExpansion called for:', cardElement);
     const cardId = cardElement.dataset.cardId;
     const cardType = cardElement.dataset.cardType;
     
+    console.log('Card ID:', cardId, 'Card Type:', cardType);
+    
     if (expandedCards.has(cardId)) {
+        console.log('Collapsing card:', cardId);
         collapseCard(cardElement, cardId);
     } else {
+        console.log('Expanding card:', cardId);
         expandCard(cardElement, cardId, cardType);
     }
 }
@@ -26,18 +31,26 @@ function toggleCardExpansion(cardElement) {
  * Expand a card to show full details
  */
 function expandCard(cardElement, cardId, cardType) {
+    console.log('expandCard called for:', cardId, cardType);
+    
     // Add to expanded set
     expandedCards.add(cardId);
     
     // Add expanded class
     cardElement.classList.add('expanded');
+    console.log('Added expanded class to card');
     
     // Find the content container
     const contentContainer = cardElement.querySelector('.card-content');
-    if (!contentContainer) return;
+    if (!contentContainer) {
+        console.log('No content container found!');
+        return;
+    }
+    console.log('Found content container');
     
     // Show all hidden content
     const truncatedElements = cardElement.querySelectorAll('.line-clamp-2, .line-clamp-3');
+    console.log('Found truncated elements:', truncatedElements.length);
     truncatedElements.forEach(el => {
         el.classList.remove('line-clamp-2', 'line-clamp-3');
         el.classList.add('expanded-content');
@@ -46,7 +59,10 @@ function expandCard(cardElement, cardId, cardType) {
     // Show expanded details
     const expandedDetails = cardElement.querySelector('.expanded-details');
     if (expandedDetails) {
+        console.log('Found expanded details, removing hidden class');
         expandedDetails.classList.remove('hidden');
+    } else {
+        console.log('No expanded details found');
     }
     
     // Add action buttons if not already present
@@ -147,12 +163,12 @@ function createActionButtons(cardId, cardType) {
         
         // Create container for edit/delete buttons
         const editDeleteContainer = document.createElement('div');
-        editDeleteContainer.className = 'flex items-center gap-2';
+        editDeleteContainer.className = 'flex gap-1';
         
         // Edit button (icon only)
         const editBtn = document.createElement('button');
-        editBtn.className = 'flex items-center justify-center w-8 h-8 bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 rounded transition-colors duration-200';
-        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+        editBtn.className = 'w-6 h-6 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm';
+        editBtn.innerHTML = '<i class="fas fa-pencil-alt text-xs"></i>';
         editBtn.title = 'Edit';
         editBtn.onclick = (e) => {
             e.stopPropagation();
@@ -161,8 +177,8 @@ function createActionButtons(cardId, cardType) {
         
         // Delete button (icon only)
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'flex items-center justify-center w-8 h-8 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 rounded transition-colors duration-200';
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        deleteBtn.className = 'w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm';
+        deleteBtn.innerHTML = '<i class="fas fa-trash text-xs"></i>';
         deleteBtn.title = 'Delete';
         deleteBtn.onclick = (e) => {
             e.stopPropagation();
@@ -177,12 +193,12 @@ function createActionButtons(cardId, cardType) {
         const spacer = document.createElement('div');
         
         const editDeleteContainer = document.createElement('div');
-        editDeleteContainer.className = 'flex items-center gap-2';
+        editDeleteContainer.className = 'flex gap-1';
         
         // Edit button (icon only)
         const editBtn = document.createElement('button');
-        editBtn.className = 'flex items-center justify-center w-8 h-8 bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 rounded transition-colors duration-200';
-        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+        editBtn.className = 'w-6 h-6 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm';
+        editBtn.innerHTML = '<i class="fas fa-pencil-alt text-xs"></i>';
         editBtn.title = 'Edit';
         editBtn.onclick = (e) => {
             e.stopPropagation();
@@ -191,8 +207,8 @@ function createActionButtons(cardId, cardType) {
         
         // Delete button (icon only)
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'flex items-center justify-center w-8 h-8 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 rounded transition-colors duration-200';
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        deleteBtn.className = 'w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm';
+        deleteBtn.innerHTML = '<i class="fas fa-trash text-xs"></i>';
         deleteBtn.title = 'Delete';
         deleteBtn.onclick = (e) => {
             e.stopPropagation();
@@ -311,11 +327,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add click handlers to all entry cards
     const cards = document.querySelectorAll('[data-card-id]');
+    console.log('Found cards:', cards.length);
     cards.forEach(card => {
+        console.log('Setting up card:', card.dataset.cardId, card.dataset.cardType);
         card.style.cursor = 'pointer';
         card.addEventListener('click', function(e) {
+            console.log('Card clicked:', this.dataset.cardId);
             // Don't expand if clicking on action buttons
-            if (e.target.closest('.card-actions')) return;
+            if (e.target.closest('.card-actions')) {
+                console.log('Clicked on action buttons, ignoring');
+                return;
+            }
             
             toggleCardExpansion(this);
         });

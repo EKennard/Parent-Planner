@@ -259,7 +259,7 @@ def add_child(request):
 @login_required 
 def onboarding_decision(request, child_id):
     """
-    Decision dialog: Add another child or continue to dashboard
+    Decision dialogue: Add another child or continue to dashboard
     """
     parent = get_parent_or_redirect(request)
     if not parent:

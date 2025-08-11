@@ -1,5 +1,5 @@
 <!-- Events Section Component -->
-<div class="bg-white shadow-lg h-full flex flex-col relative" style="border: 2px solid #7c3aed;">
+<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #7c3aed;">
     <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #7c3aed;">
         <div class="flex items-center justify-between">
             <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Events</h3>
@@ -76,24 +76,20 @@
                                 
                                 <!-- All other fields in expanded view only -->
                                 <div class="hidden expanded-details">
+                                    <!-- Category and Location tags - In expanded view -->
+                                    <div class="flex flex-wrap gap-1 mb-3">
+                                        {% if entry.location %}
+                                            <span class="bg-violet-100 text-violet-700 px-2 py-0.5 text-xs rounded">{{ entry.location }}</span>
+                                        {% endif %}
+                                        {% if entry.category and entry.category != 'none' %}
+                                            <span class="bg-violet-100 text-violet-700 px-2 py-0.5 text-xs rounded">{{ entry.get_category_display }}</span>
+                                        {% endif %}
+                                    </div>
+                                    
                                     {% if entry.description %}
                                         <div class="mb-2">
                                             <span class="font-medium text-gray-700">Description:</span>
                                             <p class="ml-1">{{ entry.description }}</p>
-                                        </div>
-                                    {% endif %}
-                                    
-                                    {% if entry.location %}
-                                        <div class="mb-2">
-                                            <span class="font-medium text-gray-700">Location:</span>
-                                            <span class="ml-1">{{ entry.location }}</span>
-                                        </div>
-                                    {% endif %}
-                                    
-                                    {% if entry.category and entry.category != 'none' %}
-                                        <div class="mb-2">
-                                            <span class="font-medium text-gray-700">Category:</span>
-                                            <span class="ml-1 bg-violet-100 text-violet-700 px-2 py-0.5 text-xs rounded">{{ entry.get_category_display }}</span>
                                         </div>
                                     {% endif %}
                                     

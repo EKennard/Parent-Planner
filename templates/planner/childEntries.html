@@ -3,80 +3,154 @@
 {% block title %}{{ child.name }}'s Profile - ParentPlanner{% endblock %}
 
 {% block extra_head %}
-<!-- Optimized dashboard assets -->
+<!-- Optimised dashboard assets -->
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 <link rel="stylesheet" href="{% static 'css/dashboard-scroll.css' %}">
-<script src="{% static 'js/clean-swipe.js' %}" defer></script>
+<script src="{% static 'js/clean-swipe.js' %}?v=1" defer></script>
+<script src="{% static 'js/expandable-cards.js' %}?v=2" defer></script>
 
 <style>
-.force-visible {
-    display: block !important;
-    visibility: visible !important;
-}
+    .force-visible {
+        display: block !important;
+        visibility: visible !important;
+    }
+
+    /* Desktop layout height constraints */
+    @media (min-width: 1024px) {
+        .dashboard-section {
+            max-height: calc(100vh - 80px);
+            overflow: hidden;
+        }
+
+        .dashboard-section .flex-1 {
+            max-height: calc(100% - 80px);
+            overflow-y: auto;
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .dashboard-section {
+            max-height: calc(100vh - 60px);
+        }
+
+        .dashboard-section .flex-1 {
+            max-height: calc(100% - 70px);
+        }
+    }
+
+    /* Line clamp utilities for expandable cards */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .line-clamp-none {
+        display: block !important;
+        -webkit-line-clamp: unset !important;
+        line-clamp: unset !important;
+        -webkit-box-orient: unset !important;
+        overflow: visible !important;
+    }
 </style>
 
 <script>
-function toggleEntryDetails(card) {
-    const details = card.querySelector('.entry-details');
-    if (details) details.classList.toggle('hidden');
-}
+    function toggleEntryDetails(card) {
+        const details = card.querySelector('.entry-details');
+        if (details) details.classList.toggle('hidden');
+    }
 
-function toggleNoteDetails(card) {
-    const details = card.querySelector('.note-details');
-    if (details) details.classList.toggle('hidden');
-}
+    function toggleNoteDetails(card) {
+        const details = card.querySelector('.note-details');
+        if (details) details.classList.toggle('hidden');
+    }
 
-function collapseAllEntries() {
-    document.querySelectorAll('.entry-details').forEach(d => d.classList.add('hidden'));
-}
+    function collapseAllEntries() {
+        document.querySelectorAll('.entry-details').forEach(d => d.classList.add('hidden'));
+    }
 
-function collapseAllNotes() {
-    document.querySelectorAll('.note-details').forEach(d => d.classList.add('hidden'));
-}
+    function collapseAllNotes() {
+        document.querySelectorAll('.note-details').forEach(d => d.classList.add('hidden'));
+    }
 
-// Modal functions for adding entries
-function openAddEventModal(childId) {
-    // Redirect to dashboard with the modal open
-    // Since child entries page doesn't have the modal, redirect to main dashboard
-    window.location.href = '/dashboard/?open=addEvent&child=' + (childId || '');
-}
+    // Modal functions for adding entries
+    function openAddEventModal(childId) {
+        // Redirect to dashboard with the modal open
+        // Since child entries page doesn't have the modal, redirect to main dashboard
+        window.location.href = '/dashboard/?open=addEvent&child=' + (childId || '');
+    }
 
-function openAddTaskModal(childId) {
-    // Redirect to dashboard with the modal open
-    // Since child entries page doesn't have the modal, redirect to main dashboard
-    window.location.href = '/dashboard/?open=addTask&child=' + (childId || '');
-}
+    function openAddTaskModal(childId) {
+        // Redirect to dashboard with the modal open
+        // Since child entries page doesn't have the modal, redirect to main dashboard
+        window.location.href = '/dashboard/?open=addTask&child=' + (childId || '');
+    }
 
-function openAddNoteModal() {
-    // Redirect to dashboard with the modal open
-    window.location.href = '/dashboard/?open=addNote';
-}
+    function openAddNoteModal() {
+        // Redirect to dashboard with the modal open
+        window.location.href = '/dashboard/?open=addNote';
+    }
+
+    function deleteChildConfirm(childId, childName) {
+        if (confirm(`Are you sure you want to delete ${childName}? This action cannot be undone and will also delete all associated entries and notes.`)) {
+            const deleteForm = document.createElement('form');
+            deleteForm.method = 'post';
+            deleteForm.action = '/delete_child/' + childId + '/';
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+
+            deleteForm.appendChild(csrfToken);
+            document.body.appendChild(deleteForm);
+            deleteForm.submit();
+        }
+    }
+
+    function openEditChildModal(childId, childData) {
+        // Redirect to dashboard with edit modal
+        window.location.href = '/dashboard/?edit_child=' + childId;
+    }
 </script>
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-container min-h-screen bg-gray-100 relative">
+<div class="bg-gray-50 pb-4">
     {% if messages %}
-        <div class="mb-3 sm:mb-6">
-            {% for message in messages %}
-                <div class="mb-2 p-2 sm:p-4 border-l-4 text-sm sm:text-base {% if message.tags == 'success' %}bg-green-50 text-green-700 border-green-500{% elif message.tags == 'error' %}bg-red-50 text-red-700 border-red-500{% else %}bg-blue-50 text-blue-700 border-blue-500{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+    <div class="mb-3 sm:mb-6">
+        {% for message in messages %}
+        <div
+            class="mb-2 p-2 sm:p-4 border-l-4 text-sm sm:text-base {% if message.tags == 'success' %}bg-green-50 text-green-700 border-green-500{% elif message.tags == 'error' %}bg-red-50 text-red-700 border-red-500{% else %}bg-blue-50 text-blue-700 border-blue-500{% endif %}">
+            {{ message }}
         </div>
+        {% endfor %}
+    </div>
     {% endif %}
 
     <!-- Child Profile Header -->
     <div class="w-full bg-white shadow-sm border-b border-gray-200 px-4 py-4">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="w-full flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-12 h-12 border-2 border-primary flex items-center justify-center text-white font-normal text-lg tracking-wide" style="background-color: {{ child.colour }};">
+                <div class="w-12 h-12 border-2 border-primary flex items-center justify-center text-white font-normal text-lg tracking-wide"
+                    style="background-color: {{ child.colour }};">
                     {{ child.name|first|upper }}
                 </div>
                 <div>
                     <h1 class="text-xl font-medium text-gray-900">{{ child.name }}'s Profile</h1>
-                    <p class="text-sm text-gray-600">{{ tasks.count }} tasks • {{ events.count }} events • {{ notes.count }} notes</p>
+                    <p class="text-sm text-gray-600">{{ tasks.count }} tasks • {{ events.count }} events • {{
+                        notes.count }} notes</p>
                 </div>
             </div>
             <a href="{% url 'dashboard' %}" class="text-primary hover:text-primary-dark font-medium">
@@ -86,64 +160,85 @@ function openAddNoteModal() {
     </div>
 
     <!-- Dashboard with Child Data -->
-    <div class="w-full px-4 py-6">
+    <div class="w-full px-4 py-6 lg:py-2 lg:h-screen lg:flex lg:flex-col xl:h-screen xl:overflow-hidden">
         <!-- Mobile Swipe Navigation (mobile only) -->
         <div class="w-full max-w-7xl mx-auto block lg:hidden">
             <!-- Mobile Navigation Indicators -->
             <div class="flex justify-center mb-4 space-x-2">
-                <button class="nav-indicator w-3 h-3 rounded-full bg-primary transition-colors duration-200" data-section="0"></button>
-                <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" data-section="1"></button>
-                <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" data-section="2"></button>
-                <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" data-section="3"></button>
+                <button class="nav-indicator w-3 h-3 rounded-full bg-primary transition-colors duration-200"
+                    data-section="0"></button>
+                <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200"
+                    data-section="1"></button>
+                <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200"
+                    data-section="2"></button>
+                <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200"
+                    data-section="3"></button>
             </div>
-            
+
             <!-- Swipeable Container -->
             <div id="swipeContainer" class="relative overflow-hidden h-[500px]">
-                <div id="swipeContent" class="flex transition-transform duration-300 ease-out" style="transform: translateX(0%);">
+                <div id="swipeContent" class="flex transition-transform duration-300 ease-out"
+                    style="transform: translateX(0%);">
                     <!-- Child Profile Section -->
                     <div class="w-full h-[500px] flex-shrink-0 px-2">
-                        <div class="bg-white shadow-lg h-full flex flex-col relative" style="border: 2px solid #4F46E5;">
-                            <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #4F46E5;">
-                                <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Profile Details</h3>
+                        <div class="bg-white shadow-lg h-full flex flex-col relative"
+                            style="border: 2px solid #4F46E5;">
+                            <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0"
+                                style="border-bottom: 2px solid #4F46E5;">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Profile
+                                        Details</h3>
+                                    <div class="flex gap-1 flex-shrink-0">
+                                        <a href="{% url 'edit_child' child.id %}" class="w-6 h-6 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Child">
+                                            <i class="fas fa-pencil-alt text-xs"></i>
+                                        </a>
+                                        <button onclick="deleteChildConfirm({{ child.id }}, '{{ child.name|addslashes }}')" class="w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Delete Child">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-blue-50 to-indigo-50">
-                                <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 border-l-4 border-blue-500">
+                            <div
+                                class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-blue-50 to-indigo-50">
+                                <div
+                                    class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 border-l-4 border-blue-500">
                                     <div class="text-center mb-4">
-                                        <div class="w-20 h-20 mx-auto border-2 border-blue-500 flex items-center justify-center text-white font-normal text-2xl tracking-wide mb-3" style="background-color: {{ child.colour }};">
+                                        <div class="w-20 h-20 mx-auto border-2 border-blue-500 flex items-center justify-center text-white font-normal text-2xl tracking-wide mb-3"
+                                            style="background-color: {{ child.colour }};">
                                             {{ child.name|first|upper }}
                                         </div>
                                         <h4 class="font-medium text-gray-900 text-lg">{{ child.name }}</h4>
                                         {% if child.birth_date %}
-                                            <p class="text-sm text-gray-600">Born {{ child.birth_date|date:"M j, Y" }}</p>
+                                        <p class="text-sm text-gray-600">Born {{ child.birth_date|date:"M j, Y" }}</p>
                                         {% endif %}
                                     </div>
-                                    
+
                                     {% if child.school or child.year or child.class_name %}
-                                        <div class="border-t pt-4 mb-4">
-                                            <h3 class="text-sm font-medium text-gray-900 mb-3">School Info</h3>
-                                            <div class="space-y-2">
-                                                {% if child.school %}
-                                                    <p class="flex items-center gap-2 text-sm text-gray-600">
-                                                        <i class="fas fa-school text-blue-600"></i>
-                                                        {{ child.school }}
-                                                    </p>
-                                                {% endif %}
-                                                {% if child.year %}
-                                                    <p class="flex items-center gap-2 text-sm text-gray-600">
-                                                        <i class="fas fa-calendar text-blue-600"></i>
-                                                        Year {{ child.year }}
-                                                    </p>
-                                                {% endif %}
-                                                {% if child.class_name %}
-                                                    <p class="flex items-center gap-2 text-sm text-gray-600">
-                                                        <i class="fas fa-users text-blue-600"></i>
-                                                        {{ child.class_name }}
-                                                    </p>
-                                                {% endif %}
-                                            </div>
+                                    <div class="border-t pt-4 mb-4">
+                                        <h3 class="text-sm font-medium text-gray-900 mb-3">School Info</h3>
+                                        <div class="space-y-2">
+                                            {% if child.school %}
+                                            <p class="flex items-center gap-2 text-sm text-gray-600">
+                                                <i class="fas fa-school text-blue-600"></i>
+                                                {{ child.school }}
+                                            </p>
+                                            {% endif %}
+                                            {% if child.year %}
+                                            <p class="flex items-center gap-2 text-sm text-gray-600">
+                                                <i class="fas fa-calendar text-blue-600"></i>
+                                                Year {{ child.year }}
+                                            </p>
+                                            {% endif %}
+                                            {% if child.class_name %}
+                                            <p class="flex items-center gap-2 text-sm text-gray-600">
+                                                <i class="fas fa-users text-blue-600"></i>
+                                                {{ child.class_name }}
+                                            </p>
+                                            {% endif %}
                                         </div>
+                                    </div>
                                     {% endif %}
-                                    
+
                                     <div class="border-t pt-4">
                                         <h3 class="text-sm font-medium text-gray-900 mb-3">Activity Summary</h3>
                                         <div class="space-y-2">
@@ -185,51 +280,71 @@ function openAddNoteModal() {
         </div>
 
         <!-- Desktop Grid (original layout) -->
-        <div class="w-full max-w-7xl mx-auto hidden lg:grid grid-cols-4 gap-3 lg:gap-6 min-h-[500px]">
+        <div
+            class="w-full px-4 hidden lg:grid grid-cols-4 gap-3 lg:gap-6 lg:flex-1 lg:min-h-0 lg:max-h-[calc(100vh-80px)] xl:max-h-[calc(100vh-60px)] lg:overflow-hidden">
             <!-- Child Profile Section -->
-            <div class="w-full h-[500px] lg:h-[600px]">
-                <div class="bg-white shadow-lg h-full flex flex-col relative" style="border: 2px solid #4F46E5;">
-                    <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #4F46E5;">
-                        <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Profile Details</h3>
+            <div class="w-full h-full min-h-0 max-h-full">
+                <div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section"
+                    style="border: 2px solid #4F46E5;">
+                    <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0"
+                        style="border-bottom: 2px solid #4F46E5;">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Profile Details</h3>
+                            <div class="flex gap-1 flex-shrink-0">
+                                <a href="{% url 'edit_child' child.id %}" class="w-6 h-6 bg-gray-600 hover:bg-gray-700 text-white border border-gray-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Edit Child">
+                                    <i class="fas fa-pencil-alt text-xs"></i>
+                                </a>
+                                <button onclick="deleteChildConfirm({{ child.id }}, '{{ child.name|addslashes }}')" class="w-6 h-6 bg-red-600 hover:bg-red-700 text-white border border-red-800 flex items-center justify-center transition-all duration-200 rounded-sm" title="Delete Child">
+                                    <i class="fas fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+
+
+
                     </div>
-                    <div class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-blue-50 to-indigo-50">
-                        <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 border-l-4 border-blue-500">
+                    <div
+                        class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-blue-50 to-indigo-50">
+                        <div
+                            class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 border-l-4 border-blue-500">
                             <div class="text-center mb-6">
-                                <div class="w-24 h-24 mx-auto border-2 border-blue-500 flex items-center justify-center text-white font-normal text-2xl tracking-wide mb-4" style="background-color: {{ child.colour }};">
+                                <div class="w-24 h-24 mx-auto border-2 border-blue-500 flex items-center justify-center text-white font-normal text-2xl tracking-wide mb-4"
+                                    style="background-color: {{ child.colour }};">
                                     {{ child.name|first|upper }}
                                 </div>
                                 <h4 class="font-medium text-gray-900 text-xl mb-2">{{ child.name }}</h4>
                                 {% if child.birth_date %}
-                                    <p class="text-sm text-gray-600">Born {{ child.birth_date|date:"M j, Y" }}</p>
+                                <p class="text-sm text-gray-600">Born {{ child.birth_date|date:"M j, Y" }}</p>
                                 {% endif %}
                             </div>
-                            
+
                             {% if child.school or child.year or child.class_name %}
-                                <div class="border-t pt-4 mb-6">
-                                    <h3 class="text-sm font-medium text-gray-900 mb-3">School Info</h3>
-                                    <div class="space-y-3">
-                                        {% if child.school %}
-                                            <p class="flex items-center gap-2 text-sm text-gray-600">
-                                                <i class="fas fa-school text-blue-600"></i>
-                                                {{ child.school }}
-                                            </p>
-                                        {% endif %}
-                                        {% if child.year %}
-                                            <p class="flex items-center gap-2 text-sm text-gray-600">
-                                                <i class="fas fa-calendar text-blue-600"></i>
-                                                Year {{ child.year }}
-                                            </p>
-                                        {% endif %}
-                                        {% if child.class_name %}
-                                            <p class="flex items-center gap-2 text-sm text-gray-600">
-                                                <i class="fas fa-users text-blue-600"></i>
-                                                {{ child.class_name }}
-                                            </p>
-                                        {% endif %}
-                                    </div>
+                            <div class="border-t pt-4 mb-6">
+                                <h3 class="text-sm font-medium text-gray-900 mb-3">School Info</h3>
+                                <div class="space-y-3">
+                                    {% if child.school %}
+                                    <p class="flex items-center gap-2 text-sm text-gray-600">
+                                        <i class="fas fa-school text-blue-600"></i>
+                                        {{ child.school }}
+                                    </p>
+                                    {% endif %}
+                                    {% if child.year %}
+                                    <p class="flex items-center gap-2 text-sm text-gray-600">
+                                        <i class="fas fa-calendar text-blue-600"></i>
+                                        Year {{ child.year }}
+                                    </p>
+                                    {% endif %}
+                                    {% if child.class_name %}
+                                    <p class="flex items-center gap-2 text-sm text-gray-600">
+                                        <i class="fas fa-users text-blue-600"></i>
+                                        {{ child.class_name }}
+                                    </p>
+                                    {% endif %}
                                 </div>
+                            </div>
                             {% endif %}
-                            
+
                             <div class="border-t pt-4">
                                 <h3 class="text-sm font-medium text-gray-900 mb-3">Activity Summary</h3>
                                 <div class="space-y-3">
@@ -253,21 +368,20 @@ function openAddNoteModal() {
             </div>
 
             <!-- Timeline Section (Events) -->
-            <div class="w-full h-[500px] lg:h-[600px]">
+            <div class="w-full h-full min-h-0 max-h-full">
                 {% include 'components/timeline_section.html' with entries=events selected_child=child %}
             </div>
 
             <!-- Tasks Section -->
-            <div class="w-full h-[500px] lg:h-[600px]">
+            <div class="w-full h-full min-h-0 max-h-full">
                 {% include 'components/tasks_section.html' with tasks=tasks selected_child=child %}
             </div>
 
             <!-- Notes Section -->
-            <div class="w-full h-[500px] lg:h-[600px]">
+            <div class="w-full h-full min-h-0 max-h-full">
                 {% include 'components/notes_section.html' with notes=notes selected_child=child %}
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

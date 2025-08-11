@@ -15,7 +15,7 @@ class Category(models.Model):
 
 class Child(models.Model):
     
-    # Predefined color choices for children
+    # Predefined colour choices for children
     COLOR_CHOICES = [
         ('#FF6B6B', 'Coral Red'),
         ('#4ECDC4', 'Turquoise'),
@@ -35,7 +35,7 @@ class Child(models.Model):
     school = models.CharField(max_length=100, blank=True)
     year = models.CharField(max_length=20, blank=True)
     class_name = models.CharField(max_length=50, blank=True)
-    colour = models.CharField(max_length=7, choices=COLOR_CHOICES, default='#FF6B6B', blank=True)  # hex color code
+    colour = models.CharField(max_length=7, choices=COLOR_CHOICES, default='#FF6B6B', blank=True)  # hex colour code
     
     def __str__(self):
         return self.name

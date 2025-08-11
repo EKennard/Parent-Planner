@@ -13,7 +13,7 @@ urlpatterns = [
     path('add-child/', views.add_child, name='add_child'),
     path('add-entry/', views.add_entry, name='add_entry'),
     
-    # Decision dialog for onboarding
+    # Decision dialogue for onboarding
     path('onboarding-decision/<int:child_id>/', views.onboarding_decision, name='onboarding_decision'),
     
     path('edit-child/<int:child_id>/', views.edit_child, name='edit_child'),
