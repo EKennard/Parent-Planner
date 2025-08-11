@@ -43,23 +43,23 @@ The application features a comprehensive email-based user registration and login
 The navigation system includes a responsive navigation bar that seamlessly adapts between mobile and desktop screen sizes. Users are welcomed with a personalised message displaying their logged-in username, alongside quick access links to the Dashboard and Logout functionality. Mobile users enjoy an optimised hamburger menu designed specifically for smaller screens, all supported by a clean and intuitive navigation structure that makes moving through the application effortless.
 
 #### **Dashboard**
-The dashboard presents a centralised four-section layout that elegantly displays Children, Events, Tasks, and Notes in an organised manner. Real-time content updates occur without requiring page refreshes, while the responsive grid system intelligently adapts from a mobile stack layout to a desktop four-column arrangement. Each section features distinct colour coding for easy visual identification, with individual section scrolling capabilities when content exceeds the viewport height. Interactive task completion provides instant visual feedback, while chronological event sorting ensures upcoming activities appear first. The dashboard is completed with a professional footer containing copyright and branding information.
+The dashboard presents a centralised four-section layout that displays Children, Events, Tasks, and Notes in an organised manner. Real-time content updates occur without requiring page refreshes, while the responsive grid system adapts from a mobile stack layout to a desktop four-column arrangement. Each section features colour coding for easy visual identification, with individual section scrolling capabilities when content exceeds the viewport height. Interactive task completion provides visual feedback, while chronological event sorting ensures upcoming activities appear first. The dashboard is completed with a professional footer containing copyright and branding information.
 
 #### **Child Management**
-Parents can create comprehensive individual child profiles that include personalised information and unique colour assignments for easy visual identification throughout the application. The system allows for detailed school information recording, including school names and year groups, with the flexibility to edit and update child profiles as information changes over time. Child-specific activity filtering and viewing capabilities enable focused management, while visual child cards display essential information including initials, names, school details, and year information in an accessible format.
+Parents can create individual child profiles that include personalised information and unique colour assignments for easy visual identification throughout the application. The system allows for detailed school information recording, including school names and year groups, with the flexibility to edit and update child profiles as information changes over time. Child-specific activity filtering and viewing capabilities enable focused management, while visual child cards display essential information including initials, names, school details, and year information in an accessible format.
 
 #### **Entry System**
-The application supports three distinct entry types: Events, Tasks, and Notes, each designed for specific family management needs. A smart categorisation system organises activities into School, Sports, Health, and Entertainment categories for efficient organisation. Event management includes separate start and end time tracking, while task management incorporates due dates and priority levels ranging from High to Medium to Low importance. Note-taking functionality provides a space for general family information and reminders, with rich text support enabling detailed descriptions across all entry types.
-
-#### **Calendar View**
-The calendar view functionality is currently under active development for future release, with plans for a comprehensive monthly calendar view that will display activities visually. Individual child calendar pages are planned to provide focused scheduling capabilities, allowing parents to manage each child's commitments separately while maintaining an overview of the entire family schedule.
+The application supports three distinct entry types: Events, Tasks, and Notes, each designed for specific family management needs. A smart categorisation system organises activities into School, Sports, Health, and Entertainment categories for efficient organisation. Event management includes separate start and end time tracking, while task management incorporates due dates and priority levels ranging from High to Low importance. Note-taking functionality provides a space for general family information and reminders, and descriptions across all entry types.
 
 #### **Entry Management**
-Complete CRUD operations (Create, Read, Update, Delete) are available for all entry types, ensuring full data management capabilities. Users can edit existing entries using pre-populated forms that maintain data integrity, while unwanted entries can be deleted with appropriate confirmation prompts. Task completion features include a toggle system with immediate visual feedback, automatic reordering of completed tasks for better organization, and child-specific entry filtering that enables focused management of individual children's activities.
+Complete CRUD operations are available for all entry types, ensuring full data management capabilities. Users can edit existing entries using pre-populated forms that maintain data integrity, while unwanted entries can be deleted with appropriate confirmation prompts. Task completion features include a toggle system with immediate visual feedback, automatic reordering of completed tasks for better organization, and child-specific entry filtering that enables focused management of individual children's activities.
 
 #### **Responsive Design**
 The application employs a mobile-first design approach that has been specifically optimized for smartphone usage while scaling beautifully to larger devices. Tablet users enjoy a touch-optimized interface that takes advantage of the larger screen real estate, while desktop users benefit from an enhanced four-column grid layout that maximizes productivity. The flexible layout system adapts seamlessly to any screen size, ensuring a consistent user experience across all devices with touch-friendly buttons and interactive elements that work equally well with finger taps or mouse clicks.
 ### Future Features
+#### **Calendar View**
+The calendar view functionality has not yet been implemented, but is still intended to be a part of the project, with plans for a comprehensive monthly calendar view that will display activities visually. Individual child calendar pages are planned to provide focused scheduling capabilities, allowing parents to manage each child's commitments separately while maintaining an overview of the entire family schedule.
+
 #### **Enhanced Child Profiles**
 Future development will expand child profiles to include comprehensive personal information such as photos and detailed personal characteristics. The system will incorporate medical information tracking capabilities for allergies, medications, and emergency contact details to ensure child safety and proper care coordination. Academic progress monitoring features will track grades and teacher information, while activity history and achievement tracking will provide parents with a complete picture of their child's development. Additional features will include growth charts and milestone recording capabilities, with planned integration to school systems for automatic updates that keep information current without manual data entry.
 
@@ -117,7 +117,8 @@ The production environment implements comprehensive security measures including 
 #### **Framework and Backend**
 - **Django Framework**
 - **Django Authentication**
-- **SQLite Database**
+- **PostgreSQL Database** (Production)
+- **SQLite Database** (Development)
 - **Python**
 #### **Frontend Technologies**
 - **Tailwind CSS**
