@@ -1,0 +1,58 @@
+<!-- Task Card Component -->
+<div class="bg-white border-l-4 p-4 hover:bg-gray-50 transition-all duration-200 task-card shadow-sm" 
+     data-card-id="{{ task.id }}" 
+     data-child-id="{{ task.child.id }}"
+     data-card-type="task"
+     data-completed="{{ task.is_completed|yesno:'true,false' }}"
+     style="border-left-color: {{ task.child.colour }};"
+     tabindex="0">
+    <div class="flex items-start gap-3">
+        <!-- Child Initial Circle -->
+        <div class="w-10 h-10 border-2 flex items-center justify-center text-white font-medium text-sm flex-shrink-0"
+             style="background-color: {{ task.child.colour }}; border-color: {{ task.child.colour }};">
+            {{ task.child.name|first|upper }}
+        </div>
+        
+        <!-- Task Content -->
+        <div class="flex-1 min-w-0 card-content">
+            <div class="flex items-center justify-between mb-2">
+                <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
+                {% if task.is_completed %}
+                    <span class="bg-green-100 text-green-700 px-2 py-1 text-xs rounded-sm">✓ Completed</span>
+                {% else %}
+                    <span class="bg-gray-100 text-gray-700 px-2 py-1 text-xs rounded-sm">Pending</span>
+                {% endif %}
+            </div>
+            
+            <!-- Always visible summary info -->
+            <div class="flex flex-wrap gap-1 mb-2">
+                {% if task.due_date %}
+                    <span class="bg-amber-100 text-amber-700 px-2 py-1 text-xs rounded-sm">Due: {{ task.due_date|date:"M j, Y" }}</span>
+                {% endif %}
+                {% if task.priority and task.priority != 'medium' %}
+                    {% if task.priority == 'high' %}
+                        <span class="bg-red-100 text-red-700 px-2 py-1 text-xs rounded-sm">High Priority</span>
+                    {% elif task.priority == 'low' %}
+                        <span class="bg-blue-100 text-blue-700 px-2 py-1 text-xs rounded-sm">Low Priority</span>
+                    {% endif %}
+                {% endif %}
+                {% if task.category and task.category != 'none' %}
+                    <span class="bg-indigo-100 text-indigo-700 px-2 py-1 text-xs rounded-sm">{{ task.get_category_display }}</span>
+                {% endif %}
+            </div>
+            
+            <!-- Always show description if available -->
+            {% if task.description %}
+                <div class="mb-2">
+                    <span class="font-medium text-gray-700 text-sm">Description:</span>
+                    <p class="text-gray-600 text-sm mt-1">{{ task.description }}</p>
+                </div>
+            {% endif %}
+            
+            <!-- Show created date -->
+            <div class="flex items-center justify-between mt-2">
+                <p class="text-xs text-gray-500">Created: {{ task.created_at|date:"M j, Y g:i A" }}</p>
+            </div>
+        </div>
+    </div>
+</div>

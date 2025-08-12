@@ -1,16 +1,5 @@
 <!-- Entry Card Component -->
-<div         <!-- Action Buttons -->
-        <div class="flex gap-1 flex-shrink-0">
-            <a href="{% url 'edit_entry' entry.id %}{% if request.resolver_match.url_name == 'dashboard' %}?next=dashboard{% endif %}" class="btn-edit" title="Edit Entry">
-                <i class="fas fa-pencil-alt text-xs"></i>
-            </a>
-            <form method="post" action="{% url 'delete_entry' entry.id %}" style="display: inline;" onsubmit="return confirm('Delete this {{ entry.get_entry_type_display|lower }}?')">
-                {% csrf_token %}
-                <button type="submit" class="btn-delete" title="Delete Entry">
-                    <i class="fas fa-trash text-xs"></i>
-                </button>
-            </form>
-        </div>ite border-l-4 p-4 hover:bg-gray-50 transition-all duration-200 entry-card shadow-sm" 
+<div class="bg-white border-l-4 p-4 hover:bg-gray-50 transition-all duration-200 entry-card shadow-sm" 
      data-entry-type="{{ entry.entry_type }}" 
      data-child-id="{{ entry.child.id }}"
      style="border-left-color: {{ entry.child.colour }};">
@@ -24,21 +13,59 @@
         <!-- Entry Content -->
         <div class="flex-1 min-w-0">
             <h4 class="font-medium text-gray-900 mb-2">{{ entry.title }}</h4>
+            
+            <!-- Tags and info -->
             <div class="flex flex-wrap gap-1 mb-2">
                 {% if entry.entry_type == 'task' and entry.priority %}
                     <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">{{ entry.get_priority_display }}</span>
                 {% elif entry.entry_type == 'event' and entry.location %}
-                    <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">{{ entry.location }}</span>
+                    <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">📍 {{ entry.location }}</span>
                 {% endif %}
                 {% if entry.category and entry.category != 'none' %}
                     <span class="bg-gray-200 text-gray-700 px-2 py-1 text-xs rounded-sm">{{ entry.get_category_display }}</span>
                 {% endif %}
+                {% if entry.entry_type == 'task' and entry.is_completed %}
+                    <span class="bg-green-100 text-green-700 px-2 py-1 text-xs rounded-sm">✓ Completed</span>
+                {% elif entry.entry_type == 'task' and not entry.is_completed %}
+                    <span class="bg-gray-100 text-gray-700 px-2 py-1 text-xs rounded-sm">Pending</span>
+                {% endif %}
             </div>
+            
+            <!-- Always show description if available -->
             {% if entry.description %}
-                <p class="text-gray-700 text-sm mb-2">{{ entry.description }}</p>
+                <div class="mb-2">
+                    <span class="font-medium text-gray-700 text-sm">Description:</span>
+                    <p class="text-gray-600 text-sm mt-1">{{ entry.description }}</p>
+                </div>
             {% endif %}
-            <div class="flex items-center justify-between">
-                <p class="text-xs text-gray-500">{{ entry.created_at|date:"M j, Y g:i A" }}</p>
+            
+            <!-- Show additional details based on entry type -->
+            {% if entry.entry_type == 'task' and entry.due_date %}
+                <div class="mb-2">
+                    <span class="font-medium text-gray-700 text-sm">Due Date:</span>
+                    <p class="text-gray-600 text-sm">{{ entry.due_date|date:"M j, Y" }}</p>
+                </div>
+            {% endif %}
+            
+            {% if entry.entry_type == 'event' %}
+                {% if entry.start_time or entry.end_time %}
+                    <div class="mb-2">
+                        <span class="font-medium text-gray-700 text-sm">Time:</span>
+                        <div class="text-sm text-gray-600">
+                            {% if entry.start_time %}
+                                <span>Start: {{ entry.start_time|time:"g:i A" }}</span>
+                            {% endif %}
+                            {% if entry.end_time %}
+                                {% if entry.start_time %} - {% endif %}
+                                <span>End: {{ entry.end_time|time:"g:i A" }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+            
+            <div class="flex items-center justify-between mt-2">
+                <p class="text-xs text-gray-500">Created: {{ entry.created_at|date:"M j, Y g:i A" }}</p>
                 {% if not child %}
                     <span class="font-medium text-xs" style="color: {{ entry.child.colour }};">{{ entry.child.name }}</span>
                 {% endif %}
@@ -50,7 +77,7 @@
             <a href="{% url 'edit_entry' entry.id %}{% if request.resolver_match.url_name == 'dashboard' %}?next=dashboard{% endif %}" class="btn-edit" title="Edit Entry">
                 <i class="fas fa-pencil-alt text-xs"></i>
             </a>
-            <form method="post" action="{% url 'delete_entry' entry.id %}" style="display: inline;" onsubmit="return confirm('Delete this entry?')">
+            <form method="post" action="{% url 'delete_entry' entry.id %}" style="display: inline;" onsubmit="return confirm('Delete this {{ entry.get_entry_type_display|lower }}?')">
                 {% csrf_token %}
                 <button type="submit" class="btn-delete" title="Delete Entry">
                     <i class="fas fa-trash text-xs"></i>
