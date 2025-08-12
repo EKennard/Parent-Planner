@@ -1,13 +1,15 @@
 <!-- Tasks Section Component -->
-<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #d97706;">
+<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #d97706;" role="region" aria-labelledby="tasks-section-heading">
     <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #d97706;">
         <div class="flex items-center justify-between">
-            <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Tasks</h3>
+            <h3 id="tasks-section-heading" class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Tasks</h3>
             <div class="flex items-center gap-2">
                 <!-- Add Task Button (icon only) -->
                 <button onclick="{% if selected_child %}openAddTaskModal({{ selected_child.id }}){% else %}openAddTaskModal(){% endif %}" 
-                        class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 border-2 border-amber-700 text-xs sm:text-sm transition-all duration-200 flex items-center justify-center">
-                    <i class="fas fa-plus text-xs"></i>
+                        class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 border-2 border-amber-700 text-xs sm:text-sm transition-all duration-200 flex items-center justify-center"
+                        aria-label="Add new task"
+                        title="Add new task">
+                    <i class="fas fa-plus text-xs" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
@@ -16,21 +18,27 @@
     <!-- Tasks List -->
     <div id="tasks-section" class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-amber-50 to-yellow-50">
         {% if tasks %}
+            <ul role="list" class="space-y-3">
             {% for task in tasks %}
+                <li>
                 <div class="{% if task.is_completed %}bg-gray-50 task-completed{% else %}bg-white{% endif %} p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 flex items-start gap-3 task-card"
                      style="border-left-color: {{ task.child.colour }};"
                      data-card-id="{{ task.id }}"
                      data-card-type="task"
-                     data-completed="{{ task.is_completed|yesno:'true,false' }}">
+                     data-completed="{{ task.is_completed|yesno:'true,false' }}"
+                     role="article"
+                     aria-labelledby="task-title-{{ task.id }}">
                     <!-- Child Initial Icon -->
-                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-white text-sm font-bold" style="background-color: {{ task.child.colour }};">
+                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-white text-sm font-bold" 
+                         style="background-color: {{ task.child.colour }};"
+                         aria-label="Task for {{ task.child.name }}">
                         {{ task.child.name|first|upper }}
                     </div>
                     
                     <!-- Task Content -->
                     <div class="flex-1 min-w-0 card-content">
                         <div class="flex items-start justify-between mb-2">
-                            <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ task.title }}</h4>
+                            <h4 id="task-title-{{ task.id }}" class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ task.title }}</h4>
                         </div>
                         
                         <!-- Task Details -->
@@ -39,15 +47,18 @@
                             <div class="flex flex-wrap items-center gap-3 text-xs text-gray-500 mb-2">
                                 {% if task.task_due_date %}
                                     <span class="flex items-center gap-1">
-                                        <i class="fas fa-calendar text-amber-600"></i>
-                                        Due: {{ task.task_due_date|date:"M j, Y" }}
-                                        {% if task.task_due_time %}
-                                            at {{ task.task_due_time|time:"g:i A" }}
-                                        {% endif %}
+                                        <i class="fas fa-calendar text-amber-600" aria-hidden="true"></i>
+                                        <span>Due: </span>
+                                        <time datetime="{{ task.task_due_date|date:'Y-m-d' }}{% if task.task_due_time %} {{ task.task_due_time|time:'H:i' }}{% endif %}">
+                                            {{ task.task_due_date|date:"M j, Y" }}
+                                            {% if task.task_due_time %}
+                                                at {{ task.task_due_time|time:"g:i A" }}
+                                            {% endif %}
+                                        </time>
                                     </span>
                                 {% elif task.due_date %}
                                     <span class="flex items-center gap-1">
-                                        <i class="fas fa-calendar text-amber-600"></i>
+                                        <i class="fas fa-calendar text-amber-600" aria-hidden="true"></i>
                                         Due: {{ task.due_date|date:"M j, Y g:i A" }}
                                     </span>
                                 {% endif %}

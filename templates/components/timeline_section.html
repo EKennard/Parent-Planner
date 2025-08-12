@@ -1,13 +1,15 @@
 <!-- Events Section Component -->
-<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #7c3aed;">
+<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #7c3aed;" role="region" aria-labelledby="events-section-heading">
     <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #7c3aed;">
         <div class="flex items-center justify-between">
-            <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Events</h3>
+            <h3 id="events-section-heading" class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Events</h3>
             <div class="flex items-center gap-2">
                 <!-- Add Event Button (icon only) -->
                 <button onclick="{% if selected_child %}openAddEventModal({{ selected_child.id }}){% else %}openAddEventModal(){% endif %}" 
-                        class="bg-violet-600 hover:bg-violet-700 text-white px-3 py-2 border-2 border-violet-700 text-xs sm:text-sm transition-all duration-200 flex items-center justify-center">
-                    <i class="fas fa-plus text-xs"></i>
+                        class="bg-violet-600 hover:bg-violet-700 text-white px-3 py-2 border-2 border-violet-700 text-xs sm:text-sm transition-all duration-200 flex items-center justify-center"
+                        aria-label="Add new event"
+                        title="Add new event">
+                    <i class="fas fa-plus text-xs" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
@@ -16,20 +18,26 @@
     <!-- Events List -->
     <div class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 bg-gradient-to-br from-violet-50 to-purple-50">
         {% if events %}
+            <ul role="list" class="space-y-3">
             {% for entry in events %}
+                <li>
                 <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 flex items-start gap-3"
                      style="border-left-color: {{ entry.child.colour }};"
                      data-card-id="{{ entry.id }}"
-                     data-card-type="event">
+                     data-card-type="event"
+                     role="article"
+                     aria-labelledby="event-title-{{ entry.id }}">
                         <!-- Child Initial Icon -->
-                        <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-white text-sm font-bold" style="background-color: {{ entry.child.colour }};">
+                        <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-white text-sm font-bold" 
+                             style="background-color: {{ entry.child.colour }};"
+                             aria-label="Event for {{ entry.child.name }}">
                             {{ entry.child.name|first|upper }}
                         </div>
                         
                         <!-- Entry Content -->
                         <div class="flex-1 min-w-0 card-content">
                             <div class="flex items-start justify-between mb-2">
-                                <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ entry.title }}</h4>
+                                <h4 id="event-title-{{ entry.id }}" class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ entry.title }}</h4>
                             </div>
                             
                             <!-- Event Details - ALL VISIBLE -->
@@ -38,38 +46,42 @@
                                 <div class="space-y-1 text-xs text-gray-500 mb-2">
                                     {% if entry.event_date %}
                                         <div class="flex items-center gap-1">
-                                            <i class="fas fa-calendar text-violet-600"></i>
+                                            <i class="fas fa-calendar text-violet-600" aria-hidden="true"></i>
                                             <span class="font-medium">Start:</span>
-                                            {{ entry.event_date|date:"M j, Y" }}
-                                            {% if entry.event_start_time %} @ {{ entry.event_start_time|time:"g:i A" }}{% endif %}
+                                            <time datetime="{{ entry.event_date|date:'Y-m-d' }}{% if entry.event_start_time %} {{ entry.event_start_time|time:'H:i' }}{% endif %}">
+                                                {{ entry.event_date|date:"M j, Y" }}
+                                                {% if entry.event_start_time %} @ {{ entry.event_start_time|time:"g:i A" }}{% endif %}
+                                            </time>
                                         </div>
                                     {% endif %}
                                     {% if entry.event_start_time and not entry.event_date %}
                                         <div class="flex items-center gap-1">
-                                            <i class="fas fa-clock text-violet-600"></i>
+                                            <i class="fas fa-clock text-violet-600" aria-hidden="true"></i>
                                             <span class="font-medium">Start:</span>
-                                            {{ entry.event_start_time|time:"g:i A" }}
+                                            <time datetime="{{ entry.event_start_time|time:'H:i' }}">{{ entry.event_start_time|time:"g:i A" }}</time>
                                         </div>
                                     {% endif %}
                                     {% if entry.event_end_time %}
                                         <div class="flex items-center gap-1">
-                                            <i class="fas fa-clock text-violet-600"></i>
+                                            <i class="fas fa-clock text-violet-600" aria-hidden="true"></i>
                                             <span class="font-medium">End:</span>
-                                            {% if entry.event_date %}{{ entry.event_date|date:"M j, Y" }} @ {% endif %}{{ entry.event_end_time|time:"g:i A" }}
+                                            <time datetime="{% if entry.event_date %}{{ entry.event_date|date:'Y-m-d' }} {% endif %}{{ entry.event_end_time|time:'H:i' }}">
+                                                {% if entry.event_date %}{{ entry.event_date|date:"M j, Y" }} @ {% endif %}{{ entry.event_end_time|time:"g:i A" }}
+                                            </time>
                                         </div>
                                     {% endif %}
                                     {% if entry.start_time and not entry.event_start_time %}
                                         <div class="flex items-center gap-1">
-                                            <i class="fas fa-clock text-violet-600"></i>
+                                            <i class="fas fa-clock text-violet-600" aria-hidden="true"></i>
                                             <span class="font-medium">Start:</span>
-                                            {{ entry.start_time|date:"M j, Y @ g:i A" }}
+                                            <time datetime="{{ entry.start_time|date:'Y-m-d H:i' }}">{{ entry.start_time|date:"M j, Y @ g:i A" }}</time>
                                         </div>
                                     {% endif %}
                                     {% if entry.end_time and not entry.event_end_time %}
                                         <div class="flex items-center gap-1">
-                                            <i class="fas fa-clock text-violet-600"></i>
+                                            <i class="fas fa-clock text-violet-600" aria-hidden="true"></i>
                                             <span class="font-medium">End:</span>
-                                            {{ entry.end_time|date:"M j, Y @ g:i A" }}
+                                            <time datetime="{{ entry.end_time|date:'Y-m-d H:i' }}">{{ entry.end_time|date:"M j, Y @ g:i A" }}</time>
                                         </div>
                                     {% endif %}
                                 </div>
@@ -77,10 +89,10 @@
                                 <!-- Category and Location tags - NOW ALWAYS VISIBLE -->
                                 <div class="flex flex-wrap gap-1 mb-3">
                                         {% if entry.location %}
-                                            <span class="bg-violet-100 text-violet-700 px-2 py-0.5 text-xs rounded">{{ entry.location }}</span>
+                                            <span class="bg-violet-100 text-violet-700 px-2 py-0.5 text-xs rounded" aria-label="Location">{{ entry.location }}</span>
                                         {% endif %}
                                         {% if entry.category and entry.category != 'none' %}
-                                            <span class="bg-violet-100 text-violet-700 px-2 py-0.5 text-xs rounded">{{ entry.get_category_display }}</span>
+                                            <span class="bg-violet-100 text-violet-700 px-2 py-0.5 text-xs rounded" aria-label="Category">{{ entry.get_category_display }}</span>
                                         {% endif %}
                                     </div>
                                     
@@ -95,9 +107,9 @@
                                         <div class="mb-2">
                                             <span class="font-medium text-gray-700">Priority:</span>
                                             {% if entry.priority == 'high' %}
-                                                <span class="ml-1 bg-red-100 text-red-700 px-2 py-0.5 text-xs rounded">High Priority</span>
+                                                <span class="ml-1 bg-red-100 text-red-700 px-2 py-0.5 text-xs rounded" aria-label="High priority">High Priority</span>
                                             {% elif entry.priority == 'low' %}
-                                                <span class="ml-1 bg-blue-100 text-blue-700 px-2 py-0.5 text-xs rounded">Low Priority</span>
+                                                <span class="ml-1 bg-blue-100 text-blue-700 px-2 py-0.5 text-xs rounded" aria-label="Low priority">Low Priority</span>
                                             {% endif %}
                                         </div>
                                     {% endif %}
@@ -105,20 +117,28 @@
                                     {% if entry.due_date %}
                                         <div class="mb-2">
                                             <span class="font-medium text-gray-700">Due Date:</span>
-                                            <span class="ml-1">{{ entry.due_date|date:"M j, Y g:i A" }}</span>
+                                            <time class="ml-1" datetime="{{ entry.due_date|date:'Y-m-d H:i' }}">{{ entry.due_date|date:"M j, Y g:i A" }}</time>
                                         </div>
                                     {% endif %}
                                     
                                     {% if entry.is_completed %}
                                         <div class="mb-2">
                                             <span class="font-medium text-gray-700">Status:</span>
-                                            <span class="ml-1 bg-green-100 text-green-700 px-2 py-0.5 text-xs rounded">Completed</span>
+                                            <span class="ml-1 bg-green-100 text-green-700 px-2 py-0.5 text-xs rounded" aria-label="Completed status">Completed</span>
                                         </div>
                                     {% endif %}
                             </div>
                         </div>
-                    </div>
+                </div>
+                </li>
             {% endfor %}
+            </ul>
+        {% else %}
+            <div class="text-center py-8 text-gray-500" role="status" aria-live="polite">
+                <i class="fas fa-calendar-alt text-4xl text-violet-300 mb-4" aria-hidden="true"></i>
+                <p class="text-lg font-medium mb-2">No events yet</p>
+                <p class="text-sm">Add your first event to get started!</p>
+            </div>
         {% endif %}
         
         <!-- Show empty state if no events -->

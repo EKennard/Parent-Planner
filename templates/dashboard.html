@@ -756,6 +756,9 @@ function collapseAllNotes() {
 {% endblock %}
 
 {% block content %}
+<!-- Live Region for Screen Reader Announcements -->
+<div id="live-region" class="live-region" aria-live="polite" aria-atomic="true"></div>
+
 <!-- Main Dashboard Container -->
 <div class="bg-gray-50 pb-4">
     {% if children_count == 0 %}
@@ -780,33 +783,54 @@ function collapseAllNotes() {
             <!-- Mobile Swipe Navigation (mobile only) -->
             <div class="w-full max-w-7xl mx-auto block lg:hidden">
                 <!-- Mobile Navigation Indicators -->
-                <div class="flex justify-center mb-4 space-x-2">
-                    <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" data-section="0"></button>
-                    <button class="nav-indicator w-3 h-3 rounded-full bg-primary transition-colors duration-200" data-section="1"></button>
-                    <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" data-section="2"></button>
-                    <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" data-section="3"></button>
+                <div class="flex justify-center mb-4 space-x-2" role="tablist" aria-label="Dashboard sections">
+                    <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" 
+                            data-section="0" 
+                            role="tab" 
+                            aria-controls="children-section"
+                            aria-label="Children section"
+                            tabindex="-1"></button>
+                    <button class="nav-indicator w-3 h-3 rounded-full bg-primary transition-colors duration-200" 
+                            data-section="1" 
+                            role="tab" 
+                            aria-controls="events-section"
+                            aria-label="Events section"
+                            aria-selected="true"
+                            tabindex="0"></button>
+                    <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" 
+                            data-section="2" 
+                            role="tab" 
+                            aria-controls="tasks-section"
+                            aria-label="Tasks section"
+                            tabindex="-1"></button>
+                    <button class="nav-indicator w-3 h-3 rounded-full bg-gray-300 transition-colors duration-200" 
+                            data-section="3" 
+                            role="tab" 
+                            aria-controls="notes-section"
+                            aria-label="Notes section"
+                            tabindex="-1"></button>
                 </div>
                 
                 <!-- Swipeable Container -->
-                <div id="swipeContainer" class="relative overflow-hidden h-[500px]">
+                <div id="swipeContainer" class="relative overflow-hidden h-[500px]" role="tabpanel">
                     <div id="swipeContent" class="flex transition-transform duration-300 ease-out" style="transform: translateX(-100%);">
                         <!-- Children Section -->
-                        <div class="w-full h-[500px] flex-shrink-0 px-2">
+                        <div id="children-section" class="w-full h-[500px] flex-shrink-0 px-2" role="tabpanel" aria-labelledby="children-section-heading">
                             {% include 'components/children_section.html' %}
                         </div>
 
                         <!-- Timeline Section (Events) -->
-                        <div class="w-full h-[500px] flex-shrink-0 px-2">
+                        <div id="events-section" class="w-full h-[500px] flex-shrink-0 px-2" role="tabpanel" aria-labelledby="events-section-heading">
                             {% include 'components/timeline_section.html' %}
                         </div>
 
                         <!-- Tasks Section -->
-                        <div class="w-full h-[500px] flex-shrink-0 px-2">
+                        <div id="tasks-section" class="w-full h-[500px] flex-shrink-0 px-2" role="tabpanel" aria-labelledby="tasks-section-heading">
                             {% include 'components/tasks_section.html' %}
                         </div>
 
                         <!-- Notes Section -->
-                        <div class="w-full h-[500px] flex-shrink-0 px-2">
+                        <div id="notes-section" class="w-full h-[500px] flex-shrink-0 px-2" role="tabpanel" aria-labelledby="notes-section-heading">
                             {% include 'components/notes_section.html' %}
                         </div>
                     </div>
@@ -841,13 +865,13 @@ function collapseAllNotes() {
 
 <!-- Modal Overlays -->
 <!-- Add Child Modal -->
-<div id="addChildModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" onclick="closeAddChildModal()">
+<div id="addChildModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" onclick="closeAddChildModal()" role="dialog" aria-labelledby="add-child-modal-title" aria-modal="true">
     <div class="bg-white border-2 border-secondary w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
         <div class="border-b-2 border-secondary bg-purple-50 px-4 py-3">
             <div class="flex items-center justify-between">
-                <h2 class="text-lg font-medium text-gray-900">Add New Child</h2>
-                <button onclick="closeAddChildModal()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
+                <h2 id="add-child-modal-title" class="text-lg font-medium text-gray-900">Add New Child</h2>
+                <button onclick="closeAddChildModal()" class="text-gray-500 hover:text-gray-700" aria-label="Close dialog">
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
@@ -857,8 +881,11 @@ function collapseAllNotes() {
                 <input type="hidden" name="add_child" value="1">
                 
                 <div>
-                    <label for="{{ child_form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <label for="{{ child_form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Name <span class="text-red-500" aria-label="Required">*</span></label>
                     {{ child_form.name }}
+                    {% if child_form.name.errors %}
+                        <div class="text-red-500 text-sm mt-1" role="alert">{{ child_form.name.errors.0 }}</div>
+                    {% endif %}
                 </div>
                 
                 <div>
@@ -867,21 +894,33 @@ function collapseAllNotes() {
                     {% if child_form.birth_date.help_text %}
                         <p class="text-xs text-gray-500 mt-1">{{ child_form.birth_date.help_text }}</p>
                     {% endif %}
+                    {% if child_form.birth_date.errors %}
+                        <div class="text-red-500 text-sm mt-1" role="alert">{{ child_form.birth_date.errors.0 }}</div>
+                    {% endif %}
                 </div>
                 
                 <div>
                     <label for="{{ child_form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">School</label>
                     {{ child_form.school }}
+                    {% if child_form.school.errors %}
+                        <div class="text-red-500 text-sm mt-1" role="alert">{{ child_form.school.errors.0 }}</div>
+                    {% endif %}
                 </div>
                 
                 <div>
                     <label for="{{ child_form.year.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Year</label>
                     {{ child_form.year }}
+                    {% if child_form.year.errors %}
+                        <div class="text-red-500 text-sm mt-1" role="alert">{{ child_form.year.errors.0 }}</div>
+                    {% endif %}
                 </div>
                 
                 <div>
                     <label for="{{ child_form.class_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Class</label>
                     {{ child_form.class_name }}
+                    {% if child_form.class_name.errors %}
+                        <div class="text-red-500 text-sm mt-1" role="alert">{{ child_form.class_name.errors.0 }}</div>
+                    {% endif %}
                 </div>
                 
                 <div>
@@ -890,69 +929,115 @@ function collapseAllNotes() {
                     
                     <!-- Custom color grid -->
                     <div class="color-grid-widget mt-2" data-target="{{ child_form.colour.id_for_label }}">
-                        <div class="color-dots-grid grid grid-cols-5 gap-2">
-                            <div class="color-dot selected w-8 h-8 border-2 cursor-pointer" 
-                                 data-color="#FF6B6B"
-                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                 style="background-color: #FF6B6B;"
-                                 title="Coral Red">
+                        <fieldset>
+                            <legend class="sr-only">Choose a color for this child</legend>
+                            <div class="color-dots-grid grid grid-cols-5 gap-2" role="radiogroup" aria-labelledby="{{ child_form.colour.id_for_label }}">
+                                <div class="color-dot selected w-8 h-8 border-2 cursor-pointer" 
+                                     data-color="#FF6B6B"
+                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                     style="background-color: #FF6B6B;"
+                                     title="Coral Red"
+                                     role="radio"
+                                     aria-checked="true"
+                                     aria-label="Coral Red"
+                                     tabindex="0">
+                                </div>
+                                <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                     data-color="#4ECDC4"
+                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                     style="background-color: #4ECDC4;"
+                                     title="Turquoise"
+                                     role="radio"
+                                     aria-checked="false"
+                                     aria-label="Turquoise"
+                                     tabindex="-1">
+                                </div>
+                                <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                     data-color="#0D6A80"
+                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                     style="background-color: #0D6A80;"
+                                     title="Sky Blue"
+                                     role="radio"
+                                     aria-checked="false"
+                                     aria-label="Sky Blue"
+                                     tabindex="-1">
+                                </div>
+                                <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                     data-color="#96CEB4"
+                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                     style="background-color: #96CEB4;"
+                                     title="Mint Green"
+                                     role="radio"
+                                     aria-checked="false"
+                                     aria-label="Mint Green"
+                                     tabindex="-1">
+                                </div>
+                                <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                     data-color="#D1D811"
+                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                     style="background-color: #D1D811;"
+                                     title="Sunny Yellow"
+                                     role="radio"
+                                     aria-checked="false"
+                                     aria-label="Sunny Yellow"
+                                     tabindex="-1">
+                                </div>
+                                <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                     data-color="#DDA0DD"
+                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                     style="background-color: #DDA0DD;"
+                                     title="Plum Purple"
+                                     role="radio"
+                                     aria-checked="false"
+                                     aria-label="Plum Purple"
+                                     tabindex="-1">
+                                </div>
+                                <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                     data-color="#AD6A0D"
+                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                     style="background-color: #AD6A0D;"
+                                     title="Peach Orange"
+                                     role="radio"
+                                     aria-checked="false"
+                                     aria-label="Peach Orange"
+                                     tabindex="-1">
+                                </div>
+                                <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                     data-color="#8516EE"
+                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                     style="background-color: #8516EE;"
+                                     title="Light Blue"
+                                     role="radio"
+                                     aria-checked="false"
+                                     aria-label="Light Blue"
+                                     tabindex="-1">
+                                </div>
+                                <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                     data-color="#0CEB0C"
+                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                     style="background-color: #0CEB0C;"
+                                     title="Pale Green"
+                                     role="radio"
+                                     aria-checked="false"
+                                     aria-label="Pale Green"
+                                     tabindex="-1">
+                                </div>
+                                <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
+                                     data-color="#BE12E0"
+                                     onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
+                                     style="background-color: #BE12E0;"
+                                     title="Bright Pink"
+                                     role="radio"
+                                     aria-checked="false"
+                                     aria-label="Bright Pink"
+                                     tabindex="-1">
+                                </div>
                             </div>
-                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
-                                 data-color="#4ECDC4"
-                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                 style="background-color: #4ECDC4;"
-                                 title="Turquoise">
-                            </div>
-                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
-                                 data-color="#0D6A80"
-                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                 style="background-color: #0D6A80;"
-                                 title="Sky Blue">
-                            </div>
-                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
-                                 data-color="#96CEB4"
-                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                 style="background-color: #96CEB4;"
-                                 title="Mint Green">
-                            </div>
-                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
-                                 data-color="#D1D811"
-                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                 style="background-color: #D1D811;"
-                                 title="Sunny Yellow">
-                            </div>
-                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
-                                 data-color="#DDA0DD"
-                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                 style="background-color: #DDA0DD;"
-                                 title="Plum Purple">
-                            </div>
-                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
-                                 data-color="#AD6A0D"
-                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                 style="background-color: #AD6A0D;"
-                                 title="Peach Orange">
-                            </div>
-                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
-                                 data-color="#8516EE"
-                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                 style="background-color: #8516EE;"
-                                 title="Light Blue">
-                            </div>
-                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
-                                 data-color="#0CEB0C"
-                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                 style="background-color: #0CEB0C;"
-                                 title="Pale Green">
-                            </div>
-                            <div class="color-dot w-8 h-8 border-2 cursor-pointer" 
-                                 data-color="#BE12E0"
-                                 onclick="selectColorDot(this, '{{ child_form.colour.id_for_label }}')"
-                                 style="background-color: #BE12E0;"
-                                 title="Bright Pink">
-                            </div>
-                        </div>
+                        </fieldset>
                     </div>
+                    {% if child_form.colour.errors %}
+                        <div class="text-red-500 text-sm mt-1" role="alert">{{ child_form.colour.errors.0 }}</div>
+                    {% endif %}
                 </div>
                 
                 <div class="flex gap-2 pt-2">

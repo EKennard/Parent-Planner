@@ -38,6 +38,8 @@
     {% load static %}
     <!-- Main styles -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Accessibility styles -->
+    <link rel="stylesheet" href="{% static 'css/accessibility.css' %}">
     <!-- Form Validation JS -->
     <script src="{% static 'js/form_validation.js' %}" defer></script>
     <!-- Mobile Menu JS -->
@@ -46,45 +48,73 @@
 </head>
 
 <body class="min-h-screen flex flex-col">
+    <!-- Skip Navigation Link -->
+    <a href="#main-content" class="skip-link sr-only-focusable">Skip to main content</a>
+    
     {% if user.is_authenticated or request.resolver_match.url_name != 'home' %}
-    <nav class="bg-primary text-white flex-shrink-0">
+    <nav class="bg-primary text-white flex-shrink-0" role="navigation" aria-label="Main navigation">
         <div class="w-full px-4 py-3">
             <div class="flex justify-between items-center">
                 <!-- Logo/Brand -->
                 <div class="flex-1 min-w-0">
-                    <h1 class="text-lg md:text-xl lg:text-2xl font-bold tracking-tight truncate">ParentPlanner</h1>
+                    <h1 class="text-lg md:text-xl lg:text-2xl font-bold tracking-tight truncate">
+                        <a href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'home' %}{% endif %}" class="text-white hover:text-accent focus:text-accent" aria-label="ParentPlanner home">
+                            ParentPlanner
+                        </a>
+                    </h1>
                 </div>
                 
                 <!-- Mobile menu button -->
                 <div class="md:hidden">
-                    <button id="mobile-menu-button" type="button" class="text-white hover:text-accent focus:outline-none focus:text-accent">
-                        <i class="fas fa-bars text-xl" id="menu-icon"></i>
+                    <button id="mobile-menu-button" 
+                            type="button" 
+                            class="text-white hover:text-accent focus:outline-none focus:text-accent"
+                            aria-label="Toggle mobile menu"
+                            aria-expanded="false"
+                            aria-controls="mobile-menu">
+                        <i class="fas fa-bars text-xl" id="menu-icon" aria-hidden="true"></i>
                     </button>
                 </div>
                 
                 <!-- Desktop navigation -->
-                <div class="hidden md:flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-4" role="menubar">
                     {% if user.is_authenticated %}
-                        <span class="text-accent font-medium">Welcome, {{ user.username }}</span>
-                        <a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a>
-                        <a href="{% url 'account_logout' %}" class="hover:underline">Logout</a>
+                        <span class="text-accent font-medium" aria-label="Current user">Welcome, {{ user.username }}</span>
+                        <a href="{% url 'dashboard' %}" 
+                           class="hover:underline focus:underline focus:outline-none"
+                           role="menuitem">Dashboard</a>
+                        <a href="{% url 'account_logout' %}" 
+                           class="hover:underline focus:underline focus:outline-none"
+                           role="menuitem">Logout</a>
                     {% else %}
-                        <a href="{% url 'account_login' %}" class="hover:underline">Login</a>
-                        <a href="{% url 'account_signup' %}" class="hover:underline">Register</a>
+                        <a href="{% url 'account_login' %}" 
+                           class="hover:underline focus:underline focus:outline-none"
+                           role="menuitem">Login</a>
+                        <a href="{% url 'account_signup' %}" 
+                           class="hover:underline focus:underline focus:outline-none"
+                           role="menuitem">Register</a>
                     {% endif %}
                 </div>
             </div>
             
             <!-- Mobile navigation menu -->
-            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-2">
+            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-2" role="menu" aria-label="Mobile navigation menu">
                 <div class="flex flex-col space-y-3">
                     {% if user.is_authenticated %}
-                        <span class="text-accent font-medium text-sm">Welcome, {{ user.username }}</span>
-                        <a href="{% url 'dashboard' %}" class="text-white hover:text-accent py-2">Dashboard</a>
-                        <a href="{% url 'account_logout' %}" class="text-white hover:text-accent py-2">Logout</a>
+                        <span class="text-accent font-medium text-sm" aria-label="Current user">Welcome, {{ user.username }}</span>
+                        <a href="{% url 'dashboard' %}" 
+                           class="text-white hover:text-accent py-2 focus:text-accent focus:outline-none"
+                           role="menuitem">Dashboard</a>
+                        <a href="{% url 'account_logout' %}" 
+                           class="text-white hover:text-accent py-2 focus:text-accent focus:outline-none"
+                           role="menuitem">Logout</a>
                     {% else %}
-                        <a href="{% url 'account_login' %}" class="text-white hover:text-accent py-2">Login</a>
-                        <a href="{% url 'account_signup' %}" class="text-white hover:text-accent py-2">Register</a>
+                        <a href="{% url 'account_login' %}" 
+                           class="text-white hover:text-accent py-2 focus:text-accent focus:outline-none"
+                           role="menuitem">Login</a>
+                        <a href="{% url 'account_signup' %}" 
+                           class="text-white hover:text-accent py-2 focus:text-accent focus:outline-none"
+                           role="menuitem">Register</a>
                     {% endif %}
                 </div>
             </div>
@@ -95,7 +125,7 @@
     <!-- Unified Messages System -->
     {% include 'components/messages.html' %}
 
-    <main class="w-full flex-1">
+    <main id="main-content" class="w-full flex-1" role="main">
         {% block content %}
         {% endblock %}
     </main>
