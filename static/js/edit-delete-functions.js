@@ -253,8 +253,16 @@ function deleteChild() {
     if (confirm('Are you sure you want to delete this child profile? This will also delete all associated events, tasks, and notes.')) {
         const form = document.getElementById('editChildForm');
         if (form) {
-            form.action = form.action.replace('/edit-child/', '/delete-child/');
-            form.submit();
+            // Extract child ID from the current action URL
+            const currentAction = form.action;
+            const childIdMatch = currentAction.match(/\/save-child\/(\d+)\//);
+            if (childIdMatch) {
+                const childId = childIdMatch[1];
+                form.action = `/delete-child/${childId}/`;
+                form.submit();
+            } else {
+                console.error('Could not extract child ID from form action:', currentAction);
+            }
         }
     }
 }
