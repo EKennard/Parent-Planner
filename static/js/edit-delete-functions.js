@@ -307,10 +307,20 @@ function deleteChild() {
                 const deleteUrl = `/delete-child/${childId}/`;
                 console.log('Setting form action to:', deleteUrl);
                 form.action = deleteUrl;
+                
+                // Add debugging for form submission
+                console.log('About to submit form with action:', form.action);
+                console.log('Form method:', form.method);
+                console.log('Form has CSRF token:', !!form.querySelector('[name=csrfmiddlewaretoken]'));
+                
                 form.submit();
             } else {
                 console.error('Could not extract child ID from form action:', currentAction);
             }
+        } else {
+            console.error('editChildForm not found in DOM');
         }
+    } else {
+        console.log('User cancelled child deletion');
     }
 }
