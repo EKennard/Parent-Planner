@@ -1,5 +1,5 @@
 <!-- Notes Section Component -->
-<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #10b981;"                                     <button onclick="openEditNoteModal({{ note.id }}, {{ note.child.id }}, '{{ note.title|addslashes }}', '{{ note.content|addslashes }}', '{% if note.created %}{{ note.created|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ note.title }}" aria-label="Edit {{ note.title }}">"ole="region" aria-labelledby="notes-section-heading">
+<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #10b981;" role="region" aria-labelledby="notes-section-heading">
     <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #10b981;">
         <div class="flex items-center justify-between">
             <h3 id="notes-section-heading" class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Notes</h3>
