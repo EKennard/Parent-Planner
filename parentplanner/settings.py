@@ -149,19 +149,13 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Static files configuration for Heroku
 if 'DATABASE_URL' in os.environ:  # This means we're on Heroku
-    # Use whitenoise for static files (updated for Django 4.2+)
-    STORAGES = {
-        "default": {
-            "BACKEND": "django.core.files.storage.FileSystemStorage",
-        },
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-        },
-    }
-    # Disable compression for JS files to avoid issues
-    WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx']
-    # Force collection of static files
-    COLLECTFAST_STRATEGY = "collectfast.strategies.boto3.Boto3Strategy"
+    # Use whitenoise for static files without compression to avoid JS issues
+    STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+    # Ensure static files are always collected
+    STATICFILES_FINDERS = [
+        'django.contrib.staticfiles.finders.FileSystemFinder',
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

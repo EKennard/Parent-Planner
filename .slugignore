@@ -1,0 +1,3 @@
+# Keep static files for deployment
+!static/
+!staticfiles/
