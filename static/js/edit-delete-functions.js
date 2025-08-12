@@ -39,12 +39,14 @@ function openEditEventModal(eventId, childId, category, title, content, date) {
     const titleField = document.getElementById('edit_event_title');
     const contentField = document.getElementById('edit_event_content');
     const dateField = document.getElementById('edit_event_date');
+    const categoryField = document.getElementById('edit_event_category');
     const form = document.getElementById('editEventForm');
     
     if (childField) childField.value = childId || '';
     if (titleField) titleField.value = title || '';
     if (contentField) contentField.value = content || '';
     if (dateField && date) dateField.value = date;
+    if (categoryField) categoryField.value = category || 'none';
 
     // Set form action
     if (form) {
@@ -76,12 +78,14 @@ function openEditTaskModal(taskId, childId, category, title, content, date) {
     const titleField = document.getElementById('edit_task_title');
     const contentField = document.getElementById('edit_task_content');
     const dateField = document.getElementById('edit_task_date');
+    const categoryField = document.getElementById('edit_task_category');
     const form = document.getElementById('editTaskForm');
     
     if (childField) childField.value = childId || '';
     if (titleField) titleField.value = title || '';
     if (contentField) contentField.value = content || '';
     if (dateField && date) dateField.value = date;
+    if (categoryField) categoryField.value = category || 'none';
 
     // Set form action
     if (form) {
