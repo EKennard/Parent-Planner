@@ -62,7 +62,7 @@
             
             <!-- Edit/Delete Actions -->
             <div class="flex gap-2 mt-4 pt-3 border-t border-gray-200">
-                <button onclick="openEditEntryModal({{ event.id }}, {{ event.child.id }}, '{{ event.category }}', '{{ event.title|addslashes }}', '{{ event.description|addslashes }}', '{% if event.event_date %}{{ event.event_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit flex-1" title="Edit {{ event.title }}" aria-label="Edit {{ event.title }}">
+                <button onclick="openEditEventModal({{ event.id }}, {{ event.child.id }}, '{{ event.category }}', '{{ event.title|addslashes }}', '{{ event.description|addslashes }}', '{% if event.event_date %}{{ event.event_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit flex-1" title="Edit {{ event.title }}" aria-label="Edit {{ event.title }}">
                     <i class="fas fa-pencil-alt mr-1" aria-hidden="true"></i>
                     Edit
                 </button>

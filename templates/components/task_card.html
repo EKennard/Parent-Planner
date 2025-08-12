@@ -58,7 +58,7 @@
             
             <!-- Edit/Delete Actions -->
             <div class="flex gap-2 mt-4 pt-3 border-t border-gray-200">
-                <button onclick="openEditEntryModal({{ task.id }}, {{ task.child.id }}, '{{ task.category }}', '{{ task.title|addslashes }}', '{{ task.description|addslashes }}', '{% if task.task_due_date %}{{ task.task_due_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit flex-1" title="Edit {{ task.title }}" aria-label="Edit {{ task.title }}">
+                <button onclick="openEditTaskModal({{ task.id }}, {{ task.child.id }}, '{{ task.category }}', '{{ task.title|addslashes }}', '{{ task.description|addslashes }}', '{% if task.task_due_date %}{{ task.task_due_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit flex-1" title="Edit {{ task.title }}" aria-label="Edit {{ task.title }}">
                     <i class="fas fa-pencil-alt mr-1" aria-hidden="true"></i>
                     Edit
                 </button>

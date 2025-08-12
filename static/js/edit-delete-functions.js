@@ -138,7 +138,7 @@ function openEditNoteModal(noteId, childId, title, content, date) {
     document.getElementById('edit_note_date').value = date;
     
     // Set form action
-    form.action = '/edit_note/' + noteId + '/';
+    form.action = '/edit-entry/' + noteId + '/';
     
     // Show modal
     modal.classList.remove('hidden');
