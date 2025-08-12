@@ -1,58 +1,5 @@
 // Shared JavaScript functions for edit and delete operations across all pages
 
-// Modal functions for editing entries
-function openEditEntryModal(entryId, childId, category, title, content, date) {
-    // Check if we're on the dashboard page with the modal
-    const modal = document.getElementById('editEntryModal');
-    if (!modal) {
-        // If modal doesn't exist, redirect to dashboard
-        window.location.href = `/dashboard/?edit=entry&id=${entryId}`;
-        return;
-    }
-    
-    const form = document.getElementById('editEntryForm');
-    
-    // Populate form fields
-    document.getElementById('edit_entry_child').value = childId;
-    document.getElementById('edit_entry_category').value = category;
-    document.getElementById('edit_entry_title').value = title;
-    document.getElementById('edit_entry_content').value = content;
-    document.getElementById('edit_entry_date').value = date;
-    
-    // Set form action
-    form.action = '/edit_entry/' + entryId + '/';
-    
-    // Show modal
-    modal.classList.remove('hidden');
-}
-
-function closeEditEntryModal() {
-    const modal = document.getElementById('editEntryModal');
-    if (modal) {
-        modal.classList.add('hidden');
-    }
-}
-
-function deleteEntry() {
-    const form = document.getElementById('editEntryForm');
-    const entryTitle = document.getElementById('edit_entry_title').value;
-    
-    if (confirm(`Are you sure you want to delete "${entryTitle}"? This action cannot be undone.`)) {
-        const deleteForm = document.createElement('form');
-        deleteForm.method = 'post';
-        deleteForm.action = form.action.replace('/edit_entry/', '/delete_entry/');
-        
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = 'csrfmiddlewaretoken';
-        csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        
-        deleteForm.appendChild(csrfToken);
-        document.body.appendChild(deleteForm);
-        deleteForm.submit();
-    }
-}
-
 // Modal functions for editing events specifically
 function openEditEventModal(eventId, childId, category, title, content, date) {
     // Check if we're on the dashboard page with the modal
@@ -146,6 +93,14 @@ function openEditNoteModal(noteId, childId, title, content, date) {
 
 function closeEditNoteModal() {
     const modal = document.getElementById('editNoteModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+// Close function for the shared entry modal (used by events and tasks)
+function closeEditEntryModal() {
+    const modal = document.getElementById('editEntryModal');
     if (modal) {
         modal.classList.add('hidden');
     }
