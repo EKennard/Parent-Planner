@@ -367,12 +367,20 @@ function initializeSwipeNavigation(swipeContainer, swipeContent, indicators) {
     
     // Navigate to section
     function navigateToSection(section) {
-        if (section < 0 || section > 3) return;
+        console.log('navigateToSection called with section:', section);
+        console.log('Valid range: 0-3, current section:', currentSection);
+        
+        if (section < 0 || section > 3) {
+            console.log('Section out of range, returning');
+            return;
+        }
+        
         console.log('Navigating to section:', section);
         
         currentSection = section;
         const translateX = -(section * 100);
         
+        console.log('Setting transform to:', `translateX(${translateX}%)`);
         swipeContent.style.transform = `translateX(${translateX}%)`;
         swipeContent.style.transition = 'transform 0.3s ease-out';
         
@@ -381,19 +389,28 @@ function initializeSwipeNavigation(swipeContainer, swipeContent, indicators) {
             if (index === currentSection) {
                 indicator.classList.remove('bg-gray-300');
                 indicator.classList.add('bg-primary');
+                console.log('Activated indicator:', index);
             } else {
                 indicator.classList.remove('bg-primary');
                 indicator.classList.add('bg-gray-300');
             }
         });
+        
+        console.log('Navigation complete. Current section is now:', currentSection);
     }
     
     // Indicator click events
     indicators.forEach((indicator, index) => {
         indicator.addEventListener('click', () => {
-            console.log('Indicator clicked:', index);
+            console.log('Indicator clicked for section:', index);
+            console.log('Available sections: 0=Profile, 1=Events, 2=Tasks, 3=Notes');
             navigateToSection(index);
         });
+        
+        // Make indicators more visible and clickable
+        indicator.style.cursor = 'pointer';
+        indicator.style.minWidth = '16px';
+        indicator.style.minHeight = '16px';
     });
     
     // Touch events
@@ -402,24 +419,32 @@ function initializeSwipeNavigation(swipeContainer, swipeContent, indicators) {
     
     swipeContainer.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
-        console.log('Touch start at:', startX);
+        console.log('Touch start at:', startX, 'Current section:', currentSection);
     });
     
     swipeContainer.addEventListener('touchend', (e) => {
         endX = e.changedTouches[0].clientX;
-        console.log('Touch end at:', endX);
+        console.log('Touch end at:', endX, 'Current section:', currentSection);
         
         const deltaX = endX - startX;
-        const threshold = 50;
+        const threshold = 30; // Reduced threshold for easier swiping
+        
+        console.log('Delta X:', deltaX, 'Threshold:', threshold);
         
         if (Math.abs(deltaX) > threshold) {
             if (deltaX > 0 && currentSection > 0) {
                 // Swipe right - previous section
+                console.log('Swiping right from section', currentSection, 'to section', currentSection - 1);
                 navigateToSection(currentSection - 1);
             } else if (deltaX < 0 && currentSection < 3) {
                 // Swipe left - next section  
+                console.log('Swiping left from section', currentSection, 'to section', currentSection + 1);
                 navigateToSection(currentSection + 1);
+            } else {
+                console.log('Swipe ignored - at boundary or insufficient delta');
             }
+        } else {
+            console.log('Swipe too small, ignored');
         }
     });
     
