@@ -119,10 +119,7 @@
         }
     }
 
-    function openEditChildModal(childId, childData) {
-        // Redirect to dashboard with edit modal
-        window.location.href = '/dashboard/?edit_child=' + childId;
-    }
+    // openEditChildModal function is provided by edit-delete-functions.js
 </script>
 {% endblock %}
 
@@ -176,9 +173,9 @@
                                     <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Profile
                                         Details</h3>
                                     <div class="flex gap-1 flex-shrink-0">
-                                        <a href="{% url 'edit_child' child.id %}" class="btn-edit" title="Edit Child">
+                                        <button onclick="openEditChildModal({{ child.id }}, {name: '{{ child.name|addslashes }}', birth_date: '{% if child.birth_date %}{{ child.birth_date|date:"Y-m-d" }}{% endif %}', school: '{{ child.school|addslashes }}', year: '{{ child.year|addslashes }}', class_name: '{{ child.class_name|addslashes }}', colour: '{{ child.colour }}'})" class="btn-edit" title="Edit Child">
                                             <i class="fas fa-pencil-alt text-xs"></i>
-                                        </a>
+                                        </button>
                                         <button onclick="deleteChildConfirm({{ child.id }}, '{{ child.name|addslashes }}')" class="btn-delete" title="Delete Child">
                                             <i class="fas fa-trash text-xs"></i>
                                         </button>
@@ -278,9 +275,9 @@
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Profile Details</h3>
                             <div class="flex gap-1 flex-shrink-0">
-                                <a href="{% url 'edit_child' child.id %}" class="btn-edit" title="Edit Child">
+                                <button onclick="openEditChildModal({{ child.id }}, {name: '{{ child.name|addslashes }}', birth_date: '{% if child.birth_date %}{{ child.birth_date|date:"Y-m-d" }}{% endif %}', school: '{{ child.school|addslashes }}', year: '{{ child.year|addslashes }}', class_name: '{{ child.class_name|addslashes }}', colour: '{{ child.colour }}'})" class="btn-edit" title="Edit Child">
                                     <i class="fas fa-pencil-alt text-xs"></i>
-                                </a>
+                                </button>
                                 <button onclick="deleteChildConfirm({{ child.id }}, '{{ child.name|addslashes }}')" class="btn-delete" title="Delete Child">
                                     <i class="fas fa-trash text-xs"></i>
                                 </button>
