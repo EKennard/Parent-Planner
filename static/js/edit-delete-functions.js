@@ -220,15 +220,21 @@ function closeEditEntryModal() {
 
 // Delete functions
 function deleteEvent() {
+    console.log('deleteEvent called');
     if (confirm('Are you sure you want to delete this event?')) {
         const form = document.getElementById('editEventForm');
+        console.log('Event form found:', !!form);
         if (form) {
             // Extract entry ID from the current action URL
             const currentAction = form.action;
+            console.log('Current form action:', currentAction);
             const entryIdMatch = currentAction.match(/\/save-entry\/(\d+)\//);
+            console.log('Entry ID match:', entryIdMatch);
             if (entryIdMatch) {
                 const entryId = entryIdMatch[1];
-                form.action = `/delete-entry/${entryId}/`;
+                const deleteUrl = `/delete-entry/${entryId}/`;
+                console.log('Setting form action to:', deleteUrl);
+                form.action = deleteUrl;
                 form.submit();
             } else {
                 console.error('Could not extract entry ID from form action:', currentAction);
@@ -238,15 +244,21 @@ function deleteEvent() {
 }
 
 function deleteTask() {
+    console.log('deleteTask called');
     if (confirm('Are you sure you want to delete this task?')) {
         const form = document.getElementById('editTaskForm');
+        console.log('Task form found:', !!form);
         if (form) {
             // Extract entry ID from the current action URL
             const currentAction = form.action;
+            console.log('Current form action:', currentAction);
             const entryIdMatch = currentAction.match(/\/save-entry\/(\d+)\//);
+            console.log('Entry ID match:', entryIdMatch);
             if (entryIdMatch) {
                 const entryId = entryIdMatch[1];
-                form.action = `/delete-entry/${entryId}/`;
+                const deleteUrl = `/delete-entry/${entryId}/`;
+                console.log('Setting form action to:', deleteUrl);
+                form.action = deleteUrl;
                 form.submit();
             } else {
                 console.error('Could not extract entry ID from form action:', currentAction);
@@ -256,15 +268,21 @@ function deleteTask() {
 }
 
 function deleteNote() {
+    console.log('deleteNote called');
     if (confirm('Are you sure you want to delete this note?')) {
         const form = document.getElementById('editNoteForm');
+        console.log('Note form found:', !!form);
         if (form) {
             // Extract note ID from the current action URL
             const currentAction = form.action;
+            console.log('Current form action:', currentAction);
             const noteIdMatch = currentAction.match(/\/edit-note\/(\d+)\//);
+            console.log('Note ID match:', noteIdMatch);
             if (noteIdMatch) {
                 const noteId = noteIdMatch[1];
-                form.action = `/delete-entry/${noteId}/`;
+                const deleteUrl = `/delete-entry/${noteId}/`;
+                console.log('Setting form action to:', deleteUrl);
+                form.action = deleteUrl;
                 form.submit();
             } else {
                 console.error('Could not extract note ID from form action:', currentAction);
@@ -274,15 +292,21 @@ function deleteNote() {
 }
 
 function deleteChild() {
+    console.log('deleteChild called');
     if (confirm('Are you sure you want to delete this child profile? This will also delete all associated events, tasks, and notes.')) {
         const form = document.getElementById('editChildForm');
+        console.log('Child form found:', !!form);
         if (form) {
             // Extract child ID from the current action URL
             const currentAction = form.action;
+            console.log('Current form action:', currentAction);
             const childIdMatch = currentAction.match(/\/save-child\/(\d+)\//);
+            console.log('Child ID match:', childIdMatch);
             if (childIdMatch) {
                 const childId = childIdMatch[1];
-                form.action = `/delete-child/${childId}/`;
+                const deleteUrl = `/delete-child/${childId}/`;
+                console.log('Setting form action to:', deleteUrl);
+                form.action = deleteUrl;
                 form.submit();
             } else {
                 console.error('Could not extract child ID from form action:', currentAction);

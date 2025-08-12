@@ -295,26 +295,6 @@ function collapseAllNotes() {
         document.getElementById('edit_child_colour').value = element.getAttribute('data-color');
     }
 
-    function deleteChild() {
-        if (confirm('Are you sure you want to delete this child? This action cannot be undone.')) {
-            const form = document.getElementById('editChildForm');
-            const deleteForm = document.createElement('form');
-            deleteForm.method = 'post';
-            deleteForm.action = form.action.replace('/edit_child/', '/delete_child/');
-            
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'csrfmiddlewaretoken';
-            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            
-            deleteForm.appendChild(csrfToken);
-            document.body.appendChild(deleteForm);
-            deleteForm.submit();
-        }
-    }
-
-
-
     // Close modals when clicking outside or pressing escape
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {

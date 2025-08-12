@@ -218,6 +218,29 @@ Several issues have been successfully resolved during development, including tas
 
 Current limitations include the email notification system which has not yet been implemented but is planned for future release. The monthly calendar view is not currently available but is in active development for the next version. Export functionality for sharing family schedules is not implemented but represents a future enhancement opportunity. Recurring events are not currently supported but are planned as a future feature, while multi-user family sharing capabilities are not available but are under consideration for future development phases.
 
+## 🔍 HTML/CSS Validation Issues
+
+The following validation issues have been identified and categorized for future resolution:
+
+### CSS Issues
+- **Line-clamp Property Warnings**: The CSS validator reports that `line-clamp` property doesn't exist. These warnings are expected as the application uses `-webkit-line-clamp` for cross-browser text truncation compatibility. The CSS validator doesn't recognize this modern Tailwind CSS utility.
+- **Tailwind CSS Utilities**: Various Tailwind CSS utilities may not be recognized by standard CSS validators but are intentionally used for rapid development and consistency.
+
+### HTML Issues  
+- **Duplicate IDs Between Views**: The dashboard contains duplicate element IDs between mobile swipe view and desktop grid view (e.g., `events-section-heading`, `tasks-section`, `event-title-48`). This occurs because component templates are included in both views. Future fix will implement context-aware component IDs.
+- **Unnecessary Role Attributes**: HTML validator reports unnecessary `role` attributes on semantic elements (nav, main, ul). These are intentionally added for enhanced accessibility support and screen reader compatibility, following WCAG guidelines.
+- **ARIA Label Warnings**: Validator suggests possible misuse of `aria-label` attributes. These labels provide essential context for screen readers and assistive technologies, improving accessibility for users with disabilities.
+
+### Accessibility Enhancements
+- **Enhanced Screen Reader Support**: The application includes extensive ARIA labels and role attributes beyond HTML5 semantic requirements to ensure comprehensive accessibility.
+- **Keyboard Navigation**: Additional markup supports keyboard-only navigation patterns for improved usability.
+- **Screen Reader Context**: ARIA labels provide context that isn't visually apparent but is crucial for assistive technology users.
+
+### Resolution Timeline
+- **High Priority**: Duplicate ID issues will be resolved by implementing dynamic ID generation in component templates.
+- **Medium Priority**: CSS validation warnings are acceptable as they reflect modern CSS features and Tailwind utilities.
+- **Low Priority**: ARIA and role attribute warnings reflect intentional accessibility enhancements and will be retained.
+
 📋 Credits
 📝 Content and Development
 👤 Framework and Backend

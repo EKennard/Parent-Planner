@@ -1,8 +1,8 @@
 <!-- Tasks Section Component -->
-<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #d97706;" role="region" aria-labelledby="tasks-section-heading">
+<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #d97706;" role="region" aria-labelledby="{% if view_context %}{{ view_context }}-{% endif %}tasks-section-heading">
     <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #d97706;">
         <div class="flex items-center justify-between">
-            <h3 id="tasks-section-heading" class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Tasks</h3>
+            <h3 id="{% if view_context %}{{ view_context }}-{% endif %}tasks-section-heading" class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Tasks</h3>
             <div class="flex items-center gap-2">
                 <!-- Add Task Button (icon only) -->
                 <button onclick="{% if selected_child %}openAddTaskModal({{ selected_child.id }}){% else %}openAddTaskModal(){% endif %}" 
@@ -24,7 +24,7 @@
                 <div class="{% if task.is_completed %}bg-gray-50 task-completed{% else %}bg-white{% endif %} p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 border-l-4 flex items-start gap-3 task-card"
                      style="border-left-color: {{ task.child.colour }};"
                      role="article"
-                     aria-labelledby="task-title-{{ task.id }}">
+                     aria-labelledby="{% if view_context %}{{ view_context }}-{% endif %}task-title-{{ task.id }}">
                     <!-- Child Initial Icon -->
                     <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-white text-sm font-bold" 
                          style="background-color: {{ task.child.colour }};"
@@ -35,7 +35,7 @@
                     <!-- Task Content -->
                     <div class="flex-1 min-w-0 card-content">
                         <div class="flex items-start justify-between mb-2">
-                            <h4 id="task-title-{{ task.id }}" class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ task.title }}</h4>
+                            <h4 id="{% if view_context %}{{ view_context }}-{% endif %}task-title-{{ task.id }}" class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ task.title }}</h4>
                         </div>
                         
                         <!-- Task Details -->

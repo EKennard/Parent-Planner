@@ -1,8 +1,8 @@
 <!-- Events Section Component -->
-<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #7c3aed;" role="region" aria-labelledby="events-section-heading">
+<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #7c3aed;" role="region" aria-labelledby="{% if view_context %}{{ view_context }}-{% endif %}events-section-heading">
     <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #7c3aed;">
         <div class="flex items-center justify-between">
-            <h3 id="events-section-heading" class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Events</h3>
+            <h3 id="{% if view_context %}{{ view_context }}-{% endif %}events-section-heading" class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Events</h3>
             <div class="flex items-center gap-2">
                 <!-- Add Event Button (icon only) -->
                 <button onclick="{% if selected_child %}openAddEventModal({{ selected_child.id }}){% else %}openAddEventModal(){% endif %}" 
@@ -35,7 +35,7 @@
                         <!-- Entry Content -->
                         <div class="flex-1 min-w-0 card-content">
                             <div class="flex items-start justify-between mb-2">
-                                <h4 id="event-title-{{ entry.id }}" class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ entry.title }}</h4>
+                                <h4 id="{% if view_context %}{{ view_context }}-{% endif %}event-title-{{ entry.id }}" class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ entry.title }}</h4>
                             </div>
                             
                             <!-- Event Details - ALL VISIBLE -->
