@@ -3,6 +3,22 @@
 // Debug logging to help troubleshoot Heroku deployment
 console.log('Edit-delete-functions.js loaded successfully');
 
+// Add a global error handler to catch any JavaScript errors
+window.addEventListener('error', function(e) {
+    console.error('JavaScript Error:', e.error, e.filename, e.lineno);
+});
+
+// Test function to verify JavaScript is working
+function testJavaScript() {
+    console.log('JavaScript test function called - JS is working!');
+    alert('JavaScript is working!');
+}
+
+// Make sure DOM is ready before any modal operations
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded - Ready for modal operations');
+});
+
 // Modal functions for editing events specifically
 function openEditEventModal(eventId, childId, category, title, content, date) {
     console.log('openEditEventModal called:', {eventId, childId, category, title, content, date});
@@ -18,17 +34,22 @@ function openEditEventModal(eventId, childId, category, title, content, date) {
 
     console.log('Event modal found, proceeding with edit...');
 
-    // Fill the form fields
-    document.getElementById('edit_event_child').value = childId;
-    document.getElementById('edit_event_title').value = title;
-    document.getElementById('edit_event_content').value = content;
-    if (date) {
-        document.getElementById('edit_event_date').value = date;
-    }
+    // Fill the form fields with null checks
+    const childField = document.getElementById('edit_event_child');
+    const titleField = document.getElementById('edit_event_title');
+    const contentField = document.getElementById('edit_event_content');
+    const dateField = document.getElementById('edit_event_date');
+    const form = document.getElementById('editEventForm');
+    
+    if (childField) childField.value = childId || '';
+    if (titleField) titleField.value = title || '';
+    if (contentField) contentField.value = content || '';
+    if (dateField && date) dateField.value = date;
 
     // Set form action
-    const form = document.getElementById('editEventForm');
-    form.action = `/edit-entry/${eventId}/`;
+    if (form) {
+        form.action = `/edit-entry/${eventId}/`;
+    }
 
     // Show modal
     modal.classList.remove('hidden');
@@ -50,17 +71,22 @@ function openEditTaskModal(taskId, childId, category, title, content, date) {
 
     console.log('Task modal found, proceeding with edit...');
 
-    // Fill the form fields
-    document.getElementById('edit_task_child').value = childId;
-    document.getElementById('edit_task_title').value = title;
-    document.getElementById('edit_task_content').value = content;
-    if (date) {
-        document.getElementById('edit_task_date').value = date;
-    }
+    // Fill the form fields with null checks
+    const childField = document.getElementById('edit_task_child');
+    const titleField = document.getElementById('edit_task_title');
+    const contentField = document.getElementById('edit_task_content');
+    const dateField = document.getElementById('edit_task_date');
+    const form = document.getElementById('editTaskForm');
+    
+    if (childField) childField.value = childId || '';
+    if (titleField) titleField.value = title || '';
+    if (contentField) contentField.value = content || '';
+    if (dateField && date) dateField.value = date;
 
     // Set form action
-    const form = document.getElementById('editTaskForm');
-    form.action = `/edit-entry/${taskId}/`;
+    if (form) {
+        form.action = `/edit-entry/${taskId}/`;
+    }
 
     // Show modal
     modal.classList.remove('hidden');
@@ -84,16 +110,21 @@ function openEditNoteModal(noteId, childId, title, content, date) {
     
     const form = document.getElementById('editNoteForm');
     
-    // Populate form fields
-    document.getElementById('edit_note_child').value = childId;
-    document.getElementById('edit_note_title').value = title;
-    document.getElementById('edit_note_content').value = content;
-    if (date) {
-        document.getElementById('edit_note_date').value = date;
-    }
+    // Populate form fields with null checks
+    const childField = document.getElementById('edit_note_child');
+    const titleField = document.getElementById('edit_note_title');
+    const contentField = document.getElementById('edit_note_content');
+    const dateField = document.getElementById('edit_note_date');
+    
+    if (childField) childField.value = childId || '';
+    if (titleField) titleField.value = title || '';
+    if (contentField) contentField.value = content || '';
+    if (dateField && date) dateField.value = date;
     
     // Set the form action to edit this specific note
-    form.action = `/edit-note/${noteId}/`;
+    if (form) {
+        form.action = `/edit-note/${noteId}/`;
+    }
     
     // Show the modal
     modal.classList.remove('hidden');
@@ -101,8 +132,8 @@ function openEditNoteModal(noteId, childId, title, content, date) {
 }
 
 // Modal functions for editing children
-function openEditChildModal(childId, name, birthDate, allergies, medicalInfo, notes) {
-    console.log('openEditChildModal called:', {childId, name, birthDate, allergies, medicalInfo, notes});
+function openEditChildModal(childId, childData) {
+    console.log('openEditChildModal called:', {childId, childData});
     
     // Check if we're on the dashboard page with the modal
     const modal = document.getElementById('editChildModal');
@@ -117,15 +148,25 @@ function openEditChildModal(childId, name, birthDate, allergies, medicalInfo, no
     
     const form = document.getElementById('editChildForm');
     
-    // Populate form fields
-    document.getElementById('edit_child_name').value = name;
-    document.getElementById('edit_child_birth_date').value = birthDate;
-    document.getElementById('edit_child_allergies').value = allergies || '';
-    document.getElementById('edit_child_medical_info').value = medicalInfo || '';
-    document.getElementById('edit_child_notes').value = notes || '';
+    // Populate form fields with null checks
+    const nameField = document.getElementById('edit_child_name');
+    const birthDateField = document.getElementById('edit_child_birth_date');
+    const schoolField = document.getElementById('edit_child_school');
+    const yearField = document.getElementById('edit_child_year');
+    const classNameField = document.getElementById('edit_child_class_name');
+    const colourField = document.getElementById('edit_child_colour');
+    
+    if (nameField) nameField.value = childData.name || '';
+    if (birthDateField) birthDateField.value = childData.birth_date || '';
+    if (schoolField) schoolField.value = childData.school || '';
+    if (yearField) yearField.value = childData.year || '';
+    if (classNameField) classNameField.value = childData.class_name || '';
+    if (colourField) colourField.value = childData.colour || '';
     
     // Set the form action to edit this specific child
-    form.action = `/edit-child/${childId}/`;
+    if (form) {
+        form.action = `/edit-child/${childId}/`;
+    }
     
     // Show the modal
     modal.classList.remove('hidden');
