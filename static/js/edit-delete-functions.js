@@ -223,8 +223,16 @@ function deleteEvent() {
     if (confirm('Are you sure you want to delete this event?')) {
         const form = document.getElementById('editEventForm');
         if (form) {
-            form.action = form.action.replace('/edit-entry/', '/delete-entry/');
-            form.submit();
+            // Extract entry ID from the current action URL
+            const currentAction = form.action;
+            const entryIdMatch = currentAction.match(/\/save-entry\/(\d+)\//);
+            if (entryIdMatch) {
+                const entryId = entryIdMatch[1];
+                form.action = `/delete-entry/${entryId}/`;
+                form.submit();
+            } else {
+                console.error('Could not extract entry ID from form action:', currentAction);
+            }
         }
     }
 }
@@ -233,8 +241,16 @@ function deleteTask() {
     if (confirm('Are you sure you want to delete this task?')) {
         const form = document.getElementById('editTaskForm');
         if (form) {
-            form.action = form.action.replace('/edit-entry/', '/delete-entry/');
-            form.submit();
+            // Extract entry ID from the current action URL
+            const currentAction = form.action;
+            const entryIdMatch = currentAction.match(/\/save-entry\/(\d+)\//);
+            if (entryIdMatch) {
+                const entryId = entryIdMatch[1];
+                form.action = `/delete-entry/${entryId}/`;
+                form.submit();
+            } else {
+                console.error('Could not extract entry ID from form action:', currentAction);
+            }
         }
     }
 }
@@ -243,8 +259,16 @@ function deleteNote() {
     if (confirm('Are you sure you want to delete this note?')) {
         const form = document.getElementById('editNoteForm');
         if (form) {
-            form.action = form.action.replace('/edit-note/', '/delete-note/');
-            form.submit();
+            // Extract note ID from the current action URL
+            const currentAction = form.action;
+            const noteIdMatch = currentAction.match(/\/edit-note\/(\d+)\//);
+            if (noteIdMatch) {
+                const noteId = noteIdMatch[1];
+                form.action = `/delete-entry/${noteId}/`;
+                form.submit();
+            } else {
+                console.error('Could not extract note ID from form action:', currentAction);
+            }
         }
     }
 }
