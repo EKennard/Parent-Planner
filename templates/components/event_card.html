@@ -14,7 +14,17 @@
         
         <!-- Event Content -->
         <div class="flex-1 min-w-0 card-content">
-            <h4 class="font-medium text-gray-900 mb-2">{{ event.title }}</h4>
+            <div class="flex items-center justify-between mb-2">
+                <h4 class="font-medium text-gray-900">{{ event.title }}</h4>
+                <div class="flex gap-1 flex-shrink-0">
+                    <button onclick="openEditEntryModal({{ event.id }}, {{ event.child.id }}, '{{ event.category }}', '{{ event.title|addslashes }}', '{{ event.description|addslashes }}', '{% if event.event_date %}{{ event.event_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ event.title }}" aria-label="Edit {{ event.title }}">
+                        <i class="fas fa-pencil-alt text-xs" aria-hidden="true"></i>
+                    </button>
+                    <button onclick="deleteEntryConfirm({{ event.id }}, '{{ event.title|addslashes }}')" class="btn-delete" title="Delete {{ event.title }}" aria-label="Delete {{ event.title }}">
+                        <i class="fas fa-trash text-xs" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
             
             <!-- Always visible summary info -->
             <div class="flex flex-wrap gap-1 mb-2">

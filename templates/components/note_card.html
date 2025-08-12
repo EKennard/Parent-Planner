@@ -10,7 +10,17 @@
         
         <!-- Note Content -->
         <div class="flex-1 min-w-0">
-            <h4 class="font-medium text-gray-900 mb-1">{{ note.title }}</h4>
+            <div class="flex items-center justify-between mb-1">
+                <h4 class="font-medium text-gray-900">{{ note.title }}</h4>
+                <div class="flex gap-1 flex-shrink-0">
+                    <button onclick="openEditNoteModal({{ note.id }}, {{ note.child.id }}, '{{ note.title|addslashes }}', '{{ note.description|addslashes }}', '{% if note.created %}{{ note.created|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ note.title }}" aria-label="Edit {{ note.title }}">
+                        <i class="fas fa-pencil-alt text-xs" aria-hidden="true"></i>
+                    </button>
+                    <button onclick="deleteNoteConfirm({{ note.id }}, '{{ note.title|addslashes }}')" class="btn-delete" title="Delete {{ note.title }}" aria-label="Delete {{ note.title }}">
+                        <i class="fas fa-trash text-xs" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
             {% if note.category and note.category != 'none' %}
                 <div class="mb-2">
                     <span class="inline-block bg-blue-100 text-blue-800 px-2 py-0.5 text-xs rounded-sm border">

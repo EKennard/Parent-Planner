@@ -39,6 +39,14 @@
                     <div class="flex-1 min-w-0 card-content">
                         <div class="flex items-start justify-between mb-2">
                             <h4 id="task-title-{{ task.id }}" class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ task.title }}</h4>
+                            <div class="flex gap-1 flex-shrink-0 ml-2">
+                                <button onclick="openEditEntryModal({{ task.id }}, {{ task.child.id }}, '{{ task.category }}', '{{ task.title|addslashes }}', '{{ task.description|addslashes }}', '{% if task.task_due_date %}{{ task.task_due_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ task.title }}" aria-label="Edit {{ task.title }}">
+                                    <i class="fas fa-pencil-alt text-xs" aria-hidden="true"></i>
+                                </button>
+                                <button onclick="deleteEntryConfirm({{ task.id }}, '{{ task.title|addslashes }}')" class="btn-delete" title="Delete {{ task.title }}" aria-label="Delete {{ task.title }}">
+                                    <i class="fas fa-trash text-xs" aria-hidden="true"></i>
+                                </button>
+                            </div>
                         </div>
                         
                         <!-- Task Details -->

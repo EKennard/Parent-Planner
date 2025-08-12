@@ -21,14 +21,14 @@
             <ul role="list" class="space-y-3">
             {% for child in children %}
                 <li>
-                <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4 border-blue-500"
-                     onclick="window.location='{% url 'child_entries' child.id %}'"
+                <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 border-l-4 border-blue-500"
                      role="button"
                      tabindex="0"
-                     aria-label="View {{ child.name }}'s profile"
-                     onkeydown="if(event.key==='Enter'||event.key===' '){window.location='{% url 'child_entries' child.id %}'}">
+                     aria-label="View {{ child.name }}'s profile">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
+                        <div class="flex items-center space-x-3 cursor-pointer flex-1"
+                             onclick="window.location='{% url 'child_entries' child.id %}'"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){window.location='{% url 'child_entries' child.id %}'}">
                             <div class="w-12 h-12 sm:w-16 sm:h-16 border-2 border-blue-500 flex items-center justify-center text-white font-normal text-lg sm:text-xl tracking-wide"
                                  style="background-color: {{ child.colour }};"
                                  aria-label="Avatar for {{ child.name }}">
@@ -52,7 +52,20 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex gap-1 flex-shrink-0">
+                            <button onclick="event.stopPropagation(); openEditChildModal({{ child.id }}, {
+                                name: '{{ child.name|addslashes }}',
+                                birth_date: '{{ child.birth_date|date:"Y-m-d" }}',
+                                school: '{{ child.school|addslashes }}',
+                                year: '{{ child.year|addslashes }}',
+                                class_name: '{{ child.class_name|addslashes }}',
+                                colour: '{{ child.colour }}'
+                            })" class="btn-edit" title="Edit {{ child.name }}" aria-label="Edit {{ child.name }}">
+                                <i class="fas fa-pencil-alt text-xs" aria-hidden="true"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); deleteChildConfirm({{ child.id }}, '{{ child.name|addslashes }}')" class="btn-delete" title="Delete {{ child.name }}" aria-label="Delete {{ child.name }}">
+                                <i class="fas fa-trash text-xs" aria-hidden="true"></i>
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -17,11 +17,21 @@
         <div class="flex-1 min-w-0 card-content">
             <div class="flex items-center justify-between mb-2">
                 <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
-                {% if task.is_completed %}
-                    <span class="bg-green-100 text-green-700 px-2 py-1 text-xs rounded-sm">✓ Completed</span>
-                {% else %}
-                    <span class="bg-gray-100 text-gray-700 px-2 py-1 text-xs rounded-sm">Pending</span>
-                {% endif %}
+                <div class="flex items-center gap-2">
+                    {% if task.is_completed %}
+                        <span class="bg-green-100 text-green-700 px-2 py-1 text-xs rounded-sm">✓ Completed</span>
+                    {% else %}
+                        <span class="bg-gray-100 text-gray-700 px-2 py-1 text-xs rounded-sm">Pending</span>
+                    {% endif %}
+                    <div class="flex gap-1 flex-shrink-0">
+                        <button onclick="openEditEntryModal({{ task.id }}, {{ task.child.id }}, '{{ task.category }}', '{{ task.title|addslashes }}', '{{ task.description|addslashes }}', '{% if task.task_due_date %}{{ task.task_due_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ task.title }}" aria-label="Edit {{ task.title }}">
+                            <i class="fas fa-pencil-alt text-xs" aria-hidden="true"></i>
+                        </button>
+                        <button onclick="deleteEntryConfirm({{ task.id }}, '{{ task.title|addslashes }}')" class="btn-delete" title="Delete {{ task.title }}" aria-label="Delete {{ task.title }}">
+                            <i class="fas fa-trash text-xs" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
             
             <!-- Always visible summary info -->
