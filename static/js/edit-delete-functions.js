@@ -48,7 +48,7 @@ function openEditEventModal(eventId, childId, category, title, content, date) {
 
     // Set form action
     if (form) {
-        form.action = `/edit-entry/${eventId}/`;
+        form.action = `/edit-entry/${eventId}/?next=dashboard`;
     }
 
     // Show modal
@@ -85,7 +85,7 @@ function openEditTaskModal(taskId, childId, category, title, content, date) {
 
     // Set form action
     if (form) {
-        form.action = `/edit-entry/${taskId}/`;
+        form.action = `/edit-entry/${taskId}/?next=dashboard`;
     }
 
     // Show modal

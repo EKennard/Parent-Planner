@@ -1204,6 +1204,7 @@ function collapseAllNotes() {
         <div class="p-4">
             <form id="editEventForm" method="post" class="space-y-4">
                 {% csrf_token %}
+                <input type="hidden" name="next" value="dashboard">
                 
                 <div>
                     <label for="edit_event_child" class="block text-sm font-medium text-gray-700 mb-1">Child</label>
@@ -1265,6 +1266,7 @@ function collapseAllNotes() {
         <div class="p-4">
             <form id="editTaskForm" method="post" class="space-y-4">
                 {% csrf_token %}
+                <input type="hidden" name="next" value="dashboard">
                 
                 <div>
                     <label for="edit_task_child" class="block text-sm font-medium text-gray-700 mb-1">Child</label>
