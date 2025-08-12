@@ -23,14 +23,6 @@
                     {% else %}
                         <span class="bg-gray-100 text-gray-700 px-2 py-1 text-xs rounded-sm">Pending</span>
                     {% endif %}
-                    <div class="flex gap-1 flex-shrink-0">
-                        <button onclick="openEditEntryModal({{ task.id }}, {{ task.child.id }}, '{{ task.category }}', '{{ task.title|addslashes }}', '{{ task.description|addslashes }}', '{% if task.task_due_date %}{{ task.task_due_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ task.title }}" aria-label="Edit {{ task.title }}">
-                            <i class="fas fa-pencil-alt text-xs" aria-hidden="true"></i>
-                        </button>
-                        <button onclick="deleteEntryConfirm({{ task.id }}, '{{ task.title|addslashes }}')" class="btn-delete" title="Delete {{ task.title }}" aria-label="Delete {{ task.title }}">
-                            <i class="fas fa-trash text-xs" aria-hidden="true"></i>
-                        </button>
-                    </div>
                 </div>
             </div>
             
@@ -62,6 +54,18 @@
             <!-- Show created date -->
             <div class="flex items-center justify-between mt-2">
                 <p class="text-xs text-gray-500">Created: {{ task.created_at|date:"M j, Y g:i A" }}</p>
+            </div>
+            
+            <!-- Edit/Delete Actions -->
+            <div class="flex gap-2 mt-4 pt-3 border-t border-gray-200">
+                <button onclick="openEditEntryModal({{ task.id }}, {{ task.child.id }}, '{{ task.category }}', '{{ task.title|addslashes }}', '{{ task.description|addslashes }}', '{% if task.task_due_date %}{{ task.task_due_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit flex-1" title="Edit {{ task.title }}" aria-label="Edit {{ task.title }}">
+                    <i class="fas fa-pencil-alt mr-1" aria-hidden="true"></i>
+                    Edit
+                </button>
+                <button onclick="deleteEntryConfirm({{ task.id }}, '{{ task.title|addslashes }}')" class="btn-delete flex-1" title="Delete {{ task.title }}" aria-label="Delete {{ task.title }}">
+                    <i class="fas fa-trash mr-1" aria-hidden="true"></i>
+                    Delete
+                </button>
             </div>
         </div>
     </div>

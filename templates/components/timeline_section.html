@@ -129,14 +129,12 @@
                                     {% endif %}
                                     
                                     <!-- Edit/Delete Actions -->
-                                    <div class="flex gap-2 mt-4 pt-3 border-t border-gray-200">
-                                        <button onclick="openEditEntryModal({{ entry.id }}, {{ entry.child.id }}, '{{ entry.category }}', '{{ entry.title|addslashes }}', '{{ entry.description|addslashes }}', '{% if entry.event_date %}{{ entry.event_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit flex-1" title="Edit {{ entry.title }}" aria-label="Edit {{ entry.title }}">
-                                            <i class="fas fa-pencil-alt mr-1" aria-hidden="true"></i>
-                                            Edit
+                                    <div class="flex gap-1 justify-end mt-4 pt-3 border-t border-gray-200">
+                                        <button onclick="openEditEntryModal({{ entry.id }}, {{ entry.child.id }}, '{{ entry.category }}', '{{ entry.title|addslashes }}', '{{ entry.description|addslashes }}', '{% if entry.event_date %}{{ entry.event_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ entry.title }}" aria-label="Edit {{ entry.title }}">
+                                            <i class="fas fa-pencil-alt text-xs" aria-hidden="true"></i>
                                         </button>
-                                        <button onclick="deleteEntryConfirm({{ entry.id }}, '{{ entry.title|addslashes }}')" class="btn-delete flex-1" title="Delete {{ entry.title }}" aria-label="Delete {{ entry.title }}">
-                                            <i class="fas fa-trash mr-1" aria-hidden="true"></i>
-                                            Delete
+                                        <button onclick="deleteEntryConfirm({{ entry.id }}, '{{ entry.title|addslashes }}')" class="btn-delete" title="Delete {{ entry.title }}" aria-label="Delete {{ entry.title }}">
+                                            <i class="fas fa-trash text-xs" aria-hidden="true"></i>
                                         </button>
                                     </div>
                             </div>
