@@ -1,0 +1,30 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Django Migrations",
+			"type": "shell",
+			"command": "C:/Users/Lizzk/Desktop/vscode-projects/Parent-Planner/.venv/Scripts/python.exe manage.py migrate",
+			"group": "build"
+		},
+		{
+			"label": "Delete Database",
+			"type": "shell",
+			"command": "rm db.sqlite3",
+			"group": "build"
+		},
+		{
+			"label": "Run Django Migrations Fresh",
+			"type": "shell",
+			"command": "C:/Users/Lizzk/Desktop/vscode-projects/Parent-Planner/.venv/Scripts/python.exe manage.py migrate",
+			"group": "build"
+		},
+		{
+			"label": "Start Django Server",
+			"type": "shell",
+			"command": "C:/Users/Lizzk/Desktop/vscode-projects/Parent-Planner/.venv/Scripts/python.exe manage.py runserver",
+			"isBackground": true,
+			"group": "build"
+		}
+	]
+}
