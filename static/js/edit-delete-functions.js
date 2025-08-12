@@ -73,7 +73,7 @@ function openEditEventModal(eventId, childId, category, title, content, date) {
     document.getElementById('edit_entry_child').value = childId;
     document.getElementById('edit_entry_category').value = 'event';
     document.getElementById('edit_entry_title').value = title;
-    document.getElementById('edit_entry_description').value = content;
+    document.getElementById('edit_entry_content').value = content;
     if (date) {
         document.getElementById('edit_entry_date').value = date;
     }
@@ -106,7 +106,7 @@ function openEditTaskModal(taskId, childId, category, title, content, date) {
     document.getElementById('edit_entry_child').value = childId;
     document.getElementById('edit_entry_category').value = 'task';
     document.getElementById('edit_entry_title').value = title;
-    document.getElementById('edit_entry_description').value = content;
+    document.getElementById('edit_entry_content').value = content;
     if (date) {
         document.getElementById('edit_entry_date').value = date;
     }
