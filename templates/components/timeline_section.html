@@ -32,9 +32,9 @@
                                 <h4 class="font-medium text-gray-900 text-sm sm:text-base line-clamp-2">{{ entry.title }}</h4>
                             </div>
                             
-                            <!-- Event Details -->
+                            <!-- Event Details - ALL VISIBLE -->
                             <div class="text-xs sm:text-sm text-gray-600 mb-2">
-                                <!-- Date and Time Info - Always visible in collapsed view -->
+                                <!-- Date and Time Info -->
                                 <div class="space-y-1 text-xs text-gray-500 mb-2">
                                     {% if entry.event_date %}
                                         <div class="flex items-center gap-1">
@@ -74,10 +74,8 @@
                                     {% endif %}
                                 </div>
                                 
-                                <!-- All other fields in expanded view only -->
-                                <div class="hidden expanded-details">
-                                    <!-- Category and Location tags - In expanded view -->
-                                    <div class="flex flex-wrap gap-1 mb-3">
+                                <!-- Category and Location tags - NOW ALWAYS VISIBLE -->
+                                <div class="flex flex-wrap gap-1 mb-3">
                                         {% if entry.location %}
                                             <span class="bg-violet-100 text-violet-700 px-2 py-0.5 text-xs rounded">{{ entry.location }}</span>
                                         {% endif %}
@@ -117,7 +115,6 @@
                                             <span class="ml-1 bg-green-100 text-green-700 px-2 py-0.5 text-xs rounded">Completed</span>
                                         </div>
                                     {% endif %}
-                                </div>
                             </div>
                         </div>
                     </div>
