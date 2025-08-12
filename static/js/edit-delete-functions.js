@@ -48,7 +48,7 @@ function openEditEventModal(eventId, childId, category, title, content, date) {
 
     // Set form action
     if (form) {
-        form.action = `/edit-entry/${eventId}/?next=dashboard`;
+        form.action = `/save-entry/${eventId}/`;
     }
 
     // Show modal
@@ -85,7 +85,7 @@ function openEditTaskModal(taskId, childId, category, title, content, date) {
 
     // Set form action
     if (form) {
-        form.action = `/edit-entry/${taskId}/?next=dashboard`;
+        form.action = `/save-entry/${taskId}/`;
     }
 
     // Show modal
@@ -163,9 +163,9 @@ function openEditChildModal(childId, childData) {
     if (classNameField) classNameField.value = childData.class_name || '';
     if (colourField) colourField.value = childData.colour || '';
     
-    // Set the form action to edit this specific child
+    // Set the form action to save this specific child
     if (form) {
-        form.action = `/edit-child/${childId}/`;
+        form.action = `/save-child/${childId}/`;
     }
     
     // Show the modal

@@ -426,6 +426,29 @@ def edit_entry(request, entry_id):
     })
 
 
+#---------------------------------save entry view (for modal forms)----------------------------
+@login_required
+def save_entry(request, entry_id):
+    """AJAX endpoint to save entry from modal forms and return to dashboard"""
+    if request.method != 'POST':
+        return redirect('dashboard')
+        
+    parent = get_parent_or_redirect(request)
+    if not parent:
+        return redirect('register')
+        
+    entry = get_object_or_404(Entry, id=entry_id, child__parent=parent)
+    form = entryForm(request.POST, instance=entry, parent=parent)
+    
+    if form.is_valid():
+        form.save()
+        messages.success(request, f'Updated {entry.get_entry_type_display().lower()}: {entry.title}')
+    else:
+        messages.error(request, 'Please correct the errors in the form.')
+        
+    return redirect('dashboard')
+
+
 #-----------------------delete entry view----------------------------
 @login_required
 def delete_entry(request, entry_id, redirect_to='child_entries'):
@@ -469,6 +492,29 @@ def edit_child(request, child_id):
         'form': form,
         'child': child,
     })
+
+
+#---------------------------------save child view (for modal forms)----------------------------
+@login_required
+def save_child(request, child_id):
+    """AJAX endpoint to save child from modal forms and return to dashboard"""
+    if request.method != 'POST':
+        return redirect('dashboard')
+        
+    parent = get_parent_or_redirect(request)
+    if not parent:
+        return redirect('register')
+        
+    child = get_object_or_404(Child, id=child_id, parent=parent)
+    form = childForm(request.POST, instance=child)
+    
+    if form.is_valid():
+        form.save()
+        messages.success(request, f'Updated {child.name}!')
+    else:
+        messages.error(request, 'Please correct the errors in the form.')
+        
+    return redirect('dashboard')
 
 
 #----------------------delete child view----------------------------

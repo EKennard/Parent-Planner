@@ -18,6 +18,11 @@ urlpatterns = [
     
     path('edit-child/<int:child_id>/', views.edit_child, name='edit_child'),
     path('delete-child/<int:child_id>/', views.delete_child, name='delete_child'),
+    
+    # AJAX save endpoints for modal forms
+    path('save-entry/<int:entry_id>/', views.save_entry, name='save_entry'),
+    path('save-child/<int:child_id>/', views.save_child, name='save_child'),
+    
     path('edit-entry/<int:entry_id>/', views.edit_entry, name='edit_entry'),
     path('delete-entry/<int:entry_id>/', views.delete_entry, name='delete_entry'),
     path('toggle-completion/<int:entry_id>/', views.toggle_entry_completion, name='toggle_entry_completion'),
