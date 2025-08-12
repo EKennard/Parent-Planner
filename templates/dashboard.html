@@ -279,31 +279,6 @@ function collapseAllNotes() {
         document.getElementById('addEntryModal').classList.remove('hidden');
     }
 
-    function openEditChildModal(childId, childData) {
-        // Populate the form with child data
-        document.getElementById('edit_child_name').value = childData.name;
-        document.getElementById('edit_child_birth_date').value = childData.birth_date;
-        document.getElementById('edit_child_school').value = childData.school || '';
-        document.getElementById('edit_child_year').value = childData.year || '';
-        document.getElementById('edit_child_class_name').value = childData.class_name || '';
-        document.getElementById('edit_child_colour').value = childData.colour;
-        
-        // Set the form action to the edit URL
-        document.getElementById('editChildForm').action = '/edit_child/' + childId + '/';
-        
-        // Select the correct color dot
-        const colorDots = document.querySelectorAll('#editChildModal .color-dot');
-        colorDots.forEach(dot => {
-            dot.classList.remove('selected');
-            if (dot.getAttribute('data-color') === childData.colour) {
-                dot.classList.add('selected');
-            }
-        });
-        
-        // Show the modal
-        document.getElementById('editChildModal').classList.remove('hidden');
-    }
-
     function closeEditChildModal() {
         document.getElementById('editChildModal').classList.add('hidden');
     }
@@ -338,56 +313,7 @@ function collapseAllNotes() {
         }
     }
 
-    function deleteChildConfirm(childId, childName) {
-        if (confirm(`Are you sure you want to delete ${childName}? This action cannot be undone and will also delete all associated entries and notes.`)) {
-            const deleteForm = document.createElement('form');
-            deleteForm.method = 'post';
-            deleteForm.action = '/delete_child/' + childId + '/';
-            
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'csrfmiddlewaretoken';
-            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            
-            deleteForm.appendChild(csrfToken);
-            document.body.appendChild(deleteForm);
-            deleteForm.submit();
-        }
-    }
 
-    function deleteEntryConfirm(entryId, entryTitle) {
-        if (confirm(`Are you sure you want to delete "${entryTitle}"? This action cannot be undone.`)) {
-            const deleteForm = document.createElement('form');
-            deleteForm.method = 'post';
-            deleteForm.action = '/delete_entry/' + entryId + '/';
-            
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'csrfmiddlewaretoken';
-            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            
-            deleteForm.appendChild(csrfToken);
-            document.body.appendChild(deleteForm);
-            deleteForm.submit();
-        }
-    }
-
-    function deleteNoteConfirm(noteId, noteTitle) {
-        if (confirm(`Are you sure you want to delete "${noteTitle}"? This action cannot be undone.`)) {
-            const deleteForm = document.createElement('form');
-            deleteForm.method = 'post';
-            deleteForm.action = '/delete_note/' + noteId + '/';
-            
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'csrfmiddlewaretoken';
-            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            
-            deleteForm.appendChild(csrfToken);
-            document.body.appendChild(deleteForm);
-            deleteForm.submit();
-        }
-    }
 
     // Close modals when clicking outside or pressing escape
     document.addEventListener('keydown', function(event) {
@@ -607,27 +533,13 @@ function collapseAllNotes() {
         });
     }
 
-    // Edit Entry Modal functions
-    function openEditEntryModal(entryId, childId, category, title, content, date) {
-        const modal = document.getElementById('editEntryModal');
-        const form = document.getElementById('editEntryForm');
-        
-        // Populate form fields
-        document.getElementById('edit_entry_child').value = childId;
-        document.getElementById('edit_entry_category').value = category;
-        document.getElementById('edit_entry_title').value = title;
-        document.getElementById('edit_entry_content').value = content;
-        document.getElementById('edit_entry_date').value = date;
-        
-        // Set form action
-        form.action = '/edit_entry/' + entryId + '/';
-        
-        // Show modal
-        modal.classList.remove('hidden');
-    }
-
     function closeEditEntryModal() {
         const modal = document.getElementById('editEntryModal');
+        modal.classList.add('hidden');
+    }
+
+    function closeEditNoteModal() {
+        const modal = document.getElementById('editNoteModal');
         modal.classList.add('hidden');
     }
 
@@ -649,29 +561,6 @@ function collapseAllNotes() {
             document.body.appendChild(deleteForm);
             deleteForm.submit();
         }
-    }
-
-    // Edit Note Modal functions
-    function openEditNoteModal(noteId, childId, title, content, date) {
-        const modal = document.getElementById('editNoteModal');
-        const form = document.getElementById('editNoteForm');
-        
-        // Populate form fields
-        document.getElementById('edit_note_child').value = childId;
-        document.getElementById('edit_note_title').value = title;
-        document.getElementById('edit_note_content').value = content;
-        document.getElementById('edit_note_date').value = date;
-        
-        // Set form action
-        form.action = '/edit_note/' + noteId + '/';
-        
-        // Show modal
-        modal.classList.remove('hidden');
-    }
-
-    function closeEditNoteModal() {
-        const modal = document.getElementById('editNoteModal');
-        modal.classList.add('hidden');
     }
 
     function deleteNote() {
