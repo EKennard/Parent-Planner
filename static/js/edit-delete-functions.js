@@ -1,14 +1,22 @@
 // Shared JavaScript functions for edit and delete operations across all pages
 
+// Debug logging to help troubleshoot Heroku deployment
+console.log('Edit-delete-functions.js loaded successfully');
+
 // Modal functions for editing events specifically
 function openEditEventModal(eventId, childId, category, title, content, date) {
+    console.log('openEditEventModal called:', {eventId, childId, category, title, content, date});
+    
     // Check if we're on the dashboard page with the modal
     const modal = document.getElementById('editEntryModal');
     if (!modal) {
+        console.log('Modal not found, redirecting...');
         // If modal doesn't exist, redirect to dashboard
         window.location.href = `/dashboard/?edit=entry&id=${eventId}`;
         return;
     }
+
+    console.log('Modal found, proceeding with edit...');
 
     // Set modal title to indicate it's for events
     const modalTitle = modal.querySelector('h2');
@@ -31,17 +39,23 @@ function openEditEventModal(eventId, childId, category, title, content, date) {
 
     // Show modal
     modal.classList.remove('hidden');
+    console.log('Modal should now be visible');
 }
 
 // Modal functions for editing tasks specifically  
 function openEditTaskModal(taskId, childId, category, title, content, date) {
+    console.log('openEditTaskModal called:', {taskId, childId, category, title, content, date});
+    
     // Check if we're on the dashboard page with the modal
     const modal = document.getElementById('editEntryModal');
     if (!modal) {
+        console.log('Modal not found, redirecting...');
         // If modal doesn't exist, redirect to dashboard
         window.location.href = `/dashboard/?edit=entry&id=${taskId}`;
         return;
     }
+
+    console.log('Modal found, proceeding with edit...');
 
     // Set modal title to indicate it's for tasks
     const modalTitle = modal.querySelector('h2');

@@ -149,13 +149,20 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Static files configuration for Heroku
 if 'DATABASE_URL' in os.environ:  # This means we're on Heroku
-    # Use whitenoise for static files without compression to avoid JS issues
+    # Use standard whitenoise storage for better JS compatibility
     STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
     # Ensure static files are always collected
     STATICFILES_FINDERS = [
         'django.contrib.staticfiles.finders.FileSystemFinder',
         'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     ]
+    # Configure whitenoise for better JS handling
+    WHITENOISE_USE_FINDERS = True
+    WHITENOISE_AUTOREFRESH = True
+    # Add additional MIME types for JS files
+    WHITENOISE_MIMETYPES = {
+        '.js': 'application/javascript',
+    }
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
