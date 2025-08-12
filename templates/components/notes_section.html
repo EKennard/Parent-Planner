@@ -1,5 +1,5 @@
 <!-- Notes Section Component -->
-<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #10b981;" role="region" aria-labelledby="notes-section-heading">
+<div class="bg-white shadow-lg h-full flex flex-col relative dashboard-section" style="border: 2px solid #10b981;"                                     <button onclick="openEditNoteModal({{ note.id }}, {{ note.child.id }}, '{{ note.title|addslashes }}', '{{ note.content|addslashes }}', '{% if note.created %}{{ note.created|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ note.title }}" aria-label="Edit {{ note.title }}">"ole="region" aria-labelledby="notes-section-heading">
     <div class="bg-gray-50 px-3 py-2 sm:px-6 sm:py-4 flex-shrink-0" style="border-bottom: 2px solid #10b981;">
         <div class="flex items-center justify-between">
             <h3 id="notes-section-heading" class="text-lg sm:text-xl font-normal text-gray-900 tracking-wide">Notes</h3>
@@ -23,8 +23,6 @@
                 <li>
                 <div class="bg-white p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 border-l-4 flex items-start gap-3"
                      style="border-left-color: {{ note.child.colour }};"
-                     data-card-id="{{ note.id }}"
-                     data-card-type="note"
                      role="article"
                      aria-labelledby="note-title-{{ note.id }}">
                     <!-- Child Initial Icon -->
@@ -43,7 +41,6 @@
                         <!-- Note Content -->
                         <div class="text-xs sm:text-sm text-gray-600 mb-2">
                             <!-- All note details - NOW ALWAYS VISIBLE -->
-                            <div class="expanded-details">
                                 {% if note.category and note.category != 'none' %}
                                     <div class="mb-2">
                                         <span class="font-medium text-gray-700">Category:</span>
@@ -150,14 +147,13 @@
                                 
                                 <!-- Edit/Delete Actions at bottom -->
                                 <div class="flex gap-2 mt-4 pt-3 border-t border-gray-200 justify-end">
-                                    <button onclick="openEditNoteModal({{ note.id }}, '{{ note.title|addslashes }}', '{{ note.content|addslashes }}')" class="btn-edit" title="Edit {{ note.title }}" aria-label="Edit {{ note.title }}">
+                                    <button onclick="openEditNoteModal({{ note.id }}, {{ note.child.id }}, '{{ note.title|addslashes }}', '{{ note.description|addslashes }}', '{% if note.created %}{{ note.created|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ note.title }}" aria-label="Edit {{ note.title }}">
                                         <i class="fas fa-pencil-alt text-xs" aria-hidden="true"></i>
                                     </button>
                                     <button onclick="deleteNoteConfirm({{ note.id }}, '{{ note.title|addslashes }}')" class="btn-delete" title="Delete {{ note.title }}" aria-label="Delete {{ note.title }}">
                                         <i class="fas fa-trash text-xs" aria-hidden="true"></i>
                                     </button>
                                 </div>
-                            </div>
                         </div>
                     </div>
                 </div>

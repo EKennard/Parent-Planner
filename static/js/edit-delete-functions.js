@@ -53,6 +53,72 @@ function deleteEntry() {
     }
 }
 
+// Modal functions for editing events specifically
+function openEditEventModal(eventId, childId, category, title, content, date) {
+    // Check if we're on the dashboard page with the modal
+    const modal = document.getElementById('editEntryModal');
+    if (!modal) {
+        // If modal doesn't exist, redirect to dashboard
+        window.location.href = `/dashboard/?edit=entry&id=${eventId}`;
+        return;
+    }
+
+    // Set modal title to indicate it's for events
+    const modalTitle = modal.querySelector('h2');
+    if (modalTitle) {
+        modalTitle.textContent = 'Edit Event';
+    }
+
+    // Fill the form fields
+    document.getElementById('edit_entry_child').value = childId;
+    document.getElementById('edit_entry_category').value = 'event';
+    document.getElementById('edit_entry_title').value = title;
+    document.getElementById('edit_entry_description').value = content;
+    if (date) {
+        document.getElementById('edit_entry_date').value = date;
+    }
+
+    // Set form action
+    const form = document.getElementById('editEntryForm');
+    form.action = `/edit-entry/${eventId}/`;
+
+    // Show modal
+    modal.classList.remove('hidden');
+}
+
+// Modal functions for editing tasks specifically  
+function openEditTaskModal(taskId, childId, category, title, content, date) {
+    // Check if we're on the dashboard page with the modal
+    const modal = document.getElementById('editEntryModal');
+    if (!modal) {
+        // If modal doesn't exist, redirect to dashboard
+        window.location.href = `/dashboard/?edit=entry&id=${taskId}`;
+        return;
+    }
+
+    // Set modal title to indicate it's for tasks
+    const modalTitle = modal.querySelector('h2');
+    if (modalTitle) {
+        modalTitle.textContent = 'Edit Task';
+    }
+
+    // Fill the form fields
+    document.getElementById('edit_entry_child').value = childId;
+    document.getElementById('edit_entry_category').value = 'task';
+    document.getElementById('edit_entry_title').value = title;
+    document.getElementById('edit_entry_description').value = content;
+    if (date) {
+        document.getElementById('edit_entry_date').value = date;
+    }
+
+    // Set form action
+    const form = document.getElementById('editEntryForm');
+    form.action = `/edit-entry/${taskId}/`;
+
+    // Show modal
+    modal.classList.remove('hidden');
+}
+
 // Modal functions for editing notes
 function openEditNoteModal(noteId, childId, title, content, date) {
     // Check if we're on the dashboard page with the modal

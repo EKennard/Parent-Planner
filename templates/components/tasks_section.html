@@ -23,9 +23,6 @@
                 <li>
                 <div class="{% if task.is_completed %}bg-gray-50 task-completed{% else %}bg-white{% endif %} p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 border-l-4 flex items-start gap-3 task-card"
                      style="border-left-color: {{ task.child.colour }};"
-                     data-card-id="{{ task.id }}"
-                     data-card-type="task"
-                     data-completed="{{ task.is_completed|yesno:'true,false' }}"
                      role="article"
                      aria-labelledby="task-title-{{ task.id }}">
                     <!-- Child Initial Icon -->
@@ -65,7 +62,6 @@
                             </div>
                             
                             <!-- All task details - NOW ALWAYS VISIBLE -->
-                            <div class="expanded-details">
                                 <!-- All date/time fields first -->
                                 {% if task.start_time %}
                                     <div class="mb-2">
@@ -139,14 +135,13 @@
                                 
                                 <!-- Edit/Delete Actions at bottom -->
                                 <div class="flex gap-2 mt-4 pt-3 border-t border-gray-200 justify-end">
-                                    <button onclick="openEditEntryModal({{ task.id }}, {{ task.child.id }}, '{{ task.category }}', '{{ task.title|addslashes }}', '{{ task.description|addslashes }}', '{% if task.task_due_date %}{{ task.task_due_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ task.title }}" aria-label="Edit {{ task.title }}">
+                                    <button onclick="openEditTaskModal({{ task.id }}, {{ task.child.id }}, '{{ task.category }}', '{{ task.title|addslashes }}', '{{ task.description|addslashes }}', '{% if task.task_due_date %}{{ task.task_due_date|date:"Y-m-d" }}{% endif %}')" class="btn-edit" title="Edit {{ task.title }}" aria-label="Edit {{ task.title }}">
                                         <i class="fas fa-pencil-alt text-xs" aria-hidden="true"></i>
                                     </button>
                                     <button onclick="deleteEntryConfirm({{ task.id }}, '{{ task.title|addslashes }}')" class="btn-delete" title="Delete {{ task.title }}" aria-label="Delete {{ task.title }}">
                                         <i class="fas fa-trash text-xs" aria-hidden="true"></i>
                                     </button>
                                 </div>
-                            </div>
                         </div>
                     </div>
                 </div>
