@@ -371,4 +371,305 @@
         </div>
     </div>
 </div>
+
+<!-- Edit Child Modal -->
+<div id="editChildModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" onclick="closeEditChildModal()">
+    <div class="bg-white border-2 border-secondary w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="border-b-2 border-secondary bg-purple-50 px-4 py-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium text-gray-900">Edit Child</h2>
+                <button onclick="closeEditChildModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-4">
+            <form id="editChildForm" method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <div>
+                    <label for="edit_child_name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                    <input type="text" id="edit_child_name" name="name" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="edit_child_birth_date" class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                    <input type="date" id="edit_child_birth_date" name="birth_date" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="edit_child_school" class="block text-sm font-medium text-gray-700 mb-1">School</label>
+                    <input type="text" id="edit_child_school" name="school" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="edit_child_year" class="block text-sm font-medium text-gray-700 mb-1">Year</label>
+                    <input type="text" id="edit_child_year" name="year" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="edit_child_class_name" class="block text-sm font-medium text-gray-700 mb-1">Class Name</label>
+                    <input type="text" id="edit_child_class_name" name="class_name" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                    <div class="flex flex-wrap gap-2">
+                        <div class="color-dot bg-blue-500" data-color="blue" onclick="selectEditColorDot(this)"></div>
+                        <div class="color-dot bg-green-500" data-color="green" onclick="selectEditColorDot(this)"></div>
+                        <div class="color-dot bg-yellow-500" data-color="yellow" onclick="selectEditColorDot(this)"></div>
+                        <div class="color-dot bg-red-500" data-color="red" onclick="selectEditColorDot(this)"></div>
+                        <div class="color-dot bg-purple-500" data-color="purple" onclick="selectEditColorDot(this)"></div>
+                        <div class="color-dot bg-pink-500" data-color="pink" onclick="selectEditColorDot(this)"></div>
+                        <div class="color-dot bg-orange-500" data-color="orange" onclick="selectEditColorDot(this)"></div>
+                        <div class="color-dot bg-teal-500" data-color="teal" onclick="selectEditColorDot(this)"></div>
+                    </div>
+                    <input type="hidden" id="edit_child_colour" name="colour">
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 border-2 border-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        Update Child
+                    </button>
+                    <button type="button" onclick="deleteChild()" class="flex-1 bg-red-500 text-white px-4 py-2 border-2 border-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                        Delete Child
+                    </button>
+                    <button type="button" onclick="closeEditChildModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 border-2 border-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Entry Modal -->
+<div id="editEntryModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" onclick="closeEditEntryModal()">
+    <div class="bg-white border-2 border-secondary w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="border-b-2 border-secondary bg-purple-50 px-4 py-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium text-gray-900">Edit Entry</h2>
+                <button onclick="closeEditEntryModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-4">
+            <form id="editEntryForm" method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <div>
+                    <label for="edit_entry_child" class="block text-sm font-medium text-gray-700 mb-1">Child</label>
+                    <select id="edit_entry_child" name="child" class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                        <option value="{{ child.id }}">{{ child.name }}</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="edit_entry_category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select id="edit_entry_category" name="category" class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                        <option value="event">Event</option>
+                        <option value="task">Task</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="edit_entry_title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    <input type="text" id="edit_entry_title" name="title" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="edit_entry_content" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea id="edit_entry_content" name="description" rows="3"
+                              class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none"></textarea>
+                </div>
+                
+                <div>
+                    <label for="edit_entry_date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" id="edit_entry_date" name="date" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 border-2 border-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        Update Entry
+                    </button>
+                    <button type="button" onclick="deleteEntry()" class="flex-1 bg-red-500 text-white px-4 py-2 border-2 border-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                        Delete Entry
+                    </button>
+                    <button type="button" onclick="closeEditEntryModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 border-2 border-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Note Modal -->
+<div id="editNoteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center" onclick="closeEditNoteModal()">
+    <div class="bg-white border-2 border-secondary w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="border-b-2 border-secondary bg-purple-50 px-4 py-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-medium text-gray-900">Edit Note</h2>
+                <button onclick="closeEditNoteModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-4">
+            <form id="editNoteForm" method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <div>
+                    <label for="edit_note_child" class="block text-sm font-medium text-gray-700 mb-1">Child</label>
+                    <select id="edit_note_child" name="child" class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                        <option value="{{ child.id }}">{{ child.name }}</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="edit_note_title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    <input type="text" id="edit_note_title" name="title" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="edit_note_content" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                    <textarea id="edit_note_content" name="content" rows="4"
+                              class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none"></textarea>
+                </div>
+                
+                <div>
+                    <label for="edit_note_date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" id="edit_note_date" name="created_date" 
+                           class="w-full px-3 py-2 border-2 border-gray-300 focus:border-secondary focus:outline-none">
+                </div>
+                
+                <div class="flex gap-3 pt-4">
+                    <button type="submit" class="flex-1 bg-primary text-white px-4 py-2 border-2 border-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        Update Note
+                    </button>
+                    <button type="button" onclick="deleteNote()" class="flex-1 bg-red-500 text-white px-4 py-2 border-2 border-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                        Delete Note
+                    </button>
+                    <button type="button" onclick="closeEditNoteModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 border-2 border-gray-300 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Additional JavaScript functions needed for childEntries page
+
+function selectEditColorDot(element) {
+    // Remove selected class from all dots
+    const allDots = document.querySelectorAll('#editChildModal .color-dot');
+    allDots.forEach(dot => dot.classList.remove('selected'));
+    
+    // Add selected class to clicked dot
+    element.classList.add('selected');
+    
+    // Update hidden input
+    document.getElementById('edit_child_colour').value = element.getAttribute('data-color');
+}
+
+function closeEditChildModal() {
+    document.getElementById('editChildModal').classList.add('hidden');
+}
+
+function closeEditEntryModal() {
+    const modal = document.getElementById('editEntryModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function closeEditNoteModal() {
+    const modal = document.getElementById('editNoteModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function deleteChild() {
+    if (confirm('Are you sure you want to delete this child? This action cannot be undone.')) {
+        const form = document.getElementById('editChildForm');
+        const deleteForm = document.createElement('form');
+        deleteForm.method = 'post';
+        deleteForm.action = form.action.replace('/edit_child/', '/delete_child/');
+        
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfmiddlewaretoken';
+        csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        deleteForm.appendChild(csrfToken);
+        document.body.appendChild(deleteForm);
+        deleteForm.submit();
+    }
+}
+
+function deleteEntry() {
+    const form = document.getElementById('editEntryForm');
+    const entryTitle = document.getElementById('edit_entry_title').value;
+    
+    if (confirm(`Are you sure you want to delete "${entryTitle}"? This action cannot be undone.`)) {
+        const deleteForm = document.createElement('form');
+        deleteForm.method = 'post';
+        deleteForm.action = form.action.replace('/edit_entry/', '/delete_entry/');
+        
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfmiddlewaretoken';
+        csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        deleteForm.appendChild(csrfToken);
+        document.body.appendChild(deleteForm);
+        deleteForm.submit();
+    }
+}
+
+function deleteNote() {
+    const form = document.getElementById('editNoteForm');
+    const noteTitle = document.getElementById('edit_note_title').value;
+    
+    if (confirm(`Are you sure you want to delete "${noteTitle}"? This action cannot be undone.`)) {
+        const deleteForm = document.createElement('form');
+        deleteForm.method = 'post';
+        deleteForm.action = form.action.replace('/edit_note/', '/delete_note/');
+        
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfmiddlewaretoken';
+        csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        deleteForm.appendChild(csrfToken);
+        document.body.appendChild(deleteForm);
+        deleteForm.submit();
+    }
+}
+
+// Close modals when clicking outside or pressing escape
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeEditChildModal();
+        closeEditEntryModal();
+        closeEditNoteModal();
+    }
+});
+</script>
+
 {% endblock %}
