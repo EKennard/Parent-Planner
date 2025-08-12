@@ -345,16 +345,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const filterDropdown = document.getElementById('filterDropdown');
     console.log('Filter dropdown found:', !!filterDropdown);
     
-    // Swipe functionality (only for mobile)
+    // Swipe functionality (for mobile, tablet, and 1024px screens)
     const swipeContainer = document.getElementById('swipeContainer');
     const swipeContent = document.getElementById('swipeContent');
     const indicators = document.querySelectorAll('.nav-indicator');
     
     console.log('Swipe elements - Container:', !!swipeContainer, 'Content:', !!swipeContent, 'Indicators:', indicators.length);
     
-    // Only initialize swipe if elements exist (mobile screens)
+    // Only initialize swipe if elements exist (mobile, tablet, and 1024px screens)
     if (swipeContainer && swipeContent) {
-        console.log('Initializing swipe navigation for mobile');
+        console.log('Initializing swipe navigation for mobile/tablet/1024px screens');
         initializeSwipeNavigation(swipeContainer, swipeContent, indicators);
     } else {
         console.log('Swipe elements not found - desktop screen or elements missing');
